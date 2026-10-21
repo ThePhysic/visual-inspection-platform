@@ -1,0 +1,173 @@
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
+import { MAX_UPLOAD_BYTES } from '@vip/contracts';
+import { onlineManager } from '@tanstack/react-query';
+import { renderApp } from './test/render';
+import { accepted, apiError, asset, completed } from './test/fixtures';
+
+const image = () => new File(['image bytes'], 'panel.png', { type: 'image/png' });
+function server() {
+  return vi.fn<typeof fetch>(async (path, options) => {
+    if (path === '/api/v1/assets' && options?.method === 'POST') return Response.json(asset, { status: 201 });
+    if (path === '/api/v1/inspections' && options?.method === 'POST') return Response.json(accepted, { status: 202 });
+    if (path === accepted.url) return Response.json(completed);
+    if (path === `/api/v1/assets/${asset.id}`) return Response.json(asset);
+    throw new Error(`Unexpected request: ${String(path)}`);
+  });
+}
+
+describe('upload and inspection submission', () => {
+  it('starts with an accessible file input, constraints, and disabled submit', () => {
+    renderApp();
+    expect(screen.getByLabelText('Image file')).toHaveAttribute('accept', expect.stringContaining('image/png'));
+    expect(screen.getByText('No image selected.')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Upload and inspect' })).toBeDisabled();
+    expect(screen.getByText(/up to 10 MiB and 20 megapixels/)).toBeVisible();
+  });
+  it.each(['image/png', 'image/jpeg'])('selects and submits %s, then navigates to saved results', async type => {
+    const fetchMock = server(); vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup(); renderApp();
+    const file = new File(['bytes'], type === 'image/png' ? 'sample.png' : 'sample.jpg', { type });
+    await user.upload(screen.getByLabelText('Image file'), file);
+    expect(screen.getByText(new RegExp(file.name))).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: '2 detections' })).toBeVisible();
+    const upload = fetchMock.mock.calls.find(([path]) => path === '/api/v1/assets');
+    const form = upload?.[1]?.body as FormData;
+    expect(form.get('source')).toBe('browser'); expect(form.get('image')).toBeInstanceOf(File);
+    const submission = fetchMock.mock.calls.find(([path]) => path === '/api/v1/inspections');
+    expect(JSON.parse(submission?.[1]?.body as string)).toEqual({ assetId: asset.id });
+    expect((submission?.[1]?.headers as Record<string, string>)['Idempotency-Key']).toMatch(/^[a-f0-9-]{36}$/);
+  });
+  it.each([
+    new File(['bad'], 'bad.gif', { type: 'image/gif' }),
+    new File([new Uint8Array(MAX_UPLOAD_BYTES + 1)], 'huge.png', { type: 'image/png' }),
+    new File([], 'empty.png', { type: 'image/png' }),
+  ])('rejects invalid selection $name before any network call', async file => {
+    const fetchMock = vi.fn(); vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup({ applyAccept: false }); renderApp();
+    await user.upload(screen.getByLabelText('Image file'), file);
+    expect(screen.getByRole('alert')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Upload and inspect' })).toBeDisabled();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+  it('shows uploading and blocks concurrent form submission', async () => {
+    let finish!: (response: Response) => void;
+    const fetchMock = server().mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    const button = screen.getByRole('button', { name: 'Upload and inspect' });
+    await user.dblClick(button);
+    expect(screen.getByRole('status')).toHaveTextContent('Uploading and validating');
+    expect(screen.getByLabelText('Image file')).toBeDisabled();
+    fireEvent.submit(button.closest('form')!);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    finish(Response.json(asset, { status: 201 }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections')).toHaveLength(1);
+  });
+  it('shows authoritative backend validation without exposing arbitrary messages', async () => {
+    const fetchMock = server().mockResolvedValueOnce(apiError('CORRUPT_IMAGE', 422));
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('could not be decoded');
+    expect(screen.queryByText('Do not show arbitrary server details')).not.toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+  it('allows an explicitly requested upload retry after network failure', async () => {
+    const fetchMock = server().mockRejectedValueOnce(new TypeError('offline'));
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Check your connection');
+    await user.click(screen.getByRole('button', { name: 'Retry upload' }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(2);
+  });
+  it.each(['network', 'server', 'invalid acceptance'])('keeps the uploaded asset and idempotency key after %s creation failure', async failure => {
+    const fetchMock = server();
+    let creates = 0;
+    const implementation = fetchMock.getMockImplementation()!;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inspections' && ++creates === 1) {
+        if (failure === 'network') throw new TypeError('lost acknowledgement');
+        return failure === 'server' ? apiError('DATABASE_FAILURE', 503) : Response.json({ id: 'bad' }, { status: 202 });
+      }
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Your image is saved');
+    expect(screen.getByRole('alert')).toHaveTextContent('will not upload it again');
+    await user.click(screen.getByRole('button', { name: 'Retry inspection submission' }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    const submissions = fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections');
+    expect(submissions).toHaveLength(2);
+    expect(submissions[0]?.[1]?.headers).toEqual(submissions[1]?.[1]?.headers);
+    expect(submissions[0]?.[1]?.body).toEqual(submissions[1]?.[1]?.body);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(1);
+  });
+  it('starts a fresh logical request when the user selects another image', async () => {
+    const fetchMock = server();
+    const implementation = fetchMock.getMockImplementation()!;
+    fetchMock.mockImplementation(async (path, options) => path === '/api/v1/inspections' ? apiError('DATABASE_FAILURE', 503) : implementation(path, options));
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    for (const name of ['one.png', 'two.png']) {
+      await user.upload(screen.getByLabelText('Image file'), new File(['bytes'], name, { type: 'image/png' }));
+      await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+      await screen.findByRole('alert');
+    }
+    const submissions = fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections');
+    expect(submissions[0]?.[1]?.headers).not.toEqual(submissions[1]?.[1]?.headers);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(2);
+  });
+  it('aborts an upload when navigating away', async () => {
+    const fetchMock = vi.fn<typeof fetch>(() => new Promise(() => {})); vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup(); const { unmount } = renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    const signal = fetchMock.mock.calls[0]?.[1]?.signal;
+    unmount(); await waitFor(() => { expect(signal?.aborted).toBe(true); });
+  });
+  it('reports an offline submission immediately instead of queuing a future mutation', async () => {
+    onlineManager.setOnline(false);
+    try {
+      const fetchMock = vi.fn().mockRejectedValue(new TypeError('offline')); vi.stubGlobal('fetch', fetchMock);
+      const user = userEvent.setup(); renderApp();
+      await user.upload(screen.getByLabelText('Image file'), image());
+      await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+      expect(await screen.findByRole('alert')).toHaveTextContent('Check your connection');
+      expect(screen.getByRole('button', { name: 'Retry upload' })).toBeEnabled();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    } finally { onlineManager.setOnline(true); }
+  });
+  it('does not create an inspection after a late upload response on an unmounted page', async () => {
+    let finish!: (response: Response) => void;
+    const fetchMock = vi.fn<typeof fetch>(() => new Promise(resolve => { finish = resolve; })); vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup(); const { unmount } = renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    unmount(); finish(Response.json(asset, { status: 201 }));
+    await waitFor(() => { expect(fetchMock.mock.settledResults[0]?.type).toBe('fulfilled'); });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+  it('blocks duplicate submission while inspection acceptance is pending', async () => {
+    let finish!: (response: Response) => void;
+    const fetchMock = server(); const implementation = fetchMock.getMockImplementation()!;
+    fetchMock.mockImplementation(async (path, options) => path === '/api/v1/inspections'
+      ? new Promise(resolve => { finish = resolve; }) : implementation(path, options));
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    const button = await screen.findByRole('button', { name: 'Submitting…' });
+    expect(button).toBeDisabled(); expect(screen.getByRole('status')).toHaveTextContent('Image saved');
+    fireEvent.submit(button.closest('form')!);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections')).toHaveLength(1);
+    finish(Response.json(accepted, { status: 202 }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+  });
+});

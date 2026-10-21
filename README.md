@@ -1,14 +1,13 @@
 # Visual Inspection Platform
 
-A full-stack TypeScript foundation with a React frontend, Fastify API, and shared,
-versioned TypeBox contracts. The page checks API health and handles loading,
-connection failures, incompatible responses, and retrying.
+A full-stack image inspection application with a React frontend, Fastify API,
+and shared, versioned TypeBox contracts. Upload a JPEG/PNG, follow asynchronous
+inspection progress, and view read-only bounding boxes, labels, and confidence
+scores over the canonical stored image. Copy an inspection URL to reopen it.
 
-The API also ingests JPEG/PNG images, stores canonical image bytes locally, and
-persists asset metadata in MongoDB. The frontend remains the health-status page;
-use the REST APIs directly. Inspections run asynchronously through Redis/BullMQ
-and an independent worker using **simulated inference**. Visualization, review
-editing, and inspection-history UI are future work.
+MongoDB persists assets and inspections; Redis/BullMQ and an independent worker
+execute **simulated inference**. This is a software workflow demonstration, not a
+real detector. Annotation editing, human reviews, and history browsing are future work.
 
 ## Prerequisites
 
@@ -43,7 +42,8 @@ pnpm dev
 Open <http://127.0.0.1:5173>. The API listens on
 <http://127.0.0.1:3001/api/v1/health>. Stop development processes with Ctrl+C.
 `GET /api/v1/ready` verifies MongoDB and image storage and reports Redis status.
-`pnpm dev` also starts the worker; no inspection frontend is implemented yet.
+`pnpm dev` also starts the worker. The starting page is the upload workflow;
+the existing API-health page is available at `/health`.
 
 Compose runs MongoDB and Redis with loopback-only access, no authentication, and
 persistent named volumes. Redis uses AOF (`appendfsync everysec`), a 256 MiB memory
@@ -85,6 +85,7 @@ copy `.env.example` to `.env` at the repository root.
 | `REDIS_PORT` | `6379` | Host port published by Compose |
 | `REDIS_URL` | `redis://127.0.0.1:6379` | Shared API dispatch / worker Redis connection |
 | `REDIS_TEST_URL` | `redis://127.0.0.1:6379` | Integration-test Redis server |
+| `E2E_REDIS_URL` | `REDIS_TEST_URL` with database `/15` | Optional browser-test Redis override; reserve this DB for tests |
 
 If changing `MONGODB_PORT`, update both MongoDB URIs to match. Keep database
 credentials out of source control. The API and integration test command load the
@@ -112,6 +113,34 @@ pnpm test:integration
 pnpm build
 ```
 
+For frontend tests only, run `pnpm --filter @vip/contracts build` followed by
+`pnpm --filter @vip/web test`. These tests mock HTTP responses and exercise upload,
+retry identity, polling, route reloads, validation, and viewer states. jsdom tests
+check normalized style values; Playwright checks actual browser layout.
+
+Install Chromium once, then run the browser suite with MongoDB/Redis available:
+
+```sh
+pnpm --filter @vip/web exec playwright install chromium
+pnpm test:e2e
+```
+
+On a fresh Linux machine, use `playwright install --with-deps chromium` for system
+libraries. `pnpm test:e2e` builds the workspace, then Playwright starts compiled API
+and worker processes and Vite preview on dedicated ports **3003** and **4174**.
+It refuses to reuse existing servers. Tests create a random `vip_browser_test_*`
+database and private `.data/browser-tests` directory; teardown removes only that
+run's data/jobs. An abruptly terminated test runner can leave test resources.
+Redis database **15** is reserved by default; set `E2E_REDIS_URL` for Redis
+configurations with a different test database. No `FLUSHDB` is used.
+
+The browser suite performs real uploads, real queue execution, result rendering,
+mobile resizing, direct-link reloads, empty results, and a lost acceptance response
+followed by an idempotent retry. Separate controlled-HTTP tests expose queued and
+processing states deterministically and test portrait/landscape geometry; those
+tests mock inspection/asset responses and image bytes. The fast real mock provider
+may finish processing between polls. No production inference delays are added.
+
 - **Lint:** ESLint for JavaScript, TypeScript, and React hooks.
 - **Typecheck:** strict TypeScript across production code, tests, and Vite config.
 - **Test:** Vitest contract checks, Fastify injection tests, configuration tests,
@@ -129,7 +158,8 @@ pnpm build
 
 GitHub Actions runs the same four checks after a frozen-lockfile install on
 Linux and Windows. A separate Linux job runs integration tests with the same
-MongoDB and Redis versions as Compose. The workflow does not publish or deploy anything.
+MongoDB and Redis versions as Compose, followed by the Chromium browser suite.
+The workflow does not publish or deploy anything.
 
 ## Run compiled output locally
 
@@ -159,7 +189,7 @@ must route `/api` requests to the API and serve `apps/web/dist` separately.
 
 ```text
 apps/api/             Fastify construction, startup, configuration, and tests
-apps/web/             React health page, Vite configuration, and smoke tests
+apps/web/             React upload/results routes, viewer, unit and browser tests
 apps/worker/          Independently executable inspection consumer
 packages/contracts/   Browser-safe schemas, derived types, and validation
 packages/backend/     Shared persistence, storage, inference, and queue execution
@@ -325,7 +355,7 @@ omitted or explicitly supplied as
 `{"providerId":"mock","modelId":"mock-detector","modelVersion":"1.0.0"}`.
 Redis dispatch happens independently. `GET /api/v1/inspections/:id` returns the
 current lifecycle state and completed result or safe terminal failure details.
-Clients may poll this endpoint; there are no WebSockets or inspection UI yet.
+The frontend polls this endpoint; there are no WebSockets.
 
 `POST /api/v1/inspections/:id/retry`, with an `Idempotency-Key` and no body (or `{}`),
 creates a new inspection linked through `retriedFrom`. Only failed inspections may
@@ -368,7 +398,37 @@ the same image volume at their configured `ASSET_STORAGE_DIR`, writable for the
 API and readable for the worker; no container-local path may be assumed shared.
 
 See [execution and recovery architecture](docs/inspection-pipeline.md) for failure
-windows, ownership rules, and operational limitations. Before Task 02C, review
+windows, ownership rules, and operational limitations. Before Task 03A, review
 the fixed lease/deadline policy, retention of images/idempotency keys, and future
-cleanup of orphaned files. Frontend submission, overlays, editing, and review
-persistence require separate authorization.
+cleanup of orphaned files. Editing and review persistence require separate authorization.
+
+## Browser workflow
+
+1. Start MongoDB, Redis, API, worker, and frontend using the commands above.
+2. Open <http://127.0.0.1:5173> and select one JPEG/PNG up to 10 MiB. For a predictable
+   demo, select `fixtures/inspections/panel.png`; `empty.png` demonstrates zero detections.
+3. Choose **Upload and inspect**. The server validates, auto-orients, and saves the
+   image. After acceptance, the browser navigates to `/inspections/:inspectionId`.
+4. Queued/processing pages poll every two seconds while the tab is visible. Terminal
+   completed/failed states stop interval polling. Brief processing states may not
+   be observed because the mock finishes quickly. Refresh status manually if needed.
+5. Completed results show the canonical image, numbered boxes, class labels,
+   confidence scores, model/provider metadata, and an explicit simulated-inference
+   disclosure. Select a detection to emphasize its box; results cannot be edited.
+6. Copy the detail URL. Refreshing or opening it directly fetches the saved inspection;
+   Vite supports these routes. Any future static host must route frontend URLs to
+   `index.html` while continuing to route `/api` requests to the API.
+
+Upload and inspection creation are distinct steps. A failed creation request keeps
+the asset and idempotency key in the current upload page. **Retry inspection
+submission** sends the same logical request without uploading again, including
+when the server accepted a request but its response was lost. Selecting another
+file starts a fresh submission with a new key. Reloading/leaving an unfinished
+upload page clears this in-memory submission; it is not a resumable upload session.
+An upload acknowledgement lost before the browser receives an asset ID can leave
+an asset behind; an explicit upload retry may create another asset.
+
+Network-fetch errors are separate from terminal processing failures. Cached
+results remain visible when a background refresh fails, and image-loading errors
+leave prediction details available. There is no UI for retrying a failed inspection
+yet. See [frontend behavior](docs/browser-workflow.md) for implemented boundaries.

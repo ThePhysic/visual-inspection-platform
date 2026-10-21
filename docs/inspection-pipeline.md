@@ -140,5 +140,6 @@ keys/fingerprints, storage keys, connection strings, and stack traces.
   Simulations use controlled gates/database failures and expired leases; they do
   not claim automated OS-kill, machine-power-loss, or Redis AOF-corruption testing.
 
-No real detector, inference microservice, frontend inspection flow, review storage,
-history UI, authentication, or cloud deployment is included.
+No real detector, inference microservice, review storage, history UI,
+authentication, or cloud deployment is included. The read-only frontend inspection
+flow is documented in [browser workflow](browser-workflow.md).

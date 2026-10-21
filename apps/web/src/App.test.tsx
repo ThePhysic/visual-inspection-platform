@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { HEALTH_PATH, type HealthResponse } from '@vip/contracts';
-import App from './App';
+import HealthPage from './HealthPage';
 
 const health: HealthResponse = {
   apiVersion: 'v1', service: 'visual-inspection-api', status: 'ok',
@@ -11,16 +11,16 @@ const health: HealthResponse = {
 describe('API health page', () => {
   it('shows loading while a request is pending', () => {
     vi.stubGlobal('fetch', vi.fn(() => new Promise<Response>(() => {})));
-    render(<App />);
+    render(<HealthPage />);
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Visual Inspection Platform');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Service status');
     expect(screen.getByRole('status')).toHaveTextContent('Checking API health');
   });
 
   it('fetches and displays the shared v1 contract', async () => {
     const fetchMock = vi.fn().mockResolvedValue(Response.json(health));
     vi.stubGlobal('fetch', fetchMock);
-    render(<App />);
+    render(<HealthPage />);
 
     expect(await screen.findByText('API is healthy.')).toBeVisible();
     expect(screen.getByText(health.service)).toBeVisible();
@@ -37,7 +37,7 @@ describe('API health page', () => {
       .mockRejectedValueOnce(new TypeError('Failed to fetch'))
       .mockResolvedValueOnce(Response.json(health));
     vi.stubGlobal('fetch', fetchMock);
-    render(<App />);
+    render(<HealthPage />);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Unable to check API health');
     await user.click(screen.getByRole('button', { name: 'Try again' }));
@@ -53,7 +53,7 @@ describe('API health page', () => {
     ['invalid JSON', () => new Response('not json', { headers: { 'Content-Type': 'application/json' } })],
   ])('shows an error for %s', async (_name, response) => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response()));
-    render(<App />);
+    render(<HealthPage />);
 
     expect(await screen.findByRole('alert')).toBeVisible();
     expect(screen.queryByText('API is healthy.')).not.toBeInTheDocument();
@@ -62,7 +62,7 @@ describe('API health page', () => {
   it('cancels the request when unmounted', async () => {
     const fetchMock = vi.fn<typeof fetch>(() => new Promise<Response>(() => {}));
     vi.stubGlobal('fetch', fetchMock);
-    const { unmount } = render(<App />);
+    const { unmount } = render(<HealthPage />);
     const options = fetchMock.mock.calls[0]?.[1];
 
     unmount();

@@ -8,14 +8,20 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit && tsc --project tsconfig.node.json",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "build": "tsc --noEmit && tsc --project tsconfig.node.json && vite build"
   },
   "dependencies": {
     "@vip/contracts": "workspace:*",
+    "@tanstack/react-query": "5.104.5",
+    "react-router": "7.18.4",
+    "typebox": "1.4.2",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@vip/backend": "workspace:*",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",

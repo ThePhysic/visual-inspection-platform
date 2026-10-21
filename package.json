@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.34.7",
   "engines": {
-    "node": "24.22.0",
+    "node": ">=24.22.0 <25",
     "pnpm": "10.34.7"
   },
   "scripts": {
@@ -17,7 +17,8 @@
     "test": "pnpm --filter @vip/backend... build && pnpm -r test",
     "test:integration": "pnpm --filter @vip/backend... build && pnpm --filter @vip/api test:integration",
     "build": "pnpm -r build",
-    "dev:worker": "pnpm --filter @vip/backend... build && pnpm --filter @vip/worker dev"
+    "dev:worker": "pnpm --filter @vip/backend... build && pnpm --filter @vip/worker dev",
+    "test:e2e": "pnpm build && pnpm --filter @vip/web test:e2e"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
