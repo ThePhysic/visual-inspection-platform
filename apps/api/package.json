@@ -8,12 +8,16 @@
     "start": "node --env-file-if-exists=../../.env dist/server.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "build": "tsc --project tsconfig.build.json"
   },
   "dependencies": {
+    "@fastify/multipart": "10.1.4",
     "@fastify/type-provider-typebox": "6.3.0",
     "@vip/contracts": "workspace:*",
     "fastify": "5.12.7",
+    "mongoose": "9.11.2",
+    "sharp": "0.35.5",
     "typebox": "1.4.2"
   },
   "devDependencies": {

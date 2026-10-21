@@ -1,5 +1,6 @@
 import Fastify, { type FastifyError, type FastifyServerOptions } from 'fastify';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import multipart from '@fastify/multipart';
 import { Type } from 'typebox';
 import {
   ApiErrorResponseSchema,
@@ -8,11 +9,14 @@ import {
   type ApiErrorResponse,
   type HealthResponse,
 } from '@vip/contracts';
+import { ApiError } from './errors.js';
+import { registerAssetRoutes, multipartLimits, type AssetDependencies } from './assets.js';
 
-export function buildApp(options: Pick<FastifyServerOptions, 'logger'> = {}) {
+export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & { assets?: AssetDependencies } = {}) {
   const app = Fastify({
     logger: false,
-    ...options,
+    ...(options.logger === undefined ? {} : { logger: options.logger }),
+    requestTimeout: 30_000,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false } },
   }).withTypeProvider<TypeBoxTypeProvider>();
 
@@ -26,14 +30,21 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> = {}) {
 
     const response: ApiErrorResponse = {
       error: {
-        code: error.validation ? 'INVALID_REQUEST' : serverError ? 'INTERNAL_ERROR' : 'REQUEST_ERROR',
-        message: error.validation ? 'Request validation failed.' : serverError ? 'An unexpected error occurred.' : error.message,
+        code: error instanceof ApiError ? error.code
+          : error.validationContext === 'params' ? 'INVALID_ASSET_ID'
+          : error.validation ? 'INVALID_REQUEST' : serverError ? 'INTERNAL_ERROR' : 'REQUEST_ERROR',
+        message: error instanceof ApiError ? error.message
+          : error.validationContext === 'params' ? 'Asset ID must be 24 hexadecimal characters.'
+          : error.validation ? 'Request validation failed.' : serverError ? 'An unexpected error occurred.' : error.message,
         requestId: request.id,
       },
     };
 
     void reply.code(statusCode).send(response);
   });
+
+  app.register(multipart, { limits: multipartLimits });
+  registerAssetRoutes(app, options.assets);
 
   app.setNotFoundHandler((request, reply) => {
     const response: ApiErrorResponse = {

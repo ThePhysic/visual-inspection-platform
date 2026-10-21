@@ -10,5 +10,6 @@ coverage/
 .pnpm-store/
 .pnpm-cache/
 .pnpm-state/
+.data/
 .DS_Store
 Thumbs.db

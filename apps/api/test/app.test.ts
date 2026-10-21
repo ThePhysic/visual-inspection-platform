@@ -46,4 +46,11 @@ describe('Fastify application', () => {
     expect(response.json()).toMatchObject({ error: { code: 'INTERNAL_ERROR' } });
     expect(response.body).not.toContain('private exception detail');
   });
+
+  it('keeps liveness available while reporting unconfigured dependencies as not ready', async () => {
+    const ready = await app.inject({ method: 'GET', url: '/api/v1/ready' });
+    expect(ready.statusCode).toBe(503);
+    expect(ready.json()).toMatchObject({ error: { code: 'DATABASE_FAILURE' } });
+    expect((await app.inject({ method: 'GET', url: HEALTH_PATH })).statusCode).toBe(200);
+  });
 });

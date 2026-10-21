@@ -15,6 +15,7 @@
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm --filter @vip/contracts build && pnpm -r typecheck",
     "test": "pnpm --filter @vip/contracts build && pnpm -r test",
+    "test:integration": "pnpm --filter @vip/contracts build && pnpm --filter @vip/api test:integration",
     "build": "pnpm -r build"
   },
   "devDependencies": {
