@@ -1,0 +1,22 @@
+{
+  "name": "@vip/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=../../.env --include \"../../packages/contracts/dist/**/*.js\" src/server.ts",
+    "start": "node --env-file-if-exists=../../.env dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --project tsconfig.build.json"
+  },
+  "dependencies": {
+    "@fastify/type-provider-typebox": "6.3.0",
+    "@vip/contracts": "workspace:*",
+    "fastify": "5.12.7",
+    "typebox": "1.4.2"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15"
+  }
+}

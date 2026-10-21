@@ -1,0 +1,22 @@
+{
+  "name": "@vip/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "dev": "tsc --watch --preserveWatchOutput",
+    "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json",
+    "test": "vitest run",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "typebox": "1.4.2"
+  }
+}

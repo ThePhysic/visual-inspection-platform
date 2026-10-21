@@ -1,0 +1,31 @@
+{
+  "name": "visual-inspection-platform",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": "24.22.0",
+    "pnpm": "10.34.7"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @vip/contracts build && pnpm --parallel -r dev",
+    "dev:api": "pnpm --filter @vip/contracts build && pnpm --filter @vip/api dev",
+    "dev:web": "pnpm --filter @vip/contracts build && pnpm --filter @vip/web dev",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "pnpm --filter @vip/contracts build && pnpm -r typecheck",
+    "test": "pnpm --filter @vip/contracts build && pnpm -r test",
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.2",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.7",
+    "globals": "17.13.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}
