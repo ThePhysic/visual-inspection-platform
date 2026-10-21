@@ -3,7 +3,8 @@
 The frontend uses React Router in declarative mode for `/`, `/inspections/:id`,
 and `/health`. TanStack Query owns remote inspection/asset state, cancellation,
 cache, and nonoverlapping polling. There is no global client-state framework.
-The API, queue, and shared contracts are unchanged by Task 02C.
+The API, queue, and shared contracts are unchanged by the browser workflow and
+local annotation editor.
 
 `api.ts` checks HTTP status and existing TypeBox contracts. Completed inference
 results also pass the shared cross-field validator before rendering. IDs and
@@ -31,8 +32,9 @@ that rectangle; left/top/width/height are normalized coordinates multiplied by
 100 percent. There is no `object-fit`, letterboxing, canvas, resizing observer, or
 page-coordinate conversion. Boxes use border-box sizing. Numbered boxes connect to
 keyboard-operable list buttons, and stable class colors supplement labels/numbers.
-Image and detection list remain read-only. The DOM presentation is intentionally
-small; Task 03A should evaluate its editing needs before adding a canvas library.
+Image and detection list in this original-prediction view remain read-only.
+**Edit local draft** opens the separate [Konva annotation editor](annotation-editor.md),
+which copies predictions into memory without modifying the query cache.
 
 Vitest/Testing Library tests mock HTTP for selection, authoritative rejection,
 submission/retry identity, partial success, cancellation, lifecycle polling,

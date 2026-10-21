@@ -67,4 +67,5 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:integration
       - run: pnpm --filter @vip/web exec playwright install --with-deps chromium
+      # Includes existing workflows and real Konva drag/resize/draw interactions.
       - run: pnpm test:e2e

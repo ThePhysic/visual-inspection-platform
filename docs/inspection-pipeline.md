@@ -141,5 +141,6 @@ keys/fingerprints, storage keys, connection strings, and stack traces.
   not claim automated OS-kill, machine-power-loss, or Redis AOF-corruption testing.
 
 No real detector, inference microservice, review storage, history UI,
-authentication, or cloud deployment is included. The read-only frontend inspection
-flow is documented in [browser workflow](browser-workflow.md).
+authentication, or cloud deployment is included. The frontend inspection flow is
+documented in [browser workflow](browser-workflow.md), including the separate local
+annotation editor.

@@ -7,7 +7,8 @@ scores over the canonical stored image. Copy an inspection URL to reopen it.
 
 MongoDB persists assets and inspections; Redis/BullMQ and an independent worker
 execute **simulated inference**. This is a software workflow demonstration, not a
-real detector. Annotation editing, human reviews, and history browsing are future work.
+real detector. Interactive annotation editing supports local, unsaved corrections.
+Review persistence and history browsing are future work.
 
 ## Prerequisites
 
@@ -398,9 +399,9 @@ the same image volume at their configured `ASSET_STORAGE_DIR`, writable for the
 API and readable for the worker; no container-local path may be assumed shared.
 
 See [execution and recovery architecture](docs/inspection-pipeline.md) for failure
-windows, ownership rules, and operational limitations. Before Task 03A, review
+windows, ownership rules, and operational limitations. Before Task 03B, review
 the fixed lease/deadline policy, retention of images/idempotency keys, and future
-cleanup of orphaned files. Editing and review persistence require separate authorization.
+cleanup of orphaned files. Review persistence requires separate authorization.
 
 ## Browser workflow
 
@@ -414,7 +415,8 @@ cleanup of orphaned files. Editing and review persistence require separate autho
    be observed because the mock finishes quickly. Refresh status manually if needed.
 5. Completed results show the canonical image, numbered boxes, class labels,
    confidence scores, model/provider metadata, and an explicit simulated-inference
-   disclosure. Select a detection to emphasize its box; results cannot be edited.
+   disclosure. Select a detection to emphasize its box, or choose **Edit local draft**
+   to correct annotations in browser memory without changing original predictions.
 6. Copy the detail URL. Refreshing or opening it directly fetches the saved inspection;
    Vite supports these routes. Any future static host must route frontend URLs to
    `index.html` while continuing to route `/api` requests to the API.
@@ -432,3 +434,37 @@ Network-fetch errors are separate from terminal processing failures. Cached
 results remain visible when a background refresh fails, and image-loading errors
 leave prediction details available. There is no UI for retrying a failed inspection
 yet. See [frontend behavior](docs/browser-workflow.md) for implemented boundaries.
+
+## Local annotation editing
+
+Open a completed inspection and choose **Edit local draft**. Select an annotation
+from its box or list, drag to move, use handles to resize, or select a class label.
+Predictions start accepted. Reject keeps the prediction in the list but hides its
+box; Restore brings it back. Choose a class and **Add annotation**, then draw a
+rectangle for a missed object. Manual annotations have no model confidence and
+can be removed. Empty inference results also support manual annotation.
+
+The draft shows meaningful unsaved changes. **Reset draft** asks for confirmation
+before restoring initial predictions. **View original predictions** retains the
+draft so editing can be resumed. No Save button or persistence is implemented.
+Drafts are lost on unmount/reload. Ordinary application links and supported browser
+unload events warn about dirty drafts; SPA Back/Forward and programmatic navigation
+may discard them without warning. Drafts are not written to localStorage.
+
+The editor uses React/Konva, the shared mock-v1 class vocabulary, normalized
+coordinates, and a ResizeObserver over the canonical displayed image. It prevents
+out-of-image geometry, rotation, flipping, and zero/negative sizes. New drawings
+require 12 displayed pixels per side. See [annotation architecture and limits](docs/annotation-editor.md).
+
+Existing commands include the editor tests:
+
+```sh
+pnpm test
+pnpm --filter @vip/web test src/annotations
+pnpm test:e2e
+```
+
+The browser suite includes real Konva mouse dragging, resizing, drawing, and
+responsive alignment at DPR two; no mocked Konva events establish geometry.
+Task 03B will introduce the complete-snapshot review API and persistence. Its wire
+schema and validation are not implemented here. No reviews are currently saved or audited.
