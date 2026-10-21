@@ -1,5 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdtemp, readdir, readFile, rm, unlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm, unlink, writeFile, utimes } from 'node:fs/promises';
+import { request as httpRequest } from 'node:http';
+import { checkDatabase, inspectStorage, cleanStaleStaging, MINIMUM_CLEANUP_AGE_MS } from '@vip/backend';
 import { tmpdir } from 'node:os';
 import { join, resolve, sep } from 'node:path';
 import { crc32, deflateSync } from 'node:zlib';
@@ -310,6 +312,51 @@ describe('image ingestion with real MongoDB', () => {
     rejected(await upload(jpeg), 503, 'STORAGE_FAILURE');
     expect(await model.countDocuments()).toBe(0);
     expect(await readdir(directory)).toEqual(['unrelated.png']);
+  });
+
+  it('cleans a genuinely interrupted multipart stream without publishing bytes or metadata', async () => {
+    const address = await app.listen({ host: '127.0.0.1', port: 0 });
+    let entered!: () => void; let discarded!: () => void;
+    const uploading = new Promise<void>(done => { entered = done; });
+    const cleaned = new Promise<void>(done => { discarded = done; });
+    const write = storage.writeUpload.bind(storage);
+    vi.spyOn(storage, 'writeUpload').mockImplementation(async (...args) => { entered(); return write(...args); });
+    const discard = storage.discard.bind(storage);
+    vi.spyOn(storage, 'discard').mockImplementation(async stage => { await discard(stage); discarded(); });
+    const request = httpRequest(`${address}${ASSETS_PATH}`, { method: 'POST', headers: {
+      'content-type': 'multipart/form-data; boundary=interrupted',
+    } });
+    request.on('error', () => {});
+    try {
+      request.write('--interrupted\r\nContent-Disposition: form-data; name="image"; filename="a.png"\r\nContent-Type: image/png\r\n\r\n');
+      request.write(png);
+      await uploading;
+      request.destroy();
+      await cleaned;
+      expect(await model.countDocuments()).toBe(0);
+      expect(await readdir(directory)).toEqual([]);
+    } finally { request.destroy(); }
+  });
+
+  it('reports true orphan candidates but preserves bytes after uncertain database acknowledgements', async () => {
+    const saved = await accepted(png);
+    const record = await model.findById(saved.id).lean().orFail();
+    const orphan = `${randomUUID()}.png`;
+    await writeFile(join(directory, orphan), png);
+    const stage = await storage.stage();
+    await writeFile(stage.input, 'interrupted upload');
+    const old = new Date(Date.now() - MINIMUM_CLEANUP_AGE_MS * 2);
+    for (const path of [join(directory, record.storageKey), join(directory, orphan), stage.input, stage.directory]) {
+      await utimes(path, old, old);
+    }
+    const catalog = { assertHealthy: () => checkDatabase(connection),
+      hasStorageKey: async (key: string) => Boolean(await model.exists({ storageKey: key })) };
+    expect(await inspectStorage(directory, catalog)).toMatchObject({ orphanCandidates: [orphan],
+      staleStaging: [stage.directory.split(/[\\/]/).at(-1)] });
+    await cleanStaleStaging(directory, catalog, async () => { await app.close(); });
+    expect(await readFile(join(directory, orphan))).toEqual(png);
+    expect(await readFile(join(directory, record.storageKey))).toBeDefined();
+    expect((await readdir(directory)).some(name => name.startsWith('.upload-'))).toBe(false);
   });
 
   it('reports real staging failures as storage errors', async () => {

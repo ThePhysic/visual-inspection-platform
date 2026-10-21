@@ -618,3 +618,32 @@ No new environment variables or dependencies are required.
 reach the API can browse all history, retrieve images/reviews, and submit retries.
 It is not intended for unrestricted public deployment. Authentication and
 infrastructure hardening are not part of Task 04.
+
+## Reliability checks and storage maintenance
+
+The MongoDB-first acceptance, bounded retries, execution leases/tokens, and review
+revision semantics remain unchanged. Targeted tests now cover abrupt child-worker
+termination, concurrent repair, real dependency outages and restart persistence.
+
+```sh
+# Builds a fresh disposable full stack, validates ownership before interruptions,
+# runs bounded recovery/storage checks, and removes only its own test volumes.
+pnpm test:reliability
+# Also exercise all native integration/browser tests on its private dependency
+# ports, and the real browser workflow through the containerized web server:
+pnpm test:reliability --native --browser
+```
+
+These explicit checks require Docker plus workspace test tooling; ordinary
+full-container application use still needs no host Node/pnpm. Existing commands
+`pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:integration`, `pnpm build`,
+and `pnpm test:e2e` remain supported. The harness never targets `vip-demo` or
+`vip-native` for faults, and never prunes Docker resources.
+
+`pnpm storage:maintenance vip-demo` produces a database-checked, read-only report.
+An explicit offline staging cleanup mode requires all image-volume users stopped;
+published canonical images are **never** deleted. See [reliability evidence,
+maintenance instructions, supervision, and limitations](docs/reliability.md).
+Compose now uses an expiring local worker health observation for dependency
+connectivity and overdue active work; health is not an exactly-once or availability
+guarantee. There is no coordinated backup/disaster recovery solution.

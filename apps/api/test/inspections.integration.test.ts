@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { once } from 'node:events';
+import { fork } from 'node:child_process';
+import { setTimeout as delay } from 'node:timers/promises';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve, sep } from 'node:path';
@@ -197,6 +199,7 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
   });
 
   it('recovers dispatch failure after acceptance and admits requests while Redis is unavailable', async () => {
+    const beforeOutage = await accepted('before-redis-outage');
     queue.redis.disconnect();
     const submission = await accepted();
     await reconciler.reconcile();
@@ -207,8 +210,10 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     await queue.redis.connect();
     const instance = await consumer();
     const completed = waitForState(instance.worker, submission.id, 'completed');
+    const priorCompleted = waitForState(instance.worker, beforeOutage.id, 'completed');
     await reconciler.reconcile();
     expect((await completed).attemptCount).toBe(1);
+    expect((await priorCompleted).attemptCount).toBe(1);
   });
 
   it('automatically reconnects after a server-induced Redis connection interruption', async () => {
@@ -226,6 +231,53 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
       const completed = waitForState(instance.worker, submission.id, 'completed');
       await reconciler.reconcile(); await completed;
     } finally { control.disconnect(); }
+  });
+
+  it('commits one result during a worker Redis socket outage and acknowledges after reconnection', async () => {
+    const sockets = new Set<Socket>();
+    const target = new URL(redisUrl); let blocked = false;
+    const proxy = createServer(socket => {
+      sockets.add(socket); socket.on('error', () => {}); socket.on('close', () => { sockets.delete(socket); });
+      if (blocked) { socket.destroy(); return; }
+      const upstream = connect(Number(target.port || 6379), target.hostname);
+      sockets.add(upstream); upstream.on('error', () => { socket.destroy(); });
+      socket.on('close', () => { upstream.destroy(); });
+      upstream.on('close', () => { sockets.delete(upstream); socket.destroy(); });
+      socket.pipe(upstream).pipe(socket);
+    });
+    await new Promise<void>(done => { proxy.listen(0, '127.0.0.1', done); });
+    const local = new URL(redisUrl); local.hostname = '127.0.0.1'; local.port = String((proxy.address() as AddressInfo).port);
+    let enter!: () => void; let release!: () => void; let committed!: () => void;
+    const entered = new Promise<void>(done => { enter = done; });
+    const gate = new Promise<void>(done => { release = done; });
+    const persisted = new Promise<void>(done => { committed = done; });
+    const update = inspections.collection.updateOne.bind(inspections.collection);
+    vi.spyOn(inspections.collection, 'updateOne').mockImplementation(async (...args) => {
+      const result = await update(...args);
+      if (!Array.isArray(args[1]) && args[1].$set?.status === 'completed') committed();
+      return result;
+    });
+    const instance = startInspectionWorker(local.href, dependencies({ async infer(image, signal) {
+      enter(); await gate; return new MockInferenceProvider().infer(image, signal);
+    } }), queue.queue.name);
+    try {
+      await instance.worker.waitUntilReady();
+      const submission = await accepted();
+      const acknowledged = once(instance.worker, 'completed', { signal: AbortSignal.timeout(10_000) });
+      await reconciler.reconcile(); await entered;
+      blocked = true; for (const socket of sockets) socket.destroy();
+      await vi.waitFor(() => { expect(instance.isConnected()).toBe(false); });
+      release(); await persisted;
+      const original = await inspections.findById(submission.id).lean().orFail();
+      expect(original).toMatchObject({ status: 'completed', attemptCount: 1 });
+      blocked = false; await acknowledged;
+      await vi.waitFor(() => { expect(instance.isConnected()).toBe(true); });
+      expect(await inspections.findById(submission.id).lean().orFail()).toEqual(original);
+    } finally {
+      release(); blocked = false; await instance.close();
+      for (const socket of sockets) socket.destroy();
+      await new Promise<void>((done, reject) => { proxy.close(error => error ? reject(error) : done()); });
+    }
   });
 
   it('can close producer and worker connections before Redis becomes available', async () => {
@@ -491,5 +543,63 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     await restarted.reconcile(); await restarted.reconcile(); await restarted.reconcile();
     for (const record of records) expect(await queue.queue.getJob(jobId(payload(record.id)))).toBeDefined();
     await restarted.close();
+  });
+
+  it.each(['before-inference', 'after-inference', 'after-persistence'])(
+    'recovers an abruptly terminated child worker at %s', async phase => {
+      const submission = await accepted();
+      const child = fork(new URL('./helpers/interrupted-worker.mjs', import.meta.url), [], {
+        execArgv: [], stdio: ['ignore', 'ignore', 'pipe', 'ipc'], env: { ...process.env,
+          VIP_INTERRUPTION_TEST: JSON.stringify({ phase, database: databaseName, queue: queue.queue.name,
+            directory, mongodbUri: process.env.MONGODB_TEST_URI ?? 'mongodb://127.0.0.1:27017', redisUrl }) },
+      });
+      let stderr = '';
+      child.stderr?.on('data', value => { stderr += String(value); });
+      const exit = once(child, 'exit', { signal: AbortSignal.timeout(10_000) });
+      try {
+        const reached = once(child, 'message', { signal: AbortSignal.timeout(8000) });
+        await reconciler.reconcile();
+        expect((await reached)[0], stderr).toEqual({ phase });
+        child.kill('SIGKILL'); // Only the process created by this test.
+        await exit;
+        const before = await inspections.findById(submission.id).lean().orFail();
+        expect(before.attemptCount).toBe(1);
+        if (phase === 'after-persistence') {
+          expect(before.status).toBe('completed');
+          await createInspectionProcessor(dependencies())({ id: 'replay', data: payload(submission.id) });
+          expect(await inspections.findById(submission.id).lean().orFail()).toEqual(before);
+        } else {
+          expect(before.status).toBe('processing');
+          expect(before.result).toBeUndefined();
+          // Wait for the actual recorded lease boundary, not an assumed worker
+          // scheduling delay. BullMQ's old lock need not expire: repair uses a
+          // new generation, protected by MongoDB ownership.
+          await delay(Math.max(0, before.leaseExpiresAt!.getTime() - Date.now() + 1));
+          await reconciler.reconcile();
+          const repaired = await inspections.findById(submission.id).lean().orFail();
+          expect(repaired).toMatchObject({ status: 'queued', attemptCount: 1, dispatchGeneration: 1 });
+          const replacement = await consumer();
+          expect((await waitForState(replacement.worker, submission.id, 'completed')).attemptCount).toBe(2);
+        }
+      } finally {
+        if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+        await exit.catch(() => {});
+      }
+    });
+
+  it('serializes expired-lease recovery across independent concurrent reconcilers', async () => {
+    const submission = await accepted();
+    await inspections.updateOne({ _id: submission.id }, { $set: {
+      status: 'processing', attemptCount: 1, attemptId: 'abandoned', leaseExpiresAt: new Date(0),
+    } });
+    const other = new InspectionReconciler(inspections, queue, logger, policy);
+    try {
+      await Promise.all([reconciler.reconcile(), other.reconcile(), reconciler.reconcile()]);
+      expect(await inspections.findById(submission.id).lean().orFail()).toMatchObject({
+        status: 'queued', dispatchGeneration: 1, attemptCount: 1,
+      });
+      const replacement = await consumer();
+      expect((await waitForState(replacement.worker, submission.id, 'completed')).attemptCount).toBe(2);
+    } finally { await other.close(); }
   });
 });

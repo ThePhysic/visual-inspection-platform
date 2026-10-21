@@ -51,7 +51,9 @@ services:
       context: .
       dockerfile: infra/docker/Dockerfile
       target: worker
-    environment: *backend-environment
+    environment:
+      <<: *backend-environment
+      WORKER_HEALTH_FILE: /tmp/vip-worker-health.json
     volumes:
       - images:/data/images:ro
     depends_on:
@@ -59,8 +61,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    # No HTTP listener. The real Node consumer is supervised by init/restart;
-    # the container smoke test verifies actual work, not a fake readiness port.
+    # Expiring local observation of DB/queue connections and bounded active work.
+    healthcheck:
+      test: ["CMD", "node", "-e", "const s=JSON.parse(require('node:fs').readFileSync('/tmp/vip-worker-health.json')); if(!s.healthy || Date.now()-s.observedAt>15000 || s.observedAt>Date.now()+1000) process.exit(1)"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     init: true
     restart: unless-stopped
     stop_grace_period: 45s

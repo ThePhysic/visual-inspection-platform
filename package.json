@@ -18,7 +18,9 @@
     "test:integration": "pnpm --filter @vip/backend... build && pnpm --filter @vip/api test:integration",
     "build": "pnpm -r build",
     "dev:worker": "pnpm --filter @vip/backend... build && pnpm --filter @vip/worker dev",
-    "test:e2e": "pnpm build && pnpm --filter @vip/web test:e2e"
+    "test:e2e": "pnpm build && pnpm --filter @vip/web test:e2e",
+    "test:reliability": "node infra/docker/test-reliability.mjs",
+    "storage:maintenance": "node infra/docker/storage-maintenance.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

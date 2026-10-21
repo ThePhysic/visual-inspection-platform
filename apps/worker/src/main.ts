@@ -2,7 +2,9 @@ import { pino } from 'pino';
 import {
   readBackendConfig, connectDatabase, createAssetModel, createInspectionModel,
   LocalImageStorage, MockInferenceProvider, startInspectionWorker,
+  checkDatabase, EXECUTION_POLICY,
 } from '@vip/backend';
+import { startHealthFile } from './health.js';
 
 const logger = pino({ name: 'inspection-worker' });
 
@@ -19,6 +21,16 @@ async function main() {
     inspections, assets, storage: new LocalImageStorage(config.storageDirectory),
     provider: new MockInferenceProvider(), logger,
   });
+  const active = new Map<string, number>();
+  let lastCompletedAt: number | null = null;
+  consumer.worker.on('active', job => { if (job.id) active.set(job.id, Date.now()); });
+  consumer.worker.on('completed', job => { if (job.id) active.delete(job.id); lastCompletedAt = Date.now(); });
+  consumer.worker.on('failed', job => { if (job?.id) active.delete(job.id); });
+  const health = process.env.WORKER_HEALTH_FILE ? startHealthFile(process.env.WORKER_HEALTH_FILE, async () => {
+    const mongodb = await checkDatabase(connection).then(() => true, () => false);
+    return { mongodb, redis: consumer.isConnected(), running: consumer.worker.isRunning() && !consumer.worker.isPaused(),
+      oldestActiveAt: active.size ? Math.min(...active.values()) : null, lastCompletedAt };
+  }, EXECUTION_POLICY.leaseMs + 10_000) : undefined;
   let closing = false;
   async function shutdown(signal: string) {
     if (closing) return;
@@ -26,7 +38,7 @@ async function main() {
     logger.info({ signal }, 'Worker shutting down');
     try { await consumer.close(); }
     catch { logger.error('Worker shutdown failed'); process.exitCode = 1; }
-    finally { await connection.close(); }
+    finally { await health?.close(); await connection.close(); }
   }
   process.once('SIGINT', () => { void shutdown('SIGINT'); });
   process.once('SIGTERM', () => { void shutdown('SIGTERM'); });

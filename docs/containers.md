@@ -61,23 +61,24 @@ because a health check is unhealthy.
 
 Health checks cover MongoDB ping, Redis ping, API admission readiness, and nginx's
 `/healthz`. API/worker start after relevant dependencies; web waits for API health.
-The worker has **no HTTP health endpoint**. Process supervision, its startup log,
-and smoke-test completion of real jobs are the chosen proportional checks.
-Compose's running/"healthy" wait message for an unchecked worker is not evidence
-that it is consuming. This setup cannot independently detect a hung consumer.
+The worker has **no HTTP health endpoint**. An expiring local file records
+MongoDB/normal-and-blocking-Redis connectivity, consumer state and bounded active
+work. Compose checks that observation; smoke-test completion separately verifies
+actual consumption. See [consumer supervision and limitations](reliability.md).
 
 Startup conditions do not replace runtime recovery. MongoDB/ioredis reconnect,
 API reconciliation, leases, bounded attempts, and idempotency are unchanged.
 During Redis interruption the API can remain admission-ready and durably accept
 MongoDB intent, while reporting Redis unavailable; completion waits for recovery.
 MongoDB/storage failures make API readiness fail. Native pipeline integration
-tests retain their existing interruption coverage; advanced container fault
-injection belongs to subsequent work.
+tests retain their existing interruption coverage. The explicit disposable
+[reliability harness](reliability.md) adds bounded dependency outages and a
+controlled MongoDB completion-write failure without changing execution semantics.
 
 Ordinary restart, force-recreation, and `down` preserve named volumes. Use the
 same project name on the next `up`. `down --volumes`, Docker volume deletion, or
-pruning destroys persistent data. CI deletes only its explicitly disposable
-`vip-ci-smoke` project volumes after checks; this is not a demo shutdown command.
+pruning destroys persistent data. CI deletes only its generated, ownership-verified
+`vip-reliability-<token>` project volumes after checks; this is not a demo shutdown command.
 
 ## nginx behavior
 

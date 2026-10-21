@@ -140,12 +140,17 @@ keys/fingerprints, storage keys, connection strings, and stack traces.
 - AOF `everysec`, persistent volumes, and MongoDB intent reduce loss windows; this
   does not claim host-loss durability, backup coverage, or survival of MongoDB data loss.
 - Canonical image files must remain present. Storage outages are retried within
-  the same finite attempt budget. Orphan-file cleanup is still deferred.
+  the same finite attempt budget. [Storage maintenance](reliability.md) reports
+  canonical orphan candidates without deleting published images and supports
+  conservative offline staging cleanup.
 - Integration tests use genuine MongoDB/Redis and cover socket interruption and
   reconnection, lost dispatch, timeouts, retry limits, duplicate delivery, commit/
   acknowledgement failure, graceful restart, and simulated lease interruption.
-  Simulations use controlled gates/database failures and expired leases; they do
-  not claim automated OS-kill, machine-power-loss, or Redis AOF-corruption testing.
+  Additional IPC tests abruptly terminate owned child workers at three execution
+  boundaries and wait for their real test lease expiry. Disposable container
+  checks interrupt Redis/MongoDB and result persistence. See the
+  [reliability evidence matrix](reliability.md); machine power loss and Redis
+  AOF corruption remain untested.
 
 No real detector, inference microservice, authentication, or cloud deployment is
 included. The frontend inspection flow is documented in

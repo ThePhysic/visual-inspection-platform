@@ -181,7 +181,7 @@ export function startInspectionWorker(url: string, dependencies: ExecutionDepend
   const worker = new Worker<InspectionJob>(name, processor, { connection: redis as ConnectionOptions, concurrency: 1 });
   worker.on('error', () => { dependencies.logger.error({ component: 'bullmq' }, 'Worker queue error'); });
   worker.on('failed', job => { dependencies.logger.warn({ inspectionId: job?.data.inspectionId, jobId: job?.id }, 'Queue delivery failed'); });
-  return { worker, async close() {
+  return { worker, isConnected: () => connections.every(client => client.status === 'ready'), async close() {
     shutdown.abort();
     const force = redis.status !== 'ready';
     if (force) await closeRedisClients(connections);
