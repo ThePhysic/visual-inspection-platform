@@ -1,0 +1,41 @@
+import { test, expect } from '@playwright/test';
+import { fileURLToPath } from 'node:url';
+
+test('full Compose: upload, inspect, move canvas box, save, refresh, and browse history through nginx', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', error => { errors.push(error.message); });
+  await page.goto('/');
+  await page.getByLabel('Image file').setInputFiles(fileURLToPath(new URL('../../../fixtures/inspections/panel.png', import.meta.url)));
+  await page.getByRole('button', { name: 'Upload and inspect' }).click();
+  await expect(page.getByRole('heading', { name: 'Completed', exact: true })).toBeVisible();
+  const inspectionUrl = page.url();
+  await page.getByRole('button', { name: 'Edit local draft' }).click();
+  const canvas = page.getByRole('group', { name: 'Annotation canvas', exact: true });
+  await expect(canvas).toBeVisible();
+  await page.getByRole('button', { name: /Annotation 1:/ }).click();
+  const image = page.getByRole('img', { name: 'Canonical image for annotation editing' });
+  await image.scrollIntoViewIfNeeded();
+  const rectangle = (await image.boundingBox())!;
+  const oldX = Number(await page.getByLabel('Box x', { exact: true }).textContent());
+  const oldY = Number(await page.getByLabel('Box y', { exact: true }).textContent());
+  const width = Number(await page.getByLabel('Box width', { exact: true }).textContent());
+  const height = Number(await page.getByLabel('Box height', { exact: true }).textContent());
+  const x = rectangle.x + (oldX + width / 2) * rectangle.width;
+  const y = rectangle.y + (oldY + height / 2) * rectangle.height;
+  await page.mouse.move(x, y); await page.mouse.down();
+  await page.mouse.move(x + 20, y + 10, { steps: 8 }); await page.mouse.up();
+  const changedX = Number(await page.getByLabel('Box x', { exact: true }).textContent());
+  expect(changedX).toBeGreaterThan(oldX);
+  await page.getByLabel('Annotation class', { exact: true }).selectOption('edge-defect');
+  await page.getByRole('button', { name: 'Save review', exact: true }).click();
+  await expect(page.getByText('Review saved · revision 1.', { exact: true })).toBeVisible();
+  await page.reload(); // real nginx SPA fallback and persisted review
+  await page.getByRole('button', { name: /Annotation 1: Edge defect/ }).click();
+  expect(Number(await page.getByLabel('Box x', { exact: true }).textContent())).toBeCloseTo(changedX, 8);
+  await page.getByRole('link', { name: 'History', exact: true }).click();
+  await page.getByLabel('Inspection status').selectOption('completed');
+  const card = page.locator('.history-card').filter({ has: page.locator(`a[href="${new URL(inspectionUrl).pathname}"]`) });
+  await expect(card).toContainText('Saved review · revision 1');
+  await card.getByRole('link', { name: /Inspection ·/ }).click();
+  await expect(page.getByRole('button', { name: /Annotation 1: Edge defect/ })).toBeVisible();
+  expect(errors).toEqual([]);
+});

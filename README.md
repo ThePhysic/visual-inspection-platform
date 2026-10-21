@@ -12,7 +12,73 @@ snapshots, separately from original predictions. History supports status filters
 cursor pagination, and reopening saved reviews; failed inspections can be retried
 as new linked attempts.
 
-## Prerequisites
+## Full-container execution (Docker only)
+
+Install Docker Desktop with Linux containers, or Docker Engine with Compose
+**2.20+** and BuildKit. No host Node.js or pnpm is needed for this workflow.
+From the cloned repository root:
+
+```sh
+docker compose -p vip-demo up -d --build --wait --wait-timeout 120
+```
+
+Open <http://127.0.0.1:8080>. Upload `fixtures/inspections/panel.png`, wait for
+simulated inference, edit annotations, save, refresh, and reopen through **History**.
+Direct inspection URLs work through nginx. Set `WEB_PORT` in an optional `.env`
+to change the web host port. No private configuration is embedded in browser assets.
+
+The five services use an internal Compose network. Only the web port is published,
+on **127.0.0.1**. API/worker connect to `mongodb:27017` and `redis:6379`, sharing
+the `/data/images` named volume. The worker mounts images read-only. MongoDB,
+Redis, and images have separate persistent named volumes; uploaded bytes are never
+built into images. The API and worker run as UID 1000; nginx also runs non-root.
+
+Inspect health and logs:
+
+```sh
+docker compose -p vip-demo ps
+docker compose -p vip-demo logs --tail 100 api worker web
+docker compose -p vip-demo logs -f worker
+```
+
+Readiness is available at <http://127.0.0.1:8080/api/v1/ready>, liveness at
+`/api/v1/health`, and nginx health at `/healthz`. Compose waits for MongoDB,
+Redis, API readiness, and web health. The worker has no HTTP server: Docker's
+init/restart supervision watches its real process. Its ready log and an actual
+completed inspection establish consumer operation; `--wait` alone does not.
+An unhealthy container is not automatically restarted merely for being unhealthy.
+Existing MongoDB/Redis reconnection and dispatch recovery still apply at runtime.
+
+Rebuild after source changes, restart processes, or shut down gracefully:
+
+```sh
+docker compose -p vip-demo up -d --build --wait --wait-timeout 120
+docker compose -p vip-demo restart api worker
+docker compose -p vip-demo down
+```
+
+Run the first startup command again after `down`; records, reviews, queue files,
+and canonical images remain. Keep the same project name to reuse its volumes.
+**`docker compose down -v` deletes persisted application data. It is not a routine
+shutdown or rebuild command.** Docker volume pruning/deletion also destroys data.
+Native and full-container workflows use separate project names/storage; do not
+point one database at another environment's image directory. Existing native data
+is not automatically migrated into Docker volumes.
+
+If a port is occupied, choose another `WEB_PORT`. If `docker info` cannot reach
+the engine, start Docker Desktop/check its Linux-container context before retrying.
+For unhealthy services, inspect `ps` and the service logs; check Docker disk space,
+volume permissions, and dependency health. Do not delete volumes as a first fix.
+Registry access is required for initial images and dependency installation.
+
+This remains a trusted local/demo deployment without authentication or TLS, using
+single-host shared image storage. See [container architecture and smoke checks](docs/containers.md)
+for operational details, persistence verification, and limitations.
+
+## Native application development
+
+This workflow uses host Node/pnpm with only MongoDB/Redis in Docker. Existing
+compatible local servers can also be used. Prerequisites:
 
 - Node.js **24.22.0**, pinned in `.node-version` and `package.json`.
 - pnpm **10.34.7**, pinned in `package.json`.
@@ -32,13 +98,13 @@ The versions should print `v24.22.0` and `10.34.7`. Engine checks reject an
 incompatible runtime. MongoDB is required to start the API; Redis and the worker
 are required to execute inspections. Redis can recover after API startup.
 
-## Install and develop
+### Install and develop
 
 From the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
-docker compose up -d --wait mongodb redis
+docker compose -p vip-native -f compose.yaml -f compose.dev.yaml up -d --wait mongodb redis
 pnpm dev
 ```
 
@@ -48,10 +114,14 @@ Open <http://127.0.0.1:5173>. The API listens on
 `pnpm dev` also starts the worker. The starting page is the upload workflow;
 the existing API-health page is available at `/health`.
 
-Compose runs MongoDB and Redis with loopback-only access, no authentication, and
-persistent named volumes. Redis uses AOF (`appendfsync everysec`), a 256 MiB memory
+The explicit `compose.dev.yaml` override exposes MongoDB and Redis on loopback
+only. The service names in the command start just these dependencies, not the
+containerized web/API/worker. They use persistent named volumes without
+authentication. Redis uses AOF (`appendfsync everysec`), a 256 MiB memory
 limit, and `noeviction`. These are local development dependencies. To stop them while
-preserving data, run `docker compose down`. Restart with the same startup command.
+preserving data, run `docker compose -p vip-native -f compose.yaml -f compose.dev.yaml down`.
+Restart with the same startup command. Retain the project name when reusing an
+existing dependency volume; switching names creates a separate environment.
 Do not remove the named volume unless you intend to discard the development DB.
 
 `pnpm dev` builds contracts and the shared backend first, then watches all packages
@@ -74,18 +144,19 @@ shared code to keep compiled output up to date automatically.
 
 ## Configuration
 
-Defaults work without an env file once MongoDB and Redis are running. To override them,
+Native defaults work without an env file once MongoDB and Redis are running. To override them,
 copy `.env.example` to `.env` at the repository root.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
+| `WEB_PORT` | `8080` | Full-container web host port, loopback only |
 | `API_HOST` | `127.0.0.1` | API bind address |
 | `API_PORT` | `3001` | API port; integer from 1 through 65535 |
-| `MONGODB_PORT` | `27017` | Host port published by Compose |
+| `MONGODB_PORT` | `27017` | Host port published only by `compose.dev.yaml` |
 | `MONGODB_URI` | `mongodb://127.0.0.1:27017/visual_inspection` | API database connection |
 | `ASSET_STORAGE_DIR` | `.data/images` | Image directory; relative paths resolve from the repository root |
 | `MONGODB_TEST_URI` | `mongodb://127.0.0.1:27017` | Integration-test server; tests use a separate random database |
-| `REDIS_PORT` | `6379` | Host port published by Compose |
+| `REDIS_PORT` | `6379` | Host port published only by `compose.dev.yaml` |
 | `REDIS_URL` | `redis://127.0.0.1:6379` | Shared API dispatch / worker Redis connection |
 | `REDIS_TEST_URL` | `redis://127.0.0.1:6379` | Integration-test Redis server |
 | `E2E_REDIS_URL` | `REDIS_TEST_URL` with database `/15` | Optional browser-test Redis override; reserve this DB for tests |
@@ -97,6 +168,12 @@ The worker loads the same `.env` and resolves `ASSET_STORAGE_DIR` from the same
 repository root. If changing `REDIS_PORT`, update both Redis URLs to match.
 API and worker must use the same MongoDB database, Redis URL, and canonical image
 directory. The default queue name represents one application environment.
+
+Full Compose intentionally sets `API_HOST=0.0.0.0`, `API_PORT=3001`,
+`MONGODB_URI=mongodb://mongodb:27017/visual_inspection`,
+`REDIS_URL=redis://redis:6379`, and `ASSET_STORAGE_DIR=/data/images` in the service
+configuration. The native URI/path variables above do not override these container
+values. This avoids accidentally using localhost or a Windows path inside Linux.
 
 The web app requests relative `/api` URLs. Vite's development and preview servers
 proxy them to `127.0.0.1:API_PORT`; keep the API reachable on loopback when using
@@ -150,7 +227,7 @@ may finish processing between polls. No production inference delays are added.
   local-storage tests, and React Testing Library smoke tests in jsdom. `pnpm test`
   needs neither MongoDB nor a running API.
 - **Integration test:** `pnpm test:integration` requires MongoDB and Redis. Start
-  both with `docker compose up -d --wait mongodb redis`. Tests use genuine servers,
+  both with the native dependency startup command above. Tests use genuine servers,
   isolated `vip_ingestion_test_*` / `vip_inspection_test_*` / `vip_review_test_*` /
   `vip_history_test_*` databases, unique
   `inspections-test-*` queues, and private temporary image directories. Cleanup
@@ -163,13 +240,16 @@ may finish processing between polls. No production inference delays are added.
 GitHub Actions runs the same four checks after a frozen-lockfile install on
 Linux and Windows. A separate Linux job runs integration tests with the same
 MongoDB and Redis versions as Compose, followed by the Chromium browser suite.
+A Docker job builds all three runtime targets and verifies a bounded container
+workflow, one browser test through nginx, and persistence across ordinary restart
+and down/up. See [container validation commands](docs/containers.md).
 The workflow does not publish or deploy anything.
 
 ## Run compiled output locally
 
 ```sh
 pnpm build
-docker compose up -d --wait mongodb redis
+docker compose -p vip-native -f compose.yaml -f compose.dev.yaml up -d --wait mongodb redis
 pnpm --filter @vip/api start
 ```
 
@@ -396,10 +476,10 @@ status/token/lease condition. Cross-field validation rejects boxes outside the
 image, nonfinite values, duplicate prediction IDs, and oversized detection sets.
 Human-review data is not implemented.
 
-Both local processes use the same canonical image directory. This milestone
-containerizes dependencies only. If application containers are added later, mount
-the same image volume at their configured `ASSET_STORAGE_DIR`, writable for the
-API and readable for the worker; no container-local path may be assumed shared.
+Both native processes use the same configured canonical image directory. Full
+Compose uses the shared `images` volume at `/data/images`, writable for the API
+and mounted read-only for the worker. It is a separate image store from native
+`.data/images`; container-local paths must not be assumed shared between services.
 
 See [execution and recovery architecture](docs/inspection-pipeline.md) for failure
 windows, ownership rules, and operational limitations. The fixed lease/deadline

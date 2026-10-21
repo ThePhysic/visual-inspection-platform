@@ -1,0 +1,8 @@
+# Opt-in host access for pnpm dev. Start only mongodb and redis with this file.
+services:
+  mongodb:
+    ports:
+      - "127.0.0.1:${MONGODB_PORT:-27017}:27017"
+  redis:
+    ports:
+      - "127.0.0.1:${REDIS_PORT:-6379}:6379"

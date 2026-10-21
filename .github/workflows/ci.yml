@@ -70,3 +70,45 @@ jobs:
       - run: pnpm --filter @vip/web exec playwright install --with-deps chromium
       # Includes canvas/review workflows plus history and real-stack manual retry.
       - run: pnpm test:e2e
+
+  containers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: docker compose config --quiet
+      - run: docker compose -f compose.yaml -f compose.dev.yaml config --quiet
+      - run: docker compose -p vip-ci-smoke build
+      - run: docker compose -p vip-ci-smoke up -d --wait --wait-timeout 120
+      - name: Container workflow and packaging smoke
+        run: |
+          docker compose -p vip-ci-smoke exec -T -w /app/apps/api api node --input-type=module - create < infra/docker/smoke.mjs
+          docker compose -p vip-ci-smoke exec -T -w /app/apps/worker worker node --input-type=module - < infra/docker/check-worker.mjs
+      - run: pnpm --filter @vip/web exec playwright install --with-deps chromium
+      - name: One real browser workflow through nginx
+        run: pnpm --filter @vip/web exec playwright test --config playwright.container.config.ts
+      - name: Preserve data through restart and full recreation
+        run: |
+          docker compose -p vip-ci-smoke exec -T redis redis-cli SET vip-container-smoke-persistence retained
+          docker compose -p vip-ci-smoke restart api worker
+          docker compose -p vip-ci-smoke up -d --wait --wait-timeout 120
+          docker compose -p vip-ci-smoke exec -T -w /app/apps/api api node --input-type=module - verify < infra/docker/smoke.mjs
+          docker compose -p vip-ci-smoke restart mongodb redis
+          docker compose -p vip-ci-smoke up -d --wait --wait-timeout 120
+          docker compose -p vip-ci-smoke exec -T -w /app/apps/api api node --input-type=module - verify < infra/docker/smoke.mjs
+          docker compose -p vip-ci-smoke down
+          docker compose -p vip-ci-smoke up -d --wait --wait-timeout 120
+          docker compose -p vip-ci-smoke exec -T -w /app/apps/api api node --input-type=module - verify < infra/docker/smoke.mjs
+          test "$(docker compose -p vip-ci-smoke exec -T redis redis-cli GET vip-container-smoke-persistence)" = retained
+      - name: Container logs on failure
+        if: failure()
+        run: docker compose -p vip-ci-smoke logs --no-color --tail 100
+      - name: Remove only this disposable CI project's data
+        if: always()
+        run: docker compose -p vip-ci-smoke down --volumes --remove-orphans
