@@ -3,8 +3,8 @@ import { resolve } from 'node:path';
 import { disposableEnvironment, pnpmCommand, root } from './disposable.mjs';
 
 const flags = new Set(process.argv.slice(2));
-if ([...flags].some(flag => !['--native', '--browser'].includes(flag))) throw new Error('Use optional --native / --browser');
-const test = await disposableEnvironment();
+if ([...flags].some(flag => !['--native', '--browser', '--ci-mongodb'].includes(flag))) throw new Error('Use optional --native / --browser / --ci-mongodb');
+const test = await disposableEnvironment({ ciMongoCompatibility: flags.has('--ci-mongodb') });
 console.log(`Isolated reliability environment: ${test.project}`);
 async function workerUnavailable(dependency) {
   await test.compose(['exec', '-T', 'worker', 'node', '--input-type=module', '-', dependency], {
@@ -16,6 +16,7 @@ try {
   await test.compose(['build'], { echo: true, timeout: 600_000 });
   await test.compose(['up', '-d', '--wait', '--wait-timeout', '120'], { echo: true });
   await test.verifyOwnership();
+  await test.verifyMongoCompatibility();
   if (flags.has('--native')) {
     // Run existing real DB/queue suites against this project's private ports.
     // Native Playwright uses its own random DB, queue DB15 and storage directory.
@@ -82,6 +83,7 @@ try {
   if (await test.compose(['exec', '-T', 'redis', 'redis-cli', 'GET', 'vip-reliability-marker']) !== test.project) {
     throw new Error('Redis persistence marker lost');
   }
+  await test.verifyMongoCompatibility();
   console.log('Container reliability passed: acceptance during Redis outage, MongoDB rejection/recovery, restarts, recreation, storage report.');
 } catch (error) {
   await test.compose(['logs', '--no-color', '--tail', '80'], { echo: true }).catch(() => {});

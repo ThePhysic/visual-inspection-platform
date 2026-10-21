@@ -8,6 +8,10 @@ checkout. Node **24.22.0 bookworm-slim** and nginx-unprivileged **1.30.2 alpine*
 are pinned by multi-platform manifest digest; pnpm is **10.34.7**. MongoDB
 **8.0.34** and Redis **8.2.8** retain the existing version pins.
 
+CI explicitly adds `compose.ci.yaml` for the MongoDB/kernel allocator workaround;
+normal full-container/native configurations do not load it. See the
+[CI compatibility decision and runtime assertions](ci-mongodb-compatibility.md).
+
 Manifest/lockfile copies precede source copies. BuildKit caches the pnpm store;
 source edits reuse installed dependencies. All installs use `--frozen-lockfile`.
 The build stage includes development tooling, but separate filtered production

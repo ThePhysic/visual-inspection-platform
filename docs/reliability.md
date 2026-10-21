@@ -75,12 +75,17 @@ tags/cache are retained (no broad image cleanup). Free-port selection can race
 another host process; such startup errors fail the run rather than killing it.
 
 CI retains the lint/typecheck/unit/build matrix and real MongoDB/Redis integration
-and native-browser job. Its container job runs `pnpm test:reliability --browser`,
+and native-browser job. Its container job runs `pnpm test:reliability --browser --ci-mongodb`,
 including the existing packaging/workflow smoke, bounded dependency outages,
 offline staging maintenance, restart/recreation checks, and one real browser
 workflow. It does not duplicate the entire native suite in that job. CI execution
 is separate from local execution evidence; a successful local run does not assert
 that a remote GitHub Actions run has occurred.
+
+The [CI MongoDB compatibility environment](ci-mongodb-compatibility.md) retains
+MongoDB 8.0.34 and asserts its non-per-CPU allocator mode without relying on an
+Ubuntu label to pin the runner kernel. Native CI uses `pnpm test:ci:integration`
+to run the same integration and browser suites after explicit dependency startup.
 
 ## Storage maintenance
 

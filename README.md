@@ -647,3 +647,22 @@ maintenance instructions, supervision, and limitations](docs/reliability.md).
 Compose now uses an expiring local worker health observation for dependency
 connectivity and overdue active work; health is not an exactly-once or availability
 guarantee. There is no coordinated backup/disaster recovery solution.
+
+## GitHub Actions and MongoDB kernel compatibility
+
+CI keeps MongoDB **8.0.34**, all real MongoDB/Redis integration tests, native
+Playwright workflows, and full Compose browser/recovery checks. Linux database
+jobs select Ubuntu 24.04 and print actual runner/Docker kernel diagnostics before
+starting services; the Ubuntu label does not guarantee a particular kernel.
+
+An explicitly selected `compose.ci.yaml` enables glibc rseq registration so the
+database uses its non-per-CPU allocator fallback. CI asserts the actual MongoDB
+version and `usingPerCPUCaches: false`. Normal local Compose and named volumes
+are unchanged. To reproduce the CI jobs with native test tooling installed:
+
+```sh
+pnpm test:ci:integration
+pnpm test:reliability --browser --ci-mongodb
+```
+
+See [root cause, sources, alternatives, and remote validation requirements](docs/ci-mongodb-compatibility.md).

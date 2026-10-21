@@ -1,0 +1,7 @@
+# Explicitly selected by CI test wrappers; never loaded by normal local Compose.
+# Keep MongoDB 8.0.34. glibc owns rseq registration so TCMalloc falls back from
+# the per-CPU cache path affected by SERVER-121912. Assert the mode at runtime.
+services:
+  mongodb:
+    environment:
+      GLIBC_TUNABLES: glibc.pthread.rseq=1

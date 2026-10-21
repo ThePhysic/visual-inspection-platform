@@ -37,7 +37,7 @@ async function freePort() {
   return port;
 }
 
-export async function disposableEnvironment() {
+export async function disposableEnvironment({ ciMongoCompatibility = false } = {}) {
   const owner = randomUUID().replaceAll('-', '');
   const project = `vip-reliability-${owner}`;
   const webPort = await freePort(); const mongoPort = await freePort(); const redisPort = await freePort();
@@ -60,7 +60,8 @@ export async function disposableEnvironment() {
   override.services.mongodb.ports = [`127.0.0.1:${mongoPort}:27017`];
   override.services.redis.ports = [`127.0.0.1:${redisPort}:6379`];
   await writeFile(file, JSON.stringify(override), { flag: 'wx' });
-  const composeArgs = ['compose', '-p', project, '-f', 'compose.yaml', '-f', file];
+  const composeArgs = ['compose', '-p', project, '-f', 'compose.yaml',
+    ...(ciMongoCompatibility ? ['-f', 'compose.ci.yaml'] : []), '-f', file];
   const compose = (args, options = {}) => command('docker', [...composeArgs, ...args], {
     ...options, env: { ...options.env, WEB_PORT: String(webPort) },
   });
@@ -94,7 +95,12 @@ export async function disposableEnvironment() {
       input: await readFile(resolve(root, 'infra/docker', script), 'utf8'), echo: true,
     });
   }
-  return { project, compose, verifyOwnership, disruptive, inside,
+  async function verifyMongoCompatibility() {
+    if (!ciMongoCompatibility) return;
+    await compose(['exec', '-T', 'mongodb', 'mongosh', '--quiet', '--eval',
+      'const s=db.serverStatus(); print(JSON.stringify({version:s.version,usingPerCPUCaches:s.tcmalloc?.usingPerCPUCaches})); if(s.version!=="8.0.34" || s.tcmalloc?.usingPerCPUCaches!==false) { print("CI MongoDB allocator compatibility assertion failed"); quit(1); }'], { echo: true });
+  }
+  return { project, compose, verifyOwnership, verifyMongoCompatibility, disruptive, inside,
     environment: { MONGODB_TEST_URI: `mongodb://127.0.0.1:${mongoPort}`, REDIS_TEST_URL: `redis://127.0.0.1:${redisPort}`,
       CONTAINER_BASE_URL: `http://127.0.0.1:${webPort}` },
     async cleanup() {
