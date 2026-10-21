@@ -6,16 +6,22 @@ import {
   INSPECTIONS_PATH, InspectionRequestSchema, InspectionParamsSchema, IdempotencyHeadersSchema,
   InspectionAcceptedSchema, InspectionResponseSchema, ApiErrorResponseSchema, SaveReviewRequestSchema, SavedReviewResponseSchema,
   ReviewValidationErrorResponseSchema, ReviewConflictResponseSchema,
+  HistoryQuerySchema, InspectionHistoryResponseSchema,
 } from '@vip/contracts';
 import {
   acceptInspection, retryInspection, acceptedResponse, inspectionResponse,
   ApiError, databaseFailure, saveReview, type InspectionDependencies,
+  inspectionHistory,
 } from '@vip/backend';
 
 export function registerInspectionRoutes(instance: FastifyInstance, dependencies?: InspectionDependencies) {
   const app = instance.withTypeProvider<TypeBoxTypeProvider>();
   const errors = { 400: ApiErrorResponseSchema, 404: ApiErrorResponseSchema, 409: ApiErrorResponseSchema, 503: ApiErrorResponseSchema };
   function requireDependencies() { if (!dependencies) throw databaseFailure(); return dependencies; }
+
+  app.get(INSPECTIONS_PATH, {
+    schema: { querystring: HistoryQuerySchema, response: { 200: InspectionHistoryResponseSchema, ...errors } },
+  }, request => inspectionHistory(requireDependencies().inspections, request.query));
 
   app.post(INSPECTIONS_PATH, {
     schema: { body: InspectionRequestSchema, headers: IdempotencyHeadersSchema,
@@ -35,7 +41,11 @@ export function registerInspectionRoutes(instance: FastifyInstance, dependencies
     try {
       const record = await requireDependencies().inspections.findById(request.params.id).lean().exec();
       if (!record) throw new ApiError(404, 'INSPECTION_NOT_FOUND', 'Inspection not found.');
-      return inspectionResponse(record);
+      const response = inspectionResponse(record);
+      if (response.status !== 'failed') return response;
+      const latest = await requireDependencies().inspections.findOne({ retriedFrom: record._id })
+        .sort({ createdAt: -1, _id: -1 }).select({ _id: 1 }).lean().exec();
+      return { ...response, ...(latest ? { latestRetryId: latest._id.toString() } : {}) };
     } catch (cause) {
       if (cause instanceof ApiError) throw cause;
       throw databaseFailure(cause);

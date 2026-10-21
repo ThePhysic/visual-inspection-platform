@@ -40,7 +40,9 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
       error: {
         code: error instanceof ApiError ? error.code
           : error.validationContext === 'params' ? inspectionId ? 'INVALID_INSPECTION_ID' : 'INVALID_ASSET_ID'
-          : error.validation ? request.routeOptions.url?.endsWith('/review') ? 'INVALID_REVIEW' : 'INVALID_REQUEST' : serverError ? 'INTERNAL_ERROR' : 'REQUEST_ERROR',
+          : error.validation ? request.routeOptions.url?.endsWith('/review') ? 'INVALID_REVIEW'
+          : request.method === 'GET' && request.routeOptions.url === INSPECTIONS_PATH ? 'INVALID_HISTORY_QUERY'
+          : 'INVALID_REQUEST' : serverError ? 'INTERNAL_ERROR' : 'REQUEST_ERROR',
         message: error instanceof ApiError ? error.message
           : error.validationContext === 'params' ? `${inspectionId ? 'Inspection' : 'Asset'} ID must be 24 hexadecimal characters.`
           : error.validation ? 'Request validation failed.' : serverError ? 'An unexpected error occurred.' : error.message,

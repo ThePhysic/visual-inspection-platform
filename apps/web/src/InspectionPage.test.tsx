@@ -100,9 +100,10 @@ describe('inspection routes and polling', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Predictions remain available');
     expect(screen.getByRole('button', { name: /Surface mark/ })).toBeVisible();
   });
-  it('offers a useful fallback for a missing detail path', () => {
-    renderApp('/inspections/'); expect(screen.getByRole('heading', { name: 'Page not found' })).toBeVisible();
-    expect(screen.getByRole('link', { name: 'Start a new inspection' })).toHaveAttribute('href', '/');
+  it('opens history for the collection path, including a trailing slash', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ items: [], hasMore: false })));
+    renderApp('/inspections/'); expect(screen.getByRole('heading', { name: 'Inspection history' })).toBeVisible();
+    expect(await screen.findByRole('heading', { name: 'No inspections yet' })).toBeVisible();
   });
   it('allows retry after an initial fetch network failure', async () => {
     vi.useFakeTimers(); lifecycle(() => { throw new TypeError('offline'); }, () => Response.json(completed));

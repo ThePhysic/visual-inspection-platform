@@ -3,10 +3,14 @@ import {
   AssetResponseSchema, InspectionAcceptedSchema, InspectionResponseSchema, ApiErrorResponseSchema,
   type HealthResponse, type AssetResponse, type InspectionAccepted, type InspectionResponse,
   SavedReviewResponseSchema, isPersistedReview, validReviewAnnotations, type SaveReviewRequest, type SavedReviewResponse,
+  isInspectionHistoryResponse, type HistoryQuery, type InspectionHistoryResponse,
 } from '@vip/contracts';
 import { Value } from 'typebox/value';
 
 const errorMessages: Record<string, string> = {
+  INVALID_CURSOR: 'This history page is no longer usable. Restart history browsing.',
+  INVALID_HISTORY_QUERY: 'The history parameters are invalid. Restart history browsing.',
+  INSPECTION_NOT_FAILED: 'This inspection is no longer eligible for retry. Refresh its status.',
   INVALID_REVIEW: 'The review is invalid. Check the annotations before trying again.',
   REVIEW_REVISION_CONFLICT: 'A newer review exists. Your local changes have been retained.',
   REVIEW_OPERATION_CONFLICT: 'This save operation conflicts with an earlier request. Load the latest review before continuing.',
@@ -105,4 +109,29 @@ export async function saveReview(id: string, request: SaveReviewRequest, signal:
   if (!Value.Check(SavedReviewResponseSchema, body) || body.operationId !== request.operationId
     || body.operationRevision < 1 || body.operationRevision > body.review.revision) incompatible();
   return body;
+}
+
+export async function fetchHistory(query: HistoryQuery, signal: AbortSignal): Promise<InspectionHistoryResponse> {
+  const parameters = new URLSearchParams();
+  if (query.status) parameters.set('status', query.status);
+  if (query.cursor) parameters.set('cursor', query.cursor);
+  if (query.limit) parameters.set('limit', query.limit);
+  const body = await requestJson(`${INSPECTIONS_PATH}?${parameters.toString()}`, 200, { signal });
+  if (!isInspectionHistoryResponse(body) || (query.status && body.items.some(item => item.status !== query.status))) incompatible();
+  return body;
+}
+
+export async function retryInspection(id: string, key: string, signal: AbortSignal): Promise<InspectionAccepted> {
+  try {
+    const body = await requestJson(`${INSPECTIONS_PATH}/${id}/retry`, 202, {
+      method: 'POST', headers: { 'Idempotency-Key': key }, signal,
+    });
+    if (!Value.Check(InspectionAcceptedSchema, body) || body.url !== `${INSPECTIONS_PATH}/${body.id}` || body.id === id) incompatible();
+    return body;
+  } catch (cause) {
+    if (cause instanceof ApiClientError && cause.code === 'IDEMPOTENCY_CONFLICT') {
+      throw new ApiClientError('This retry conflicts with an earlier request. Reopen the failed inspection before starting another retry.', false, 409, cause.code);
+    }
+    throw cause;
+  }
 }

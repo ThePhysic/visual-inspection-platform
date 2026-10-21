@@ -70,3 +70,4 @@ export const ReadinessResponseSchema = Type.Object({
 }, { additionalProperties: false });
 
 export * from './reviews.js';
+export * from './history.js';

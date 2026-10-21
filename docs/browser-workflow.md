@@ -1,10 +1,15 @@
 # Browser inspection workflow
 
-The frontend uses React Router's data router for `/`, `/inspections/:id`,
+The frontend uses React Router's data router for `/`, `/inspections`, `/inspections/:id`,
 and `/health`. TanStack Query owns remote inspection/asset state, cancellation,
 cache, and nonoverlapping polling. There is no global client-state framework.
 The queue and inference workflow remain independent of the editor. Review saves
 use versioned API contracts and optimistic concurrency; see [reviews](reviews.md).
+
+History filtering/pagination and manual retry navigation are documented in
+[history and recovery](history.md). Detail polling and the editor remain separate
+from the summary list; history caches are invalidated after accepted submissions
+and confirmed review saves.
 
 `api.ts` checks HTTP status and existing TypeBox contracts. Completed inference
 results also pass the shared cross-field validator before rendering. IDs and

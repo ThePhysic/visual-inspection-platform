@@ -54,6 +54,7 @@ export default function ReviewWorkspace(props: {
       dispatch({ type: 'baseline', state: createReviewState({ ...props, review: response.review }) });
       setBaseline({ revision: response.review.revision, sequence: response.writeSequence });
       setPending(undefined); setMessage(`Review saved · revision ${response.review.revision}.`);
+      void client.invalidateQueries({ queryKey: ['inspection-history'], refetchType: 'none' });
       await client.cancelQueries({ queryKey: ['inspection', props.inspectionId] });
       client.setQueryData<InspectionResponse>(['inspection', props.inspectionId], previous => previous?.status === 'completed'
         && (previous.reviewWriteSequence ?? 0) <= response.writeSequence

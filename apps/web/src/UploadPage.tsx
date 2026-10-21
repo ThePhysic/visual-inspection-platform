@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { MAX_UPLOAD_BYTES, type AssetResponse } from '@vip/contracts';
 import { ApiClientError, submitInspection, uploadAsset } from './api';
 
@@ -8,6 +8,7 @@ interface Submission { file: File; key: string; asset?: AssetResponse }
 
 export default function UploadPage() {
   const navigate = useNavigate();
+  const client = useQueryClient();
   const [file, setFile] = useState<File>();
   const [validationError, setValidationError] = useState('');
   const [phase, setPhase] = useState<'idle' | 'uploading' | 'submitting'>('idle');
@@ -38,7 +39,10 @@ export default function UploadPage() {
       }
       setPhase('submitting');
       const accepted = await submitInspection(attempt.asset.id, attempt.key, controller.signal);
-      if (!controller.signal.aborted) navigate(`/inspections/${accepted.id}`);
+      if (!controller.signal.aborted) {
+        void client.invalidateQueries({ queryKey: ['inspection-history'], refetchType: 'none' });
+        navigate(`/inspections/${accepted.id}`);
+      }
     },
     onSettled: () => { busy.current = false; if (mounted.current) setPhase('idle'); },
   });

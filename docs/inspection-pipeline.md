@@ -44,6 +44,10 @@ on `(requestScope,requestKey)` resolves concurrent insert races. Replays compare
 the stored fingerprint. They do not create another inspection or dispatch a job.
 
 Additional indexes are `(createdAt desc,_id desc)` and `(status,updatedAt)`.
+History also uses `(status,createdAt desc,_id desc)`, and forward retry navigation
+uses `(retriedFrom,createdAt desc,_id desc)`. See [history](history.md) for query and
+live-pagination semantics. Manual retry continues to create a separate linked
+record and never updates its failed predecessor.
 Idempotency keys persist with records; there is no retention/deletion API yet.
 
 ## Attempt ownership
@@ -143,7 +147,7 @@ keys/fingerprints, storage keys, connection strings, and stack traces.
   Simulations use controlled gates/database failures and expired leases; they do
   not claim automated OS-kill, machine-power-loss, or Redis AOF-corruption testing.
 
-No real detector, inference microservice, review storage, history UI,
-authentication, or cloud deployment is included. The frontend inspection flow is
-documented in [browser workflow](browser-workflow.md), including the separate local
-annotation editor.
+No real detector, inference microservice, authentication, or cloud deployment is
+included. The frontend inspection flow is documented in
+[browser workflow](browser-workflow.md), with persisted review snapshots and
+[history/recovery navigation](history.md) separate from worker execution.

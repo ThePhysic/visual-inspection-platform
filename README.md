@@ -8,8 +8,9 @@ scores over the canonical stored image. Copy an inspection URL to reopen it.
 MongoDB persists assets and inspections; Redis/BullMQ and an independent worker
 execute **simulated inference**. This is a software workflow demonstration, not a
 real detector. Interactive corrections can be saved as revisioned human-review
-snapshots, separately from original predictions. Inspection history browsing
-remains future work.
+snapshots, separately from original predictions. History supports status filters,
+cursor pagination, and reopening saved reviews; failed inspections can be retried
+as new linked attempts.
 
 ## Prerequisites
 
@@ -150,7 +151,8 @@ may finish processing between polls. No production inference delays are added.
   needs neither MongoDB nor a running API.
 - **Integration test:** `pnpm test:integration` requires MongoDB and Redis. Start
   both with `docker compose up -d --wait mongodb redis`. Tests use genuine servers,
-  isolated `vip_ingestion_test_*` / `vip_inspection_test_*` / `vip_review_test_*` databases, unique
+  isolated `vip_ingestion_test_*` / `vip_inspection_test_*` / `vip_review_test_*` /
+  `vip_history_test_*` databases, unique
   `inspections-test-*` queues, and private temporary image directories. Cleanup
   drops only these test databases/queues; it never runs Redis `FLUSHDB`. Missing
   dependencies fail the command; tests are not silently skipped. Fault cases use
@@ -433,8 +435,9 @@ an asset behind; an explicit upload retry may create another asset.
 
 Network-fetch errors are separate from terminal processing failures. Cached
 results remain visible when a background refresh fails, and image-loading errors
-leave prediction details available. There is no UI for retrying a failed inspection
-yet. See [frontend behavior](docs/browser-workflow.md) for implemented boundaries.
+leave prediction details available. Failed inspections provide manual retry with
+idempotent network recovery and links between attempts. See
+[frontend behavior](docs/browser-workflow.md) for implemented boundaries.
 
 ## Annotation editing
 
@@ -501,3 +504,37 @@ The existing validation and CI commands discover review tests automatically.
 `pnpm test:integration` includes real MongoDB concurrent saves;
 `pnpm test:e2e` includes real-stack save/refresh/reopen, lost-response retry,
 and two-tab conflict workflows in Chromium.
+
+## History and failed-inspection recovery
+
+Choose **History** in the main navigation to browse `/inspections`. Filter by
+status and choose **Load more inspections** for another page. The default page
+contains 20 summaries. **Refresh history** restarts at the newest page. Thumbnails
+use the canonical image endpoint; failed previews do not prevent opening a record.
+Saved-review revisions and original detection counts appear on completed entries.
+Opening a result restores its saved review. Returning to history preserves the
+status filter and cached pages where practical. Unsaved annotation edits still
+require the existing navigation confirmation before being discarded.
+
+On a failed inspection, **Retry inspection** creates a new linked inspection.
+If the request fails or its acceptance response is lost, **Retry submission**
+keeps the same idempotency key. **View previous attempt** and **View latest retry**
+connect the new record and preserved failure. Reloading/unmounting loses the
+in-memory retry key; check the latest attempt before intentionally retrying again.
+
+`GET /api/v1/inspections?status=completed&limit=20` returns lightweight summaries,
+`hasMore`, and an optional `nextCursor`. Pass that cursor unchanged with the same
+status for subsequent pages. The maximum limit is 50. Ordering uses creation time
+and ID descending; live status changes and new/backdated inserts mean this is not
+a snapshot-isolated view. Invalid cursors offer a deliberate restart.
+
+See [history contracts, queries/indexes, and recovery semantics](docs/history.md).
+The existing `pnpm test`, `pnpm test:integration`, and `pnpm test:e2e` commands
+include the new cases automatically. The browser recovery test seeds a terminal
+failure only in its private database; subsequent retry and inference are real.
+No new environment variables or dependencies are required.
+
+**Trusted local/demo use:** the application has no authentication; anyone who can
+reach the API can browse all history, retrieve images/reviews, and submit retries.
+It is not intended for unrestricted public deployment. Authentication and
+infrastructure hardening are not part of Task 04.

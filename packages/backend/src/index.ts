@@ -10,3 +10,4 @@ export * from './execution.js';
 export * from './reconciliation.js';
 
 export * from './reviews.js';
+export * from './history.js';

@@ -48,6 +48,9 @@ const schema = new mongoose.Schema({
 
 schema.index({ requestScope: 1, requestKey: 1 }, { unique: true, partialFilterExpression: { requestKey: { $type: 'string' } } });
 schema.index({ createdAt: -1, _id: -1 });
+schema.index({ status: 1, createdAt: -1, _id: -1 });
+// Forward lineage lookup: newest child of a failed inspection, limited to one.
+schema.index({ retriedFrom: 1, createdAt: -1, _id: -1 });
 schema.index({ status: 1, updatedAt: 1 });
 
 export function createInspectionModel(connection: Connection) {

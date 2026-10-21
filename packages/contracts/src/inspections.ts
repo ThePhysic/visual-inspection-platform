@@ -92,6 +92,7 @@ export const InspectionResponseSchema = Type.Union([
     processingDurationMs: Type.Number({ minimum: 0 }), result: InferenceResultSchema,
     review: Type.Optional(PersistedReviewSchema), reviewWriteSequence: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER })) }, { additionalProperties: false }),
   Type.Object({ ...common, status: Type.Literal('failed'), completedAt: timestamp,
+    latestRetryId: Type.Optional(objectId),
     failure: InspectionFailureSchema }, { additionalProperties: false }),
 ]);
 export type InspectionResponse = Static<typeof InspectionResponseSchema>;

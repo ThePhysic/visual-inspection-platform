@@ -65,8 +65,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # Includes genuine MongoDB review CAS, concurrency, and retry-receipt tests.
+      # Includes MongoDB review CAS, history pagination, and retry-lineage tests.
       - run: pnpm test:integration
       - run: pnpm --filter @vip/web exec playwright install --with-deps chromium
-      # Includes Konva interactions, review save/reopen, and two-tab conflicts.
+      # Includes canvas/review workflows plus history and real-stack manual retry.
       - run: pnpm test:e2e
