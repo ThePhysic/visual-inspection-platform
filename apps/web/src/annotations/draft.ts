@@ -1,7 +1,7 @@
-import { MOCK_LABELS, isInferenceResult, type InferenceResult } from '@vip/contracts';
+import { MOCK_LABELS, MAX_DETECTIONS, REVIEW_TAXONOMY_VERSION, isInferenceResult, validReviewAnnotations, type PersistedReview, type SaveReviewRequest, type InferenceResult } from '@vip/contracts';
 import { sameBox, validBox, type Box } from './geometry';
 
-export const REVIEW_TAXONOMY_VERSION = 'mock-v1';
+export { REVIEW_TAXONOMY_VERSION } from '@vip/contracts';
 export type ClassId = typeof MOCK_LABELS[number]['classId'];
 interface AnnotationBase {
   readonly id: string;
@@ -33,6 +33,7 @@ export type ReviewAction =
   | { type: 'disposition'; id: string; disposition: 'accepted' | 'rejected' }
   | { type: 'add'; id: string; classId: ClassId; box: Box }
   | { type: 'remove'; id: string }
+  | { type: 'baseline'; state: ReviewState }
   | { type: 'reset' };
 
 export function labelFor(classId: ClassId) {
@@ -44,11 +45,17 @@ export function canEdit(result: InferenceResult) {
   return isInferenceResult(result) && result.taxonomyVersion === REVIEW_TAXONOMY_VERSION
     && result.detections.every(detection => MOCK_LABELS.some(entry => entry.classId === detection.classId && entry.label === detection.label));
 }
-export function createReviewState({ inspectionId, result }: { inspectionId: string; result: InferenceResult }): ReviewState {
+export function createReviewState({ inspectionId, result, review }: { inspectionId: string; result: InferenceResult; review?: PersistedReview | undefined }): ReviewState {
   if (!canEdit(result)) throw new Error('Unsupported review taxonomy.');
+  if (review && !validReviewAnnotations(review.annotations, result)) throw new Error('Invalid saved review.');
   const draft: ReviewDraft = {
     draftVersion: 'v1', taxonomyVersion: REVIEW_TAXONOMY_VERSION, inspectionId,
-    annotations: result.detections.map(prediction => ({
+    annotations: review ? review.annotations.map((annotation): ReviewAnnotation => {
+      const common = { id: annotation.id, classId: annotation.classId, boundingBox: { ...annotation.boundingBox }, label: labelFor(annotation.classId) };
+      return annotation.origin === 'manual' ? { ...common, origin: 'manual' }
+        : { ...common, origin: 'prediction', predictionId: annotation.predictionId, disposition: annotation.disposition,
+          originalConfidence: result.detections.find(prediction => prediction.id === annotation.predictionId)!.confidence };
+    }) : result.detections.map(prediction => ({
       id: `prediction:${prediction.id}`, origin: 'prediction', predictionId: prediction.id,
       classId: prediction.classId as ClassId, label: prediction.label,
       originalConfidence: prediction.confidence, disposition: 'accepted', boundingBox: { ...prediction.boundingBox },
@@ -70,11 +77,12 @@ export function isDirty(state: ReviewState) {
     || changedAnnotations(state.initial, state.draft).length > 0;
 }
 export function reviewReducer(state: ReviewState, action: ReviewAction): ReviewState {
+  if (action.type === 'baseline') return { ...action.state, selectedId: action.state.draft.annotations.some(item => item.id === state.selectedId) ? state.selectedId : undefined };
   if (action.type === 'reset') return { ...state, draft: state.initial, selectedId: undefined, mode: 'select' };
   if (action.type === 'mode') return { ...state, mode: action.mode };
   if (action.type === 'select') return { ...state, selectedId: state.draft.annotations.some(item => item.id === action.id) ? action.id : undefined, mode: 'select' };
   if (action.type === 'add') {
-    if (!validBox(action.box) || !action.id || state.draft.annotations.some(item => item.id === action.id)) return state;
+    if (state.draft.annotations.length >= MAX_DETECTIONS || !validBox(action.box) || !action.id || state.draft.annotations.some(item => item.id === action.id)) return state;
     const annotation: ReviewAnnotation = { id: action.id, origin: 'manual', classId: action.classId, label: labelFor(action.classId), boundingBox: { ...action.box } };
     return { ...state, draft: { ...state.draft, annotations: [...state.draft.annotations, annotation] }, selectedId: action.id, mode: 'select' };
   }
@@ -92,4 +100,14 @@ export function reviewReducer(state: ReviewState, action: ReviewAction): ReviewS
     return annotation;
   });
   return annotations.every((annotation, index) => annotation === state.draft.annotations[index]) ? state : { ...state, draft: { ...state.draft, annotations } };
+}
+
+export function savePayload(draft: ReviewDraft, expectedRevision: number, expectedWriteSequence: number, operationId: string): SaveReviewRequest {
+  return { contractVersion: 'v1', taxonomyVersion: draft.taxonomyVersion, expectedRevision, expectedWriteSequence, operationId,
+    annotations: draft.annotations.map(annotation => ({
+      id: annotation.id, classId: annotation.classId, boundingBox: { ...annotation.boundingBox },
+      ...(annotation.origin === 'prediction' ? { origin: 'prediction' as const, predictionId: annotation.predictionId,
+        disposition: annotation.disposition } : { origin: 'manual' as const, disposition: 'accepted' as const }),
+    })),
+  };
 }

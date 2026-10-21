@@ -1,10 +1,10 @@
 # Browser inspection workflow
 
-The frontend uses React Router in declarative mode for `/`, `/inspections/:id`,
+The frontend uses React Router's data router for `/`, `/inspections/:id`,
 and `/health`. TanStack Query owns remote inspection/asset state, cancellation,
 cache, and nonoverlapping polling. There is no global client-state framework.
-The API, queue, and shared contracts are unchanged by the browser workflow and
-local annotation editor.
+The queue and inference workflow remain independent of the editor. Review saves
+use versioned API contracts and optimistic concurrency; see [reviews](reviews.md).
 
 `api.ts` checks HTTP status and existing TypeBox contracts. Completed inference
 results also pass the shared cross-field validator before rendering. IDs and
@@ -34,7 +34,10 @@ page-coordinate conversion. Boxes use border-box sizing. Numbered boxes connect 
 keyboard-operable list buttons, and stable class colors supplement labels/numbers.
 Image and detection list in this original-prediction view remain read-only.
 **Edit local draft** opens the separate [Konva annotation editor](annotation-editor.md),
-which copies predictions into memory without modifying the query cache.
+which copies predictions or the current saved review into memory without modifying
+original predictions. Confirmed review saves update the review portion of the cache;
+background refetches never reset a mounted draft. The data router's supported blocker
+protects dirty drafts during in-app navigation and Back/Forward.
 
 Vitest/Testing Library tests mock HTTP for selection, authoritative rejection,
 submission/retry identity, partial success, cancellation, lifecycle polling,

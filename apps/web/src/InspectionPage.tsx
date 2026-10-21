@@ -33,7 +33,7 @@ export default function InspectionPage() {
               <h2 id="status-heading">{record.status === 'queued' ? 'Queued' : record.status === 'processing' ? 'Processing' : record.status === 'completed' ? 'Completed' : 'Inspection failed'}</h2>
               {record.status === 'queued' && <p>Your inspection is saved and waiting for the worker. This page checks for updates automatically.</p>}
               {record.status === 'processing' && <p>The worker is inspecting your image with the simulated model. Results will appear automatically.</p>}
-              {record.status === 'completed' && <p>Simulated inference is complete. Original predictions are read-only; corrections can be made in a local draft.</p>}
+              {record.status === 'completed' && <p>Simulated inference is complete. Original predictions are read-only; corrections can be reviewed and saved separately.</p>}
             </div>
             {record.status === 'failed' && <div role="alert"><p>{record.failure.message}</p><p>Failure code: <code>{record.failure.code}</code>. You can start a new inspection from the upload page.</p></div>}
             <button className="secondary" type="button" disabled={inspection.isFetching} onClick={() => { void inspection.refetch({ cancelRefetch: false }); }}>Refresh status</button>
@@ -48,7 +48,7 @@ export default function InspectionPage() {
               </dl>
               {asset.isPending && <p role="status">Loading canonical image metadata…</p>}
               {asset.error && <div role="alert"><p>Image metadata could not be refreshed. Predictions remain available.</p><button type="button" disabled={asset.isFetching} onClick={() => { void asset.refetch({ cancelRefetch: false }); }}>Retry image metadata</button></div>}
-              {canEdit(record.result) ? <ReviewWorkspace key={record.id} inspectionId={record.id} asset={asset.data} result={record.result} />
+              {canEdit(record.result) ? <ReviewWorkspace key={record.id} inspectionId={record.id} asset={asset.data} result={record.result} review={record.review} reviewWriteSequence={record.reviewWriteSequence} />
                 : <><p>This taxonomy is available for viewing only.</p><DetectionViewer key={assetId} asset={asset.data} result={record.result} /></>}
             </section>
           </>}

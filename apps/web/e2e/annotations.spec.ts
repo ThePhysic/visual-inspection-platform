@@ -151,11 +151,15 @@ test('zero predictions permit drawing; navigation warns, and another inspection 
   const image = await imageRectangle(page);
   await drag(page, { x: image.x + image.width * 0.2, y: image.y + image.height * 0.2 }, { x: image.x + image.width * 0.5, y: image.y + image.height * 0.6 });
   await expect(page.getByRole('heading', { name: '1 annotation', exact: true })).toBeVisible();
-  page.once('dialog', dialog => dialog.dismiss());
-  await page.getByRole('link', { name: 'New inspection', exact: true }).click();
+  await Promise.all([
+    page.waitForEvent('dialog').then(dialog => dialog.dismiss()),
+    page.getByRole('link', { name: 'New inspection', exact: true }).click(),
+  ]);
   await expect(page).toHaveURL(`/inspections/${completed.id}`);
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('link', { name: 'New inspection', exact: true }).click();
+  await Promise.all([
+    page.waitForEvent('dialog').then(dialog => dialog.accept()),
+    page.getByRole('link', { name: 'New inspection', exact: true }).click(),
+  ]);
   await expect(page.getByRole('heading', { name: 'Start an inspection', exact: true })).toBeVisible();
   const nextId = 'ffffffffffffffffffffffff';
   await page.route(`**/api/v1/inspections/${nextId}`, route => route.fulfill({ json: { ...completed, id: nextId } }));

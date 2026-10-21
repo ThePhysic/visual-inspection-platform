@@ -1,32 +1,36 @@
 import { useId, useState, type Dispatch } from 'react';
-import { MOCK_LABELS, type AssetResponse } from '@vip/contracts';
+import { MOCK_LABELS, MAX_DETECTIONS, type AssetResponse, type InferenceResult } from '@vip/contracts';
 import { classColor, confidenceLabel } from '../presentation';
 import { changedAnnotations, isDirty, type ClassId, type ReviewAction, type ReviewState } from './draft';
 import AnnotationCanvas from './AnnotationCanvas';
 
-export default function AnnotationEditor({ asset, state, dispatch }: {
-  asset: AssetResponse | undefined; state: ReviewState; dispatch: Dispatch<ReviewAction>;
+export default function AnnotationEditor({ asset, state, dispatch, disabled = false, savedRevision = 0, originalResult }: {
+  asset: AssetResponse | undefined; state: ReviewState; dispatch: Dispatch<ReviewAction>; disabled?: boolean; savedRevision?: number; originalResult?: InferenceResult;
 }) {
   const [drawingClass, setDrawingClass] = useState<ClassId>(MOCK_LABELS[0].classId);
   const drawingClassId = useId();
   const annotationClassId = useId();
   const selected = state.draft.annotations.find(annotation => annotation.id === state.selectedId);
   const changed = changedAnnotations(state.initial, state.draft);
+  const currentIds = new Set(state.draft.annotations.map(annotation => annotation.id));
+  const removed = state.initial.annotations.filter(annotation => !currentIds.has(annotation.id));
+  const changeCount = changed.length + removed.length;
   const dirty = isDirty(state);
   return <div className="annotation-editor" onKeyDown={event => { if (event.key === 'Escape') dispatch({ type: 'mode', mode: 'select' }); }}>
-    <aside className="notice local-notice"><strong>Local draft — not saved</strong><p>Changes exist only in this page’s memory. Original predictions remain unchanged. Reloading or leaving discards this draft.</p><p>Link navigation asks before discarding changes. Browser Back/Forward may discard them without a warning.</p></aside>
-    <p role="status" className={dirty ? 'draft-dirty' : 'muted'}>{dirty ? `Unsaved changes · ${changed.length} annotation${changed.length === 1 ? '' : 's'} changed` : 'No unsaved changes.'}</p>
+    <aside className="notice local-notice"><strong>{savedRevision ? `Saved review · revision ${savedRevision}` : 'Local draft — not saved'}</strong><p>Original predictions remain unchanged. Use Save review to persist corrections. Unsaved changes exist only in this page’s memory.</p></aside>
+    <p role="status" className={dirty ? 'draft-dirty' : 'muted'}>{dirty ? `Unsaved changes · ${changeCount} annotation${changeCount === 1 ? '' : 's'} changed` : 'No unsaved changes.'}</p>
+    <fieldset disabled={disabled} className="editor-fieldset"><legend className="sr-only">Annotation editing controls</legend>
     <div className="editor-tools">
       <div><label htmlFor={drawingClassId}>Class for new annotation</label>
         <select id={drawingClassId} value={drawingClass} onChange={event => { setDrawingClass(event.target.value as ClassId); }}>
           {MOCK_LABELS.map(entry => <option value={entry.classId} key={entry.classId}>{entry.label}</option>)}
         </select>
       </div>
-      <button type="button" disabled={!asset} aria-pressed={state.mode === 'draw'} onClick={() => { dispatch({ type: 'mode', mode: state.mode === 'draw' ? 'select' : 'draw' }); }}>
+      <button type="button" disabled={!asset || state.draft.annotations.length >= MAX_DETECTIONS} aria-pressed={state.mode === 'draw'} onClick={() => { dispatch({ type: 'mode', mode: state.mode === 'draw' ? 'select' : 'draw' }); }}>
         {state.mode === 'draw' ? 'Cancel drawing' : 'Add annotation'}
       </button>
       <button type="button" className="secondary" disabled={!dirty} onClick={() => {
-        if (window.confirm('Discard all local annotation changes and reset to the original predictions?')) dispatch({ type: 'reset' });
+        if (window.confirm('Discard all local annotation changes and reset to the last saved review (or original predictions if none)?')) dispatch({ type: 'reset' });
       }}>Reset draft</button>
     </div>
     <p id="canvas-help">{state.mode === 'draw'
@@ -34,7 +38,7 @@ export default function AnnotationEditor({ asset, state, dispatch }: {
       : 'Select a box or an annotation in the list. Drag the selected box or use its resize handles. Rejected predictions are hidden from the canvas.'}</p>
     <div className="results-grid">
       <div>
-        {asset ? <AnnotationCanvas key={asset.id} asset={asset} annotations={state.draft.annotations} selectedId={state.selectedId} mode={state.mode}
+        {asset ? <AnnotationCanvas key={asset.id} asset={asset} disabled={disabled} annotations={state.draft.annotations} selectedId={state.selectedId} mode={state.mode}
           onSelect={id => { dispatch({ type: 'select', id }); }}
           onBox={(id, box) => { dispatch({ type: 'box', id, box }); }}
           onDraw={box => { dispatch({ type: 'add', id: `manual:${crypto.randomUUID()}`, classId: drawingClass, box }); }}
@@ -58,7 +62,8 @@ export default function AnnotationEditor({ asset, state, dispatch }: {
         </ol>
         {selected ? <section className="annotation-properties" aria-labelledby="selected-heading">
           <h3 id="selected-heading">Selected annotation</h3>
-          <p>{selected.origin === 'prediction' ? <>Original prediction: <code>{selected.predictionId}</code></> : 'Manually added annotation'}</p>
+          <p>{selected.origin === 'prediction' ? `Original predicted class: ${originalResult?.detections.find(item => item.id === selected.predictionId)?.label ?? selected.label}` : 'Manually added annotation'}</p>
+          {selected.origin === 'prediction' && <details><summary>Prediction technical details</summary><code>{selected.predictionId}</code></details>}
           <label htmlFor={annotationClassId}>Annotation class</label>
             <select id={annotationClassId} value={selected.classId} onChange={event => { dispatch({ type: 'class', id: selected.id, classId: event.target.value as ClassId }); }}>
               {MOCK_LABELS.map(entry => <option value={entry.classId} key={entry.classId}>{entry.label}</option>)}
@@ -79,8 +84,11 @@ export default function AnnotationEditor({ asset, state, dispatch }: {
         </section> : <p className="muted">Select an annotation to change its class or disposition.</p>}
       </aside>
     </div>
-    {dirty && <details className="draft-summary"><summary>Review unsaved changes ({changed.length})</summary><ul>
+    </fieldset>
+    {state.draft.annotations.length >= MAX_DETECTIONS && <p>Annotation limit reached (200, including rejected predictions).</p>}
+    {dirty && <details className="draft-summary"><summary>Review unsaved changes ({changeCount})</summary><ul>
       {changed.map(annotation => <li key={annotation.id}>{annotation.label} — {annotation.origin === 'manual' ? 'added manually' : annotation.disposition === 'rejected' ? 'rejected prediction' : 'modified prediction'}</li>)}
+      {removed.map(annotation => <li key={annotation.id}>{annotation.label} — removed manual annotation</li>)}
     </ul></details>}
   </div>;
 }

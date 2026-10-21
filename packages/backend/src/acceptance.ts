@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { Value } from 'typebox/value';
 import {
-  MOCK_CONFIGURATION, INSPECTIONS_PATH, InspectionResponseSchema, isInferenceResult,
+  MOCK_CONFIGURATION, INSPECTIONS_PATH, InspectionResponseSchema, isInferenceResult, isPersistedReview, validReviewAnnotations,
   type ProviderConfiguration, type InspectionResponse, type InspectionAccepted,
 } from '@vip/contracts';
 import { type InspectionModel, type InspectionRecord } from './inspection-model.js';
@@ -80,6 +80,7 @@ export function acceptedResponse(record: InspectionRecord): InspectionAccepted {
 
 export function inspectionResponse(record: InspectionRecord): InspectionResponse {
   if (record.status === 'completed' && !isInferenceResult(record.result)) throw databaseFailure();
+  if (record.review !== undefined && (!isPersistedReview(record.review) || !validReviewAnnotations(record.review.annotations, record.result))) throw databaseFailure();
   const response = {
     id: record._id.toString(), assetId: record.assetId.toString(), status: record.status,
     createdAt: record.createdAt.toISOString(), updatedAt: record.updatedAt.toISOString(),
@@ -89,7 +90,8 @@ export function inspectionResponse(record: InspectionRecord): InspectionResponse
     ...(record.processingStartedAt ? { processingStartedAt: record.processingStartedAt.toISOString() } : {}),
     ...(record.status === 'queued' ? { nextAttemptAt: record.nextAttemptAt.toISOString() } : {}),
     ...(record.status === 'completed' || record.status === 'failed' ? { completedAt: record.completedAt?.toISOString() } : {}),
-    ...(record.status === 'completed' ? { result: record.result, processingDurationMs: record.processingDurationMs } : {}),
+    ...(record.status === 'completed' ? { result: record.result, processingDurationMs: record.processingDurationMs,
+      reviewWriteSequence: record.reviewControl?.sequence ?? 0, ...(record.review ? { review: record.review } : {}) } : {}),
     ...(record.status === 'failed' ? { failure: record.failure } : {}),
   };
   if (!Value.Check(InspectionResponseSchema, response)) throw databaseFailure();

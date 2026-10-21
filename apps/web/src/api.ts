@@ -2,10 +2,15 @@ import {
   HEALTH_PATH, ASSETS_PATH, INSPECTIONS_PATH, isHealthResponse, isInferenceResult,
   AssetResponseSchema, InspectionAcceptedSchema, InspectionResponseSchema, ApiErrorResponseSchema,
   type HealthResponse, type AssetResponse, type InspectionAccepted, type InspectionResponse,
+  SavedReviewResponseSchema, isPersistedReview, validReviewAnnotations, type SaveReviewRequest, type SavedReviewResponse,
 } from '@vip/contracts';
 import { Value } from 'typebox/value';
 
 const errorMessages: Record<string, string> = {
+  INVALID_REVIEW: 'The review is invalid. Check the annotations before trying again.',
+  REVIEW_REVISION_CONFLICT: 'A newer review exists. Your local changes have been retained.',
+  REVIEW_OPERATION_CONFLICT: 'This save operation conflicts with an earlier request. Load the latest review before continuing.',
+  INSPECTION_NOT_COMPLETED: 'Only completed inspections can be reviewed.',
   CORRUPT_IMAGE: 'This image could not be decoded. Choose a valid JPEG or PNG.',
   UNSUPPORTED_IMAGE_TYPE: 'This image format is not supported. Choose a JPEG or PNG.',
   MULTIFRAME_IMAGE: 'Animated and multipage images are not supported.',
@@ -18,7 +23,7 @@ const errorMessages: Record<string, string> = {
 };
 
 export class ApiClientError extends Error {
-  constructor(message: string, readonly retryable: boolean, readonly status?: number) { super(message); }
+  constructor(message: string, readonly retryable: boolean, readonly status?: number, readonly code?: string) { super(message); }
 }
 
 async function requestJson(path: string, expectedStatus: number, options: RequestInit = {}, timeout = 10_000): Promise<unknown> {
@@ -30,7 +35,7 @@ async function requestJson(path: string, expectedStatus: number, options: Reques
       const code = Value.Check(ApiErrorResponseSchema, body) ? body.error.code : '';
       throw new ApiClientError(errorMessages[code] ?? (response.status >= 500
         ? 'The service is temporarily unavailable. Please try again.' : 'The request was rejected. Check your image or link.'),
-      response.status >= 500 || response.status === 408 || response.status === 429, response.status);
+      response.status >= 500 || response.status === 408 || response.status === 429, response.status, code);
     }
     if (response.status !== expectedStatus || body === undefined) throw new ApiClientError('The service returned an incompatible response. Please try again.', true);
     return body;
@@ -63,7 +68,8 @@ export async function submitInspection(assetId: string, key: string, signal: Abo
 export async function fetchInspection(id: string, signal: AbortSignal): Promise<InspectionResponse> {
   const body = await requestJson(`${INSPECTIONS_PATH}/${id}`, 200, { signal });
   if (!Value.Check(InspectionResponseSchema, body) || body.id !== id.toLowerCase()
-    || (body.status === 'completed' && !isInferenceResult(body.result))) incompatible();
+    || (body.status === 'completed' && (!isInferenceResult(body.result) || (body.review !== undefined
+      && (!isPersistedReview(body.review) || !validReviewAnnotations(body.review.annotations, body.result)))))) incompatible();
   return body;
 }
 
@@ -89,5 +95,14 @@ export async function fetchHealth(signal: AbortSignal): Promise<HealthResponse> 
     throw new Error('The API returned an incompatible health response.');
   }
 
+  return body;
+}
+
+export async function saveReview(id: string, request: SaveReviewRequest, signal: AbortSignal): Promise<SavedReviewResponse> {
+  const body = await requestJson(`${INSPECTIONS_PATH}/${id}/review`, 200, {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request), signal,
+  });
+  if (!Value.Check(SavedReviewResponseSchema, body) || body.operationId !== request.operationId
+    || body.operationRevision < 1 || body.operationRevision > body.review.revision) incompatible();
   return body;
 }

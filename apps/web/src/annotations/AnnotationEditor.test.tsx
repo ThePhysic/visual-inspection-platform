@@ -1,9 +1,19 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { type ReactElement } from 'react';
+import { act, fireEvent, render as rtlRender, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type AnnotationCanvasProps } from './AnnotationCanvas';
 import ReviewWorkspace from './ReviewWorkspace';
 import { asset, inspectionId, result } from '../test/fixtures';
+
+const clients: QueryClient[] = [];
+afterEach(() => { clients.forEach(client => client.clear()); clients.length = 0; });
+function render(ui: ReactElement) {
+  const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
+  clients.push(client);
+  return rtlRender(ui, { wrapper: ({ children }) => <QueryClientProvider client={client}>{children}</QueryClientProvider> });
+}
 
 // Component tests isolate standard controls from the rendering engine. Real
 // pointer dragging, transformer handles, and drawing are covered by Playwright.
@@ -29,7 +39,7 @@ describe('local review controls', () => {
     await openEditor();
     expect(screen.getByText('Local draft — not saved')).toBeVisible();
     expect(screen.getByText('No unsaved changes.')).toBeVisible();
-    expect(screen.queryByRole('button', { name: /^Save/ })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save review' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Reset draft' })).toBeDisabled();
   });
   it('selects annotations from the canvas and standard list controls', async () => {

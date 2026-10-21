@@ -2,26 +2,18 @@ import { Type, type Static } from 'typebox';
 import { Value } from 'typebox/value';
 
 export const INSPECTIONS_PATH = '/api/v1/inspections';
-export const MAX_DETECTIONS = 200;
+import { BoundingBoxSchema, MAX_DETECTIONS } from './annotations.js';
+import { PersistedReviewSchema } from './reviews.js';
+export { BoundingBoxSchema, MAX_DETECTIONS, MOCK_LABELS } from './annotations.js';
 export const MOCK_CONFIGURATION = {
   providerId: 'mock', modelId: 'mock-detector', modelVersion: '1.0.0',
 } as const;
-export const MOCK_LABELS = [
-  { classId: 'surface-mark', label: 'Surface mark' },
-  { classId: 'edge-defect', label: 'Edge defect' },
-] as const;
 
 export const ProviderConfigurationSchema = Type.Object({
   providerId: Type.Literal('mock'), modelId: Type.Literal('mock-detector'), modelVersion: Type.Literal('1.0.0'),
 }, { additionalProperties: false });
 export type ProviderConfiguration = Static<typeof ProviderConfigurationSchema>;
 
-export const BoundingBoxSchema = Type.Object({
-  x: Type.Number({ minimum: 0, maximum: 1 }),
-  y: Type.Number({ minimum: 0, maximum: 1 }),
-  width: Type.Number({ exclusiveMinimum: 0, maximum: 1 }),
-  height: Type.Number({ exclusiveMinimum: 0, maximum: 1 }),
-}, { additionalProperties: false });
 
 export const DetectionSchema = Type.Object({
   id: Type.String({ minLength: 1, maxLength: 80 }),
@@ -97,7 +89,8 @@ export const InspectionResponseSchema = Type.Union([
   Type.Object({ ...common, status: Type.Literal('queued'), nextAttemptAt: timestamp }, { additionalProperties: false }),
   Type.Object({ ...common, status: Type.Literal('processing') }, { additionalProperties: false }),
   Type.Object({ ...common, status: Type.Literal('completed'), completedAt: timestamp,
-    processingDurationMs: Type.Number({ minimum: 0 }), result: InferenceResultSchema }, { additionalProperties: false }),
+    processingDurationMs: Type.Number({ minimum: 0 }), result: InferenceResultSchema,
+    review: Type.Optional(PersistedReviewSchema), reviewWriteSequence: Type.Optional(Type.Integer({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER })) }, { additionalProperties: false }),
   Type.Object({ ...common, status: Type.Literal('failed'), completedAt: timestamp,
     failure: InspectionFailureSchema }, { additionalProperties: false }),
 ]);

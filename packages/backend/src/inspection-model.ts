@@ -1,5 +1,5 @@
 import mongoose, { type Connection, type InferSchemaType, type Types } from 'mongoose';
-import { isInferenceResult } from '@vip/contracts';
+import { isInferenceResult, isPersistedReview } from '@vip/contracts';
 
 const configuration = new mongoose.Schema({
   providerId: { type: String, required: true, enum: ['mock'] },
@@ -9,6 +9,15 @@ const configuration = new mongoose.Schema({
 
 const failure = new mongoose.Schema({
   code: { type: String, required: true }, message: { type: String, required: true },
+}, { _id: false });
+
+const receipt = new mongoose.Schema({
+  operationId: { type: String, required: true }, fingerprint: { type: String, required: true },
+  revision: { type: Number, required: true }, writeSequence: { type: Number, required: true },
+}, { _id: false });
+const reviewControl = new mongoose.Schema({
+  sequence: { type: Number, required: true, min: 0 },
+  operations: { type: [receipt], default: undefined },
 }, { _id: false });
 
 const schema = new mongoose.Schema({
@@ -33,6 +42,8 @@ const schema = new mongoose.Schema({
   failure,
   result: { type: mongoose.Schema.Types.Mixed, validate: isInferenceResult },
   processingDurationMs: Number,
+  review: { type: mongoose.Schema.Types.Mixed, validate: isPersistedReview },
+  reviewControl,
 }, { collection: 'inspections', versionKey: false, bufferCommands: false, autoIndex: false });
 
 schema.index({ requestScope: 1, requestKey: 1 }, { unique: true, partialFilterExpression: { requestKey: { $type: 'string' } } });

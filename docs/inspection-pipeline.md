@@ -31,7 +31,10 @@ duplicated. `apps/worker` imports backend code, never the API entry point.
 Inspections store an asset reference, immutable requested configuration, scope,
 key, fingerprint, original request ID, timestamps, status, attempt count/budget,
 next-attempt time, dispatch generation, and optional execution token/lease.
-Completed results are embedded. Reviews are intentionally absent.
+Completed results are embedded. The latest human review is embedded separately
+under `review`; bounded save receipts live under `reviewControl`. These fields are
+written only by the review API, never by the provider or worker. See
+[review snapshots](reviews.md) for revision checking and save retry semantics.
 
 A SHA-256 fingerprint covers a fixed-order representation of normalized asset ID
 and effective provider configuration for creation. Retry fingerprints cover the

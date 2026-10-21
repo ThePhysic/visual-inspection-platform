@@ -68,3 +68,5 @@ export const ReadinessResponseSchema = Type.Object({
     redis: Type.Optional(Type.Union([Type.Literal('ok'), Type.Literal('unavailable')])),
   }, { additionalProperties: false }),
 }, { additionalProperties: false });
+
+export * from './reviews.js';

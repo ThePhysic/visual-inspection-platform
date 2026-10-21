@@ -1,10 +1,11 @@
+import DraftNavigationGuard from './annotations/DraftNavigationGuard';
 import { Link, NavLink, Route, Routes } from 'react-router';
 import HealthPage from './HealthPage';
 import UploadPage from './UploadPage';
 import InspectionPage from './InspectionPage';
 
 export default function App() {
-  return <>
+  return <DraftNavigationGuard>
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="site-header">
       <Link className="brand" to="/">Visual Inspection Platform</Link>
@@ -21,5 +22,5 @@ export default function App() {
         <Route path="*" element={<><h1>Page not found</h1><p>This link does not point to an inspection.</p><Link to="/">Start a new inspection</Link></>} />
       </Routes>
     </main>
-  </>;
+  </DraftNavigationGuard>;
 }

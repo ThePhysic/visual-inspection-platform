@@ -7,8 +7,9 @@ scores over the canonical stored image. Copy an inspection URL to reopen it.
 
 MongoDB persists assets and inspections; Redis/BullMQ and an independent worker
 execute **simulated inference**. This is a software workflow demonstration, not a
-real detector. Interactive annotation editing supports local, unsaved corrections.
-Review persistence and history browsing are future work.
+real detector. Interactive corrections can be saved as revisioned human-review
+snapshots, separately from original predictions. Inspection history browsing
+remains future work.
 
 ## Prerequisites
 
@@ -149,7 +150,7 @@ may finish processing between polls. No production inference delays are added.
   needs neither MongoDB nor a running API.
 - **Integration test:** `pnpm test:integration` requires MongoDB and Redis. Start
   both with `docker compose up -d --wait mongodb redis`. Tests use genuine servers,
-  isolated `vip_ingestion_test_*` / `vip_inspection_test_*` databases, unique
+  isolated `vip_ingestion_test_*` / `vip_inspection_test_*` / `vip_review_test_*` databases, unique
   `inspections-test-*` queues, and private temporary image directories. Cleanup
   drops only these test databases/queues; it never runs Redis `FLUSHDB`. Missing
   dependencies fail the command; tests are not silently skipped. Fault cases use
@@ -399,9 +400,9 @@ the same image volume at their configured `ASSET_STORAGE_DIR`, writable for the
 API and readable for the worker; no container-local path may be assumed shared.
 
 See [execution and recovery architecture](docs/inspection-pipeline.md) for failure
-windows, ownership rules, and operational limitations. Before Task 03B, review
-the fixed lease/deadline policy, retention of images/idempotency keys, and future
-cleanup of orphaned files. Review persistence requires separate authorization.
+windows, ownership rules, and operational limitations. The fixed lease/deadline
+policy, retention of images/idempotency keys, and cleanup of orphaned files remain
+operational considerations. Review saves do not change pipeline execution.
 
 ## Browser workflow
 
@@ -435,7 +436,7 @@ results remain visible when a background refresh fails, and image-loading errors
 leave prediction details available. There is no UI for retrying a failed inspection
 yet. See [frontend behavior](docs/browser-workflow.md) for implemented boundaries.
 
-## Local annotation editing
+## Annotation editing
 
 Open a completed inspection and choose **Edit local draft**. Select an annotation
 from its box or list, drag to move, use handles to resize, or select a class label.
@@ -445,11 +446,11 @@ rectangle for a missed object. Manual annotations have no model confidence and
 can be removed. Empty inference results also support manual annotation.
 
 The draft shows meaningful unsaved changes. **Reset draft** asks for confirmation
-before restoring initial predictions. **View original predictions** retains the
-draft so editing can be resumed. No Save button or persistence is implemented.
-Drafts are lost on unmount/reload. Ordinary application links and supported browser
-unload events warn about dirty drafts; SPA Back/Forward and programmatic navigation
-may discard them without warning. Drafts are not written to localStorage.
+before restoring the saved baseline (or initial predictions). **View original
+predictions** retains the draft so editing can be resumed. **Save review** persists
+corrections; unsaved drafts are lost on unmount/reload. Application navigation and
+supported browser unload events warn about dirty drafts, subject to browser policy.
+Drafts are not written to localStorage.
 
 The editor uses React/Konva, the shared mock-v1 class vocabulary, normalized
 coordinates, and a ResizeObserver over the canonical displayed image. It prevents
@@ -466,5 +467,37 @@ pnpm test:e2e
 
 The browser suite includes real Konva mouse dragging, resizing, drawing, and
 responsive alignment at DPR two; no mocked Konva events establish geometry.
-Task 03B will introduce the complete-snapshot review API and persistence. Its wire
-schema and validation are not implemented here. No reviews are currently saved or audited.
+Saved reviews use the complete-snapshot API described below. They are not an
+immutable audit history.
+
+## Save and reopen human reviews
+
+Open a completed inspection and choose **Edit local draft**. Select an annotation,
+move/resize its box, change its class, or reject/restore it. Choose a class and use
+**Add annotation** to draw a missed object. The limit is 200 entries, including
+rejected predictions. Rejected boxes stay in the list and are hidden on the canvas.
+
+Choose **Save review**, then refresh or reopen the inspection URL to recover the
+saved snapshot. Original predictions/confidence remain unchanged. **View original
+predictions** switches presentation without discarding edits. **Reset draft** returns
+to the last confirmed save (or initial predictions), after confirmation.
+
+Saving uses optimistic revision checks. If another tab saved first, local edits
+remain visible; **Load latest saved review** asks before discarding them. An
+uncertain network response retains the exact save operation and freezes editing
+until **Retry save** confirms it. No localStorage persistence or automatic merging
+is used. Unsaved changes request warnings for links, Back/Forward, and reload/close;
+browser/mobile policies can suppress warnings.
+
+The API accepts complete snapshots through
+`PUT /api/v1/inspections/:id/review`. First revision is 1; identical no-op saves keep
+the revision. A separate write token and the last 32 operation receipts make
+ambiguous retries safe within a bounded window. See [review contracts, example
+payload, concurrency, and limitations](docs/reviews.md) and the
+[editor documentation](docs/annotation-editor.md). This is the current review,
+not an immutable audit history.
+
+The existing validation and CI commands discover review tests automatically.
+`pnpm test:integration` includes real MongoDB concurrent saves;
+`pnpm test:e2e` includes real-stack save/refresh/reopen, lost-response retry,
+and two-tab conflict workflows in Chromium.

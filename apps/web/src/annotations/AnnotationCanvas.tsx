@@ -8,6 +8,7 @@ import { canvasViewport, clampPoint, constrainResize, dragBox, drawingPixels, fi
 
 export interface AnnotationCanvasProps {
   asset: AssetResponse;
+  disabled?: boolean;
   annotations: readonly ReviewAnnotation[];
   selectedId: string | undefined;
   mode: 'select' | 'draw';
@@ -79,6 +80,7 @@ function InteractiveStage(props: Omit<AnnotationCanvasProps, 'asset'> & { viewpo
     <div style={{ width: size.width, height: size.height, transform: `scale(${scale.x}, ${scale.y})`, transformOrigin: 'top left' }}>
     <Stage ref={stage} width={size.width} height={size.height}
       onPointerDown={event => {
+        if (props.disabled) return;
         if (event.evt.button !== 0 && event.evt.pointerType !== 'touch') return;
         const pointer = stage.current?.getPointerPosition();
         if (!pointer) return;
@@ -88,17 +90,17 @@ function InteractiveStage(props: Omit<AnnotationCanvasProps, 'asset'> & { viewpo
           if (target instanceof Element && 'setPointerCapture' in target) target.setPointerCapture(event.evt.pointerId);
         } else if (event.target === stage.current) onSelect(undefined);
       }}
-      onPointerMove={() => { const pointer = stage.current?.getPointerPosition(); if (mode === 'draw' && start.current && pointer) setDrawing(drawingPixels(start.current, pointer, size)); }}
+      onPointerMove={() => { const pointer = stage.current?.getPointerPosition(); if (!props.disabled && mode === 'draw' && start.current && pointer) setDrawing(drawingPixels(start.current, pointer, size)); }}
       onPointerUp={() => {
         const pointer = stage.current?.getPointerPosition();
-        if (mode !== 'draw' || !start.current || !pointer) return;
+        if (props.disabled || mode !== 'draw' || !start.current || !pointer) return;
         const box = finishDrawing(start.current, pointer, size, minimum);
         start.current = undefined; setDrawing(undefined);
         if (box) onDraw(box);
       }}
       onPointerCancel={() => { start.current = undefined; setDrawing(undefined); }}>
       <Layer>
-        {annotations.filter(annotation => annotation.origin === 'manual' || annotation.disposition !== 'rejected').map(annotation => mode === 'draw'
+        {annotations.filter(annotation => annotation.origin === 'manual' || annotation.disposition !== 'rejected').map(annotation => (mode === 'draw' || props.disabled)
           ? <Rect key={annotation.id} {...toPixels(annotation.boundingBox, size)} stroke={classColor(annotation.classId)} strokeWidth={2} listening={false} />
           : <AnnotationShape key={annotation.id} annotation={annotation} selected={annotation.id === selectedId} size={size} minimum={minimum} onSelect={onSelect} onBox={onBox} />)}
         {drawing && <Rect {...drawing} stroke="#172b3a" strokeWidth={2} dash={[5, 4]} fill="rgba(18,100,163,0.12)" listening={false} />}
@@ -138,7 +140,7 @@ export default function AnnotationCanvas(props: AnnotationCanvasProps) {
           const rectangle = event.currentTarget.getBoundingClientRect();
           setSize({ width: rectangle.width, height: rectangle.height }); setLoad('loaded');
         }} onError={() => { setLoad('error'); }} />
-      {load === 'loaded' && size.width > 0 && size.height > 0 && <InteractiveStage key={`${props.mode}:${size.width}:${size.height}`} {...props} viewport={canvasViewport(size)} />}
+      {load === 'loaded' && size.width > 0 && size.height > 0 && <InteractiveStage key={`${props.disabled}:${props.mode}:${size.width}:${size.height}`} {...props} viewport={canvasViewport(size)} />}
     </div>
     <figcaption>Canonical image · {asset.width} × {asset.height} pixels. Geometry is stored in normalized image coordinates.</figcaption>
   </figure>;

@@ -4,11 +4,12 @@ import { Type } from 'typebox';
 import { Value } from 'typebox/value';
 import {
   INSPECTIONS_PATH, InspectionRequestSchema, InspectionParamsSchema, IdempotencyHeadersSchema,
-  InspectionAcceptedSchema, InspectionResponseSchema, ApiErrorResponseSchema,
+  InspectionAcceptedSchema, InspectionResponseSchema, ApiErrorResponseSchema, SaveReviewRequestSchema, SavedReviewResponseSchema,
+  ReviewValidationErrorResponseSchema, ReviewConflictResponseSchema,
 } from '@vip/contracts';
 import {
   acceptInspection, retryInspection, acceptedResponse, inspectionResponse,
-  ApiError, databaseFailure, type InspectionDependencies,
+  ApiError, databaseFailure, saveReview, type InspectionDependencies,
 } from '@vip/backend';
 
 export function registerInspectionRoutes(instance: FastifyInstance, dependencies?: InspectionDependencies) {
@@ -39,6 +40,16 @@ export function registerInspectionRoutes(instance: FastifyInstance, dependencies
       if (cause instanceof ApiError) throw cause;
       throw databaseFailure(cause);
     }
+  });
+
+  app.put(`${INSPECTIONS_PATH}/:id/review`, {
+    schema: { params: InspectionParamsSchema, body: SaveReviewRequestSchema,
+      response: { ...errors, 200: SavedReviewResponseSchema, 400: ReviewValidationErrorResponseSchema, 409: ReviewConflictResponseSchema } },
+  }, async request => {
+    const response = await saveReview(requireDependencies().inspections, request.params.id, request.body);
+    request.log.info({ inspectionId: request.params.id, operationId: request.body.operationId,
+      reviewRevision: response.review.revision, outcome: response.outcome }, 'Review save resolved');
+    return response;
   });
 
   app.post(`${INSPECTIONS_PATH}/:id/retry`, {

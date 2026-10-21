@@ -1,6 +1,7 @@
-# Local annotation editor
+# Annotation editor and saved reviews
 
-Completed inspections start in the original read-only viewer. **Edit local draft**
+Completed inspections without a review start in the original read-only viewer.
+Existing saved reviews open directly in the editor. **Edit local draft**
 loads the Konva editor. Select a box or a list item, drag the selected box, or
 resize it with the eight handles. Use the controlled class selector to relabel.
 Rotation, flipping, image transforms, pan/zoom, and undo/redo are not implemented.
@@ -19,7 +20,8 @@ geometry operations require a pointing device.
 ## Client draft boundary
 
 `ReviewWorkspace`, keyed by inspection ID, owns a reducer with distinct initial
-and current snapshots, selection, and interaction mode. Returning to **View
+and current snapshots, selection, and interaction mode. The baseline comes from
+the persisted review when present, and confirmed saves replace that baseline. Returning to **View
 original predictions** shows unchanged server output and retains the draft.
 Refetching the same immutable result does not reset edits. Another inspection
 mounts a new workspace with independent draft and image state. Konva is loaded
@@ -94,17 +96,22 @@ adding then removing a manual annotation returns to clean state. Changed
 annotations are listed. Reset requires confirmation and restores the initial
 snapshot, selection, and mode.
 
-There is no Save button, review endpoint, MongoDB review data, localStorage draft,
-audit trail, or revision checking. Drafts live only in mounted page memory.
-Ordinary same-tab application links ask before discarding changes; beforeunload
-requests the browser's generic reload/close warning, which browsers may suppress.
-With the existing declarative router, SPA Back/Forward and programmatic navigation
-are not intercepted and may discard drafts without warning. The UI states this
-limitation. Discarded drafts cannot be recovered.
+The editor and server enforce a maximum of 200 annotations, including rejected
+predictions. Use **Save review** to persist the complete snapshot. Confidence and
+original identity remain in immutable inference results; the save DTO strips the
+client draft's display label and original confidence. Manual entries gain an
+explicit accepted disposition in the wire DTO. Reset restores the last confirmed
+baseline after asking for confirmation.
 
-Task 03B will define validation and persistence of complete snapshots. Review
-server-side immutable prediction lookup, manual-annotation limits, and navigation
-blocking needs before that task. No persistence implementation is included here.
+Save failures retain the draft. An ambiguous response pauses editing and provides
+**Retry save** with the exact same operation ID and snapshot. A revision conflict
+preserves local edits and offers **Load latest saved review** with a discard
+confirmation. No automatic merging, localStorage, or immutable audit history is
+implemented. See [review contracts and persistence](reviews.md).
+
+React Router's supported data-router blocker protects in-app links and Back/Forward.
+A beforeunload handler requests a browser reload/close warning. Browsers may suppress
+warnings, particularly on mobile; unsaved edits are not recoverable after leaving.
 
 ## Verification
 
@@ -120,5 +127,6 @@ actual image/stage alignment, painted strokes, responsive layout, boundaries,
 minimums, empty results, navigation/reset confirmation, and image failure/retry.
 Controlled HTTP isolates these cases. A real API/worker/MongoDB/Redis test verifies
 local edits send no review writes and leave stored predictions unchanged. Previous
-browser workflows remain in the suite. Touch gestures and other browser engines
+browser workflows remain in the suite. Real-stack review tests additionally cover
+save/reopen, lost-response retry identity, two-tab conflicts, and navigation warnings. Touch gestures and other browser engines
 are not established by these Chromium mouse tests.
