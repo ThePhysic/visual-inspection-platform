@@ -6,14 +6,16 @@ connection failures, incompatible responses, and retrying.
 
 The API also ingests JPEG/PNG images, stores canonical image bytes locally, and
 persists asset metadata in MongoDB. The frontend remains the health-status page;
-use the upload API directly. Inspection jobs, inference, and editing are future work.
+use the REST APIs directly. Inspections run asynchronously through Redis/BullMQ
+and an independent worker using **simulated inference**. Visualization, review
+editing, and inspection-history UI are future work.
 
 ## Prerequisites
 
 - Node.js **24.22.0**, pinned in `.node-version` and `package.json`.
 - pnpm **10.34.7**, pinned in `package.json`.
-- Docker with Compose v2 for the MongoDB development dependency (or an existing
-  MongoDB 8.0 server).
+- Docker with Compose v2 for MongoDB **8.0.34** and Redis **8.2.8** development
+  dependencies (or compatible existing servers).
 
 Install the pinned Node version using your preferred version manager or the
 official Node distribution. With that Node version active, install pnpm:
@@ -25,7 +27,8 @@ pnpm --version
 ```
 
 The versions should print `v24.22.0` and `10.34.7`. Engine checks reject an
-incompatible runtime. MongoDB is required to start the full API.
+incompatible runtime. MongoDB is required to start the API; Redis and the worker
+are required to execute inspections. Redis can recover after API startup.
 
 ## Install and develop
 
@@ -33,21 +36,23 @@ From the repository root:
 
 ```sh
 pnpm install --frozen-lockfile
-docker compose up -d --wait mongodb
+docker compose up -d --wait mongodb redis
 pnpm dev
 ```
 
 Open <http://127.0.0.1:5173>. The API listens on
 <http://127.0.0.1:3001/api/v1/health>. Stop development processes with Ctrl+C.
-`GET /api/v1/ready` verifies a MongoDB ping and writable image staging storage.
+`GET /api/v1/ready` verifies MongoDB and image storage and reports Redis status.
+`pnpm dev` also starts the worker; no inspection frontend is implemented yet.
 
-Compose runs MongoDB **8.0.34**, with loopback-only access, no authentication, and
-a persistent named volume. It is a local development dependency. To stop it while
+Compose runs MongoDB and Redis with loopback-only access, no authentication, and
+persistent named volumes. Redis uses AOF (`appendfsync everysec`), a 256 MiB memory
+limit, and `noeviction`. These are local development dependencies. To stop them while
 preserving data, run `docker compose down`. Restart with the same startup command.
 Do not remove the named volume unless you intend to discard the development DB.
 
-`pnpm dev` builds contracts first, then watches contracts, API code, and frontend
-code together. To run the applications in separate terminals instead:
+`pnpm dev` builds contracts and the shared backend first, then watches all packages
+and applications together. To use separate terminals instead:
 
 ```sh
 pnpm dev:api
@@ -57,12 +62,16 @@ pnpm dev:api
 pnpm dev:web
 ```
 
-The separate commands build contracts on startup; use `pnpm dev` when editing
-contracts to keep their compiled output up to date automatically.
+```sh
+pnpm dev:worker
+```
+
+The separate commands build shared packages on startup. Use `pnpm dev` when editing
+shared code to keep compiled output up to date automatically.
 
 ## Configuration
 
-Defaults work without an env file once MongoDB is running. To override them,
+Defaults work without an env file once MongoDB and Redis are running. To override them,
 copy `.env.example` to `.env` at the repository root.
 
 | Variable | Default | Purpose |
@@ -73,10 +82,17 @@ copy `.env.example` to `.env` at the repository root.
 | `MONGODB_URI` | `mongodb://127.0.0.1:27017/visual_inspection` | API database connection |
 | `ASSET_STORAGE_DIR` | `.data/images` | Image directory; relative paths resolve from the repository root |
 | `MONGODB_TEST_URI` | `mongodb://127.0.0.1:27017` | Integration-test server; tests use a separate random database |
+| `REDIS_PORT` | `6379` | Host port published by Compose |
+| `REDIS_URL` | `redis://127.0.0.1:6379` | Shared API dispatch / worker Redis connection |
+| `REDIS_TEST_URL` | `redis://127.0.0.1:6379` | Integration-test Redis server |
 
 If changing `MONGODB_PORT`, update both MongoDB URIs to match. Keep database
 credentials out of source control. The API and integration test command load the
 root `.env`; existing shell environment variables take precedence.
+The worker loads the same `.env` and resolves `ASSET_STORAGE_DIR` from the same
+repository root. If changing `REDIS_PORT`, update both Redis URLs to match.
+API and worker must use the same MongoDB database, Redis URL, and canonical image
+directory. The default queue name represents one application environment.
 
 The web app requests relative `/api` URLs. Vite's development and preview servers
 proxy them to `127.0.0.1:API_PORT`; keep the API reachable on loopback when using
@@ -101,23 +117,25 @@ pnpm build
 - **Test:** Vitest contract checks, Fastify injection tests, configuration tests,
   local-storage tests, and React Testing Library smoke tests in jsdom. `pnpm test`
   needs neither MongoDB nor a running API.
-- **Integration test:** `pnpm test:integration` requires reachable MongoDB. Start
-  it with `docker compose up -d --wait mongodb` first. Tests use genuine Mongoose
-  writes, reads, and unique indexes, generate an isolated `vip_ingestion_test_*`
-  database, and drop only that database afterward. No MongoDB mock or in-memory
-  database substitute is used. Each test uses an isolated OS temporary directory.
-  Missing MongoDB fails this command; tests are not silently skipped.
-- **Build:** contracts first, followed by API JavaScript and frontend assets.
+- **Integration test:** `pnpm test:integration` requires MongoDB and Redis. Start
+  both with `docker compose up -d --wait mongodb redis`. Tests use genuine servers,
+  isolated `vip_ingestion_test_*` / `vip_inspection_test_*` databases, unique
+  `inspections-test-*` queues, and private temporary image directories. Cleanup
+  drops only these test databases/queues; it never runs Redis `FLUSHDB`. Missing
+  dependencies fail the command; tests are not silently skipped. Fault cases use
+  controlled providers, events, explicit gates, and lease manipulation.
+- **Build:** contracts and shared backend first, then API/worker JavaScript and
+  frontend assets. Worker startup is also covered by the workspace typecheck.
 
 GitHub Actions runs the same four checks after a frozen-lockfile install on
 Linux and Windows. A separate Linux job runs integration tests with the same
-MongoDB version as Compose. The workflow does not publish or deploy anything.
+MongoDB and Redis versions as Compose. The workflow does not publish or deploy anything.
 
 ## Run compiled output locally
 
 ```sh
 pnpm build
-docker compose up -d --wait mongodb
+docker compose up -d --wait mongodb redis
 pnpm --filter @vip/api start
 ```
 
@@ -125,6 +143,12 @@ In another terminal:
 
 ```sh
 pnpm --filter @vip/web preview
+```
+
+Start the worker in a third terminal:
+
+```sh
+pnpm --filter @vip/worker start
 ```
 
 Open <http://127.0.0.1:4173>. Vite preview is a local build check, not a production
@@ -136,15 +160,18 @@ must route `/api` requests to the API and serve `apps/web/dist` separately.
 ```text
 apps/api/             Fastify construction, startup, configuration, and tests
 apps/web/             React health page, Vite configuration, and smoke tests
+apps/worker/          Independently executable inspection consumer
 packages/contracts/   Browser-safe schemas, derived types, and validation
+packages/backend/     Shared persistence, storage, inference, and queue execution
+fixtures/inspections/  Documented synthetic demo images
 .github/workflows/    CI validation
-compose.yaml          MongoDB development dependency and named volume
+compose.yaml          MongoDB/Redis development dependencies and named volumes
 ```
 
 `apps/api/src/app.ts` constructs an app without listening or reading environment
 variables. `server.ts` owns startup, database connection/index initialization,
 storage initialization, logging, and signal handling. MongoDB must connect and
-the unique storage-key index must initialize before the server listens. The
+the asset and inspection indexes must initialize before the server listens. The
 database connection is closed with Fastify on shutdown; failed initial startup
 exits unsuccessfully. Disconnected queries do not wait in Mongoose's command buffer.
 Contracts build to `dist` and are consumed as a normal workspace package by both
@@ -162,8 +189,10 @@ the contracts package.
 ```
 
 The endpoint accepts no query parameters. It reports API process liveness even
-when a runtime dependency fails. `/api/v1/ready` returns 200 only when both
-dependencies respond, otherwise 503. TypeBox defines the
+when a runtime dependency fails. `/api/v1/ready` returns 200 when MongoDB and
+storage are ready, otherwise 503. Its `dependencies.redis` is `ok` or `unavailable`;
+unavailable dispatch does not disable durable acceptance. This is admission
+readiness, not a guarantee of worker availability or prompt completion. TypeBox defines the
 response schema and derives its TypeScript type; Fastify uses the schema for
 serialization, and the frontend validates received JSON against the same schema.
 Incompatible wire changes require a new API version.
@@ -271,6 +300,75 @@ rotation/mirroring, duplicates/index enforcement, validation limits, staging
 cleanup, publication failures, database disconnects, and an insert that commits
 before its acknowledgement fails.
 
-Before Task 02B, review retry/idempotency policy for submissions, shared worker
-access to canonical images, and eventual orphan/staging maintenance. Redis,
-inspection jobs, inference, and frontend upload/editing require separate authorization.
+## Asynchronous inspection API
+
+Upload a fixture through the asset API, then submit its returned ID:
+
+```sh
+curl -i -X POST http://127.0.0.1:3001/api/v1/inspections \
+  -H 'Content-Type: application/json' -H 'Idempotency-Key: demo-panel-001' \
+  -d '{"assetId":"<asset-id>"}'
+```
+
+For PowerShell, JSON submission can use:
+
+```powershell
+$inspection = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:3001/api/v1/inspections `
+  -ContentType application/json -Headers @{ 'Idempotency-Key' = 'demo-panel-001' } `
+  -Body (@{ assetId = '<asset-id>' } | ConvertTo-Json)
+Invoke-RestMethod -Uri ("http://127.0.0.1:3001" + $inspection.url)
+```
+
+`POST /api/v1/inspections` returns **202** with `{id,status,createdAt,url}` and a
+`Location` header after MongoDB accepts the record. Provider configuration may be
+omitted or explicitly supplied as
+`{"providerId":"mock","modelId":"mock-detector","modelVersion":"1.0.0"}`.
+Redis dispatch happens independently. `GET /api/v1/inspections/:id` returns the
+current lifecycle state and completed result or safe terminal failure details.
+Clients may poll this endpoint; there are no WebSockets or inspection UI yet.
+
+`POST /api/v1/inspections/:id/retry`, with an `Idempotency-Key` and no body (or `{}`),
+creates a new inspection linked through `retriedFrom`. Only failed inspections may
+be retried. It preserves the original failed record and returns another **202**.
+
+Keys are case-sensitive, 1–128 ASCII letters/digits/`.`/`_`/`-`. Persistent scopes
+are `inspection:create` and `inspection:retry`. Within a scope, the same key and
+semantic request return the same inspection; different content returns **409**.
+Explicit default provider configuration and omitted defaults are equivalent, as
+are uppercase/lowercase asset IDs. Create and retry scopes are distinct, so a key
+may be reused across those operations. Different keys create distinct runs.
+Retry keys cover the parent inspection ID across the retry scope. Keys have no
+automatic expiry. Replayed responses report the existing inspection's current
+status, which may already be terminal.
+
+The worker uses one queue (`inspections-v1`) and concurrency **1**. Each inspection
+gets at most **3** application attempts, with exponential backoff starting at
+**1 second**. Image loading and inference have a **10-second** deadline within a
+**30-second** MongoDB execution lease. Native queue retries cannot reset the persistent attempt count.
+The API reconciles at startup and every **5 seconds**, checking bounded batches
+of queued work and expired execution leases. API and worker shut down with Ctrl+C;
+interrupted work remains recoverable through the lease and attempt budget.
+
+All outputs from `mock-detector@1.0.0` are explicitly marked `simulated: true` and
+use taxonomy `mock-v1`. See [sample fixtures](fixtures/inspections/README.md).
+The provider emits deterministic identities, boxes, and confidence values derived
+from image content/version, plus curated panel/empty fixtures. Provider duration
+is the deterministic placeholder `0`; measured worker wall time is stored as
+`processingDurationMs`. Neither confidence nor timing implies real ML accuracy
+or throughput. A result can contain zero through **200** detections.
+
+Completed predictions are validated, copied, and committed once using an atomic
+status/token/lease condition. Cross-field validation rejects boxes outside the
+image, nonfinite values, duplicate prediction IDs, and oversized detection sets.
+Human-review data is not implemented.
+
+Both local processes use the same canonical image directory. This milestone
+containerizes dependencies only. If application containers are added later, mount
+the same image volume at their configured `ASSET_STORAGE_DIR`, writable for the
+API and readable for the worker; no container-local path may be assumed shared.
+
+See [execution and recovery architecture](docs/inspection-pipeline.md) for failure
+windows, ownership rules, and operational limitations. Before Task 02C, review
+the fixed lease/deadline policy, retention of images/idempotency keys, and future
+cleanup of orphaned files. Frontend submission, overlays, editing, and review
+persistence require separate authorization.

@@ -12,6 +12,7 @@ import { type AssetModel, checkDatabase } from './database.js';
 import { LocalImageStorage } from './storage.js';
 import { canonicalizeImage } from './images.js';
 import { ApiError, databaseFailure } from './errors.js';
+import { type InspectionQueue } from '@vip/backend';
 
 export interface AssetDependencies {
   model: AssetModel;
@@ -27,7 +28,7 @@ const errorResponses = {
   503: ApiErrorResponseSchema,
 };
 
-export function registerAssetRoutes(instance: FastifyInstance, dependencies?: AssetDependencies) {
+export function registerAssetRoutes(instance: FastifyInstance, dependencies?: AssetDependencies, dispatchQueue?: Pick<InspectionQueue, 'healthy'>) {
   const app = instance.withTypeProvider<TypeBoxTypeProvider>();
   let activeUploads = 0;
 
@@ -82,7 +83,12 @@ export function registerAssetRoutes(instance: FastifyInstance, dependencies?: As
     const { model, storage } = requireDependencies();
     await checkDatabase(model.db);
     await storage.checkReady();
-    return { apiVersion: 'v1', status: 'ready', dependencies: { mongodb: 'ok', storage: 'ok' } } as const;
+    // MongoDB and storage determine admission readiness. Redis is a reported
+    // execution dependency, so its outage does not disable durable acceptance.
+    const redis: 'ok' | 'unavailable' | undefined = dispatchQueue ? await dispatchQueue.healthy() ? 'ok' : 'unavailable' : undefined;
+    return { apiVersion: 'v1', status: 'ready', dependencies: {
+      mongodb: 'ok', storage: 'ok', ...(redis ? { redis } : {}),
+    } } as const;
   });
 
   app.post(ASSETS_PATH, {

@@ -3,6 +3,7 @@ import { readConfig } from './config.js';
 import { connectDatabase, createAssetModel } from './database.js';
 import { LocalImageStorage } from './storage.js';
 import sharp from 'sharp';
+import { createInspectionModel, InspectionQueue, InspectionReconciler } from '@vip/backend';
 
 async function main() {
   const config = readConfig(process.env);
@@ -12,14 +13,23 @@ async function main() {
   await storage.initialize();
   const connection = await connectDatabase(config.mongodbUri);
   const model = createAssetModel(connection);
+  const inspections = createInspectionModel(connection);
   try {
     await model.createIndexes();
+    await inspections.createIndexes();
   } catch (error) {
     await connection.close();
     throw error;
   }
-  const app = buildApp({ logger: true, assets: { model, storage } });
-  app.addHook('onClose', async () => { await connection.close(); });
+  const redisStatus: Pick<InspectionQueue, 'healthy'> = { healthy: () => queue.healthy() };
+  const app = buildApp({ logger: true, assets: { model, storage }, inspections: { inspections, assets: model }, dispatchQueue: redisStatus });
+  const queue = new InspectionQueue(config.redisUrl, app.log);
+  const reconciler = new InspectionReconciler(inspections, queue, app.log);
+  app.addHook('onClose', async () => {
+    try { await reconciler.close(); } finally {
+      try { await queue.close(); } finally { await connection.close(); }
+    }
+  });
   connection.on('error', () => { app.log.error('MongoDB connection error'); });
 
   async function shutdown(signal: string) {
@@ -37,6 +47,7 @@ async function main() {
 
   try {
     await app.listen({ host: config.host, port: config.port });
+    reconciler.start();
   } catch (error) {
     await app.close();
     throw error;

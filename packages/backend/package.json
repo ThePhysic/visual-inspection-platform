@@ -1,0 +1,26 @@
+{
+  "name": "@vip/backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc --project tsconfig.build.json --watch --preserveWatchOutput",
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@vip/contracts": "workspace:*",
+    "mongoose": "9.11.2",
+    "typebox": "1.4.2",
+    "bullmq": "5.81.5",
+    "ioredis": "5.11.1",
+    "pino": "10.4.0"
+  }
+}

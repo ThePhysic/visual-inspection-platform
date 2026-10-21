@@ -1,5 +1,6 @@
 import { Type, type Static } from 'typebox';
 import { Value } from 'typebox/value';
+export * from './inspections.js';
 
 export const HEALTH_PATH = '/api/v1/health';
 
@@ -64,5 +65,6 @@ export const ReadinessResponseSchema = Type.Object({
   dependencies: Type.Object({
     mongodb: Type.Literal('ok'),
     storage: Type.Literal('ok'),
+    redis: Type.Optional(Type.Union([Type.Literal('ok'), Type.Literal('unavailable')])),
   }, { additionalProperties: false }),
 }, { additionalProperties: false });

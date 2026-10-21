@@ -1,0 +1,14 @@
+{
+  "name": "@vip/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=../../.env --include \"../../packages/backend/dist/**/*.js\" --include \"../../packages/contracts/dist/**/*.js\" src/main.ts",
+    "start": "node --env-file-if-exists=../../.env dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --project tsconfig.build.json"
+  },
+  "dependencies": { "@vip/backend": "workspace:*", "pino": "10.4.0" },
+  "devDependencies": { "tsx": "4.23.15" }
+}
