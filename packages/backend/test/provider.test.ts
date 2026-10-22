@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { isInferenceResult, MOCK_CONFIGURATION } from '@vip/contracts';
 import { MockInferenceProvider, MOCK_FIXTURES, type CanonicalImage } from '../src/provider.js';
@@ -29,6 +30,27 @@ describe('deterministic simulated inference', () => {
     const b = await new MockInferenceProvider().infer(fallback, new AbortController().signal);
     expect(a).toEqual(b);
     expect(isInferenceResult(a)).toBe(true);
+  });
+  it.each([
+    ['machined-panel', 'machinedPanel', 1200, 800, 3],
+    ['clean-panel', 'cleanPanel', 1200, 800, 0],
+    ['edge-component', 'edgeComponent', 800, 1100, 1],
+  ] as const)('provides reproducible curated regions for the original %s illustration', async (name, key, width, height, count) => {
+    const bytes = await readFile(new URL(`../../../fixtures/inspections/${name}.png`, import.meta.url));
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe(MOCK_FIXTURES[key]);
+    expect([bytes.readUInt32BE(16), bytes.readUInt32BE(20)]).toEqual([width, height]);
+    const image: CanonicalImage = { bytes, width, height, sha256: MOCK_FIXTURES[key], mimeType: 'image/png' };
+    const provider = new MockInferenceProvider();
+    const result = await provider.infer(image, new AbortController().signal);
+    expect(isInferenceResult(result)).toBe(true);
+    expect(result.detections).toHaveLength(count);
+    expect(await provider.infer(image, new AbortController().signal)).toEqual(result);
+    if (name === 'machined-panel') {
+      expect(result.detections[0]).toMatchObject({ classId: 'edge-defect', boundingBox: { x: 430 / 1200, y: 300 / 800, width: 290 / 1200, height: 125 / 800 } });
+      // Editing returned data must not mutate the next curated result.
+      result.detections[0]!.boundingBox.x = 0;
+      expect((await provider.infer(image, new AbortController().signal)).detections[0]!.boundingBox.x).toBe(430 / 1200);
+    }
   });
   it('honors cancellation', async () => {
     const controller = new AbortController(); controller.abort();

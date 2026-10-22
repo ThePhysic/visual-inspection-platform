@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-10-22T03:15:55.252Z",
+  "sourceHead": "7e84cc6803c1c7a85210df1c3800b9f1ccc30292",
+  "workingTreeDirty": true,
+  "project": "vip-reliability-ec34fb5f8e9449ed9e64e935fda0021d",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "deviceScaleFactor": 1,
+  "browser": "Playwright Chromium",
+  "test": "apps/web/container-test/portfolio.spec.ts",
+  "files": [
+    "inspection.png",
+    "review.png",
+    "history.png"
+  ],
+  "disclosure": "Real browser, API, worker, MongoDB and Redis; original synthetic illustrations and deterministic simulated inference. No mocked HTTP, compositing or image retouching."
+}

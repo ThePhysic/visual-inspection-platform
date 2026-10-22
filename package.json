@@ -22,7 +22,8 @@
     "test:reliability": "node infra/docker/test-reliability.mjs",
     "test:ci:integration": "node infra/docker/test-native.mjs",
     "storage:maintenance": "node infra/docker/storage-maintenance.mjs",
-    "benchmark": "node infra/benchmark/run.mjs"
+    "benchmark": "node infra/benchmark/run.mjs",
+    "portfolio:capture": "node infra/portfolio/capture.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

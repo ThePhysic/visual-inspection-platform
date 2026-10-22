@@ -1,686 +1,201 @@
 # Visual Inspection Platform
 
-A full-stack image inspection application with a React frontend, Fastify API,
-and shared, versioned TypeBox contracts. Upload a JPEG/PNG, follow asynchronous
-inspection progress, and view read-only bounding boxes, labels, and confidence
-scores over the canonical stored image. Copy an inspection URL to reopen it.
+[![CI](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml)
 
-MongoDB persists assets and inspections; Redis/BullMQ and an independent worker
-execute **simulated inference**. This is a software workflow demonstration, not a
-real detector. Interactive corrections can be saved as revisioned human-review
-snapshots, separately from original predictions. History supports status filters,
-cursor pagination, and reopening saved reviews; failed inspections can be retried
-as new linked attempts.
+**Upload an image, inspect simulated detections, correct annotations, and reopen a saved human review.**
 
-## Full-container execution (Docker only)
+A full-stack portfolio application demonstrating the engineering behind an image
+inspection workflow: reliable asynchronous execution, interactive geometry,
+persistent corrections, and recovery when requests or workers fail.
 
-Install Docker Desktop with Linux containers, or Docker Engine with Compose
-**2.20+** and BuildKit. No host Node.js or pnpm is needed for this workflow.
-From the cloned repository root:
+**Inference is deterministic and simulated.** This project does not train a model,
+recognize real manufacturing defects, or measure computer-vision accuracy.
 
-```sh
+## See the workflow
+
+![Actual application showing simulated detections over an original illustrated metal panel](docs/screenshots/inspection.png)
+
+The panel is an original synthetic illustration. Its hand-authored mock output
+includes an intentionally wrong class, a false positive, and a missed mark so the
+review workflow has something meaningful to correct.
+
+<details>
+<summary>Saved corrections and inspection history</summary>
+
+![Actual annotation editor after saving revision one](docs/screenshots/review.png)
+
+![Actual inspection history with canonical thumbnails and a saved-review indicator](docs/screenshots/history.png)
+
+</details>
+
+**Recording: not recorded yet.** Follow the [2–3 minute demo script](docs/demo.md)
+to reproduce upload → inspect → edit → save → refresh → history. Screenshots come
+from the real browser/API/worker stack; [capture provenance and regeneration](docs/screenshots/README.md)
+are included. There is no hosted public demo.
+
+## Engineering capabilities
+
+- **Interactive React/TypeScript editor:** select, drag, resize, relabel, reject,
+  restore, and draw annotations with react-konva; responsive canonical-image geometry.
+- **Fastify REST API and shared TypeBox contracts:** runtime request/response
+  validation, strict TypeScript, canonical JPEG/PNG ingestion with Sharp.
+- **MongoDB persistence:** immutable original predictions and a separate current
+  human-review snapshot with revisions, optimistic concurrency, and bounded save receipts.
+- **Redis/BullMQ processing:** independent worker, durable MongoDB acceptance,
+  prompt dispatch, periodic reconciliation, execution ownership, and bounded retries.
+- **Recovery UX:** stable inspection URLs, network retry identity, explicit review
+  conflicts, cursor-paginated history, and linked manual retry attempts.
+- **Reproducible operations:** five-service Docker Compose, non-root application
+  processes, shared persistent images, structured correlation logs, and local metrics.
+- **Verification:** Vitest, React Testing Library, real MongoDB/Redis integration
+  tests, Playwright canvas interactions, and disposable-container interruption tests.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Browser["Browser · React / Konva"] -->|same-origin HTTP| Web["nginx · production SPA"]
+  Web -->|/api/v1| API["Fastify API + reconciler"]
+  API -->|durable acceptance / reviews| DB["MongoDB · assets + inspections<br/>original result / separate review"]
+  API -->|post-response hint / periodic repair| Queue["Redis / BullMQ"]
+  Queue --> Worker["Independent worker"]
+  Worker -->|conditional claim / result commit| DB
+  Worker --> Provider["Inference adapter · deterministic mock"]
+  API -->|write / serve| Images["Canonical image volume"]
+  Worker -->|read-only| Images
+```
+
+MongoDB is the source of truth. A `202` confirms persistence before best-effort
+dispatch; Redis unavailability does not invalidate accepted work. Generation-specific
+jobs, attempt tokens and conditional writes arbitrate at-least-once execution.
+Review saves never replace model predictions. See the [architecture guide](docs/architecture.md),
+[pipeline guarantees](docs/inspection-pipeline.md), and [review contracts](docs/reviews.md).
+
+## Measured engineering results
+
+Prompt dispatch removed the normal wait for a five-second recovery scan.
+**Median result visibility fell from 4,955 ms to 113 ms (97.7%)** in a matched
+sequential workload. It did not accelerate a real ML model.
+These are the preserved Task 05C-OPT measurements, not a new benchmark of the
+larger release-demo illustrations.
+
+| Measurement | Before | After |
+| --- | ---: | ---: |
+| API acceptance p50 / p95 | 12.370 / 13.859 ms | 10.279 / 14.656 ms |
+| Creation to worker claim p50 / p95 | 4916 / 4972 ms | 10 / 12 ms |
+| Worker attempt p50 | 7.340 ms | 6.639 ms |
+| Simulated provider invocation p50 | 0.077 ms | 0.068 ms |
+| Result visibility after acceptance p50 / p95 | 4955.314 / 5046.764 ms | 113.262 / 115.845 ms |
+| Closed-loop completed inspections/sec | 0.200 | 8.054 |
+
+Conditions: **eight measured samples before and after**, one concurrency-one worker,
+one API, a **64×64 / 189-byte deterministic PNG**, Windows/Docker Desktop on a Ryzen
+9 7940HS, and **100 ms benchmark polling**. These tiny benchmark fixtures differ
+from the larger portfolio illustrations. Creation-to-claim includes insertion;
+it is not an exact response-acknowledgement interval. Visibility includes polling.
+
+At four outstanding inspections, matched visibility p50 fell from 4,963 to 120 ms,
+while acceptance p50 increased from 13.9 to 23.4 ms. An additional **24 samples per
+scenario** measured visibility p50/p95 of **112/116 ms sequentially** and
+**117/122 ms concurrently**. All 80 post-optimization measured inspections completed
+without errors/timeouts. History medians were modestly higher; no history speedup
+is claimed. These are exploratory closed-loop observations, not capacity, real-model
+performance, cloud estimates, or service-level promises.
+
+Read the [methodology, full environment, tradeoffs and before/after tables](docs/performance.md)
+and [original measured JSON reports](docs/performance-results/).
+
+## Quick start — Docker only
+
+Prerequisites: Git and Docker Desktop using Linux containers, or Docker Engine
+with Compose **2.20+** and BuildKit. Registry access is needed for initial builds.
+**No host Node.js, pnpm, credentials, or `.env` file is required.**
+
+```powershell
+git clone https://github.com/ThePhysic/visual-inspection-platform.git
+cd visual-inspection-platform
 docker compose -p vip-demo up -d --build --wait --wait-timeout 120
 ```
 
-Open <http://127.0.0.1:8080>. Upload `fixtures/inspections/panel.png`, wait for
-simulated inference, edit annotations, save, refresh, and reopen through **History**.
-Direct inspection URLs work through nginx. Set `WEB_PORT` in an optional `.env`
-to change the web host port. No private configuration is embedded in browser assets.
+Open **http://127.0.0.1:8080**. Upload
+[`fixtures/inspections/machined-panel.png`](fixtures/inspections/machined-panel.png),
+choose **Upload and inspect**, then **Edit local draft** and **Save review**.
+Use `clean-panel.png` for zero detections and `edge-component.png` for portrait
+geometry. [Fixture provenance and expected regions](fixtures/inspections/README.md).
 
-The five services use an internal Compose network. Only the web port is published,
-on **127.0.0.1**. API/worker connect to `mongodb:27017` and `redis:6379`, sharing
-the `/data/images` named volume. The worker mounts images read-only. MongoDB,
-Redis, and images have separate persistent named volumes; uploaded bytes are never
-built into images. The API and worker run as UID 1000; nginx also runs non-root.
-
-Inspect health and logs:
-
-```sh
+```powershell
 docker compose -p vip-demo ps
-docker compose -p vip-demo logs --tail 100 api worker web
-docker compose -p vip-demo logs -f worker
-```
-
-Readiness is available at <http://127.0.0.1:8080/api/v1/ready>, liveness at
-`/api/v1/health`, and nginx health at `/healthz`. Compose waits for MongoDB,
-Redis, API readiness, and web health. The worker's optional operator listener is
-container-local; health uses an expiring observation file, and Docker's
-init/restart supervision watches its real process. Its ready log and an actual
-completed inspection establish consumer operation; `--wait` alone does not.
-An unhealthy container is not automatically restarted merely for being unhealthy.
-Existing MongoDB/Redis reconnection and dispatch recovery still apply at runtime.
-
-Rebuild after source changes, restart processes, or shut down gracefully:
-
-```sh
-docker compose -p vip-demo up -d --build --wait --wait-timeout 120
-docker compose -p vip-demo restart api worker
+docker compose -p vip-demo logs --tail 100 api worker
+curl.exe http://127.0.0.1:8080/api/v1/ready
 docker compose -p vip-demo down
 ```
 
-Run the first startup command again after `down`; records, reviews, queue files,
-and canonical images remain. Keep the same project name to reuse its volumes.
-**`docker compose down -v` deletes persisted application data. It is not a routine
-shutdown or rebuild command.** Docker volume pruning/deletion also destroys data.
-Native and full-container workflows use separate project names/storage; do not
-point one database at another environment's image directory. Existing native data
-is not automatically migrated into Docker volumes.
+On Bash use `curl` instead of `curl.exe`. Start again with the same `up` command
+and project name to reuse records, reviews, Redis persistence, and images.
+**Do not use `down -v` for routine shutdown: it deletes stored data.**
 
-If a port is occupied, choose another `WEB_PORT`. If `docker info` cannot reach
-the engine, start Docker Desktop/check its Linux-container context before retrying.
-For unhealthy services, inspect `ps` and the service logs; check Docker disk space,
-volume permissions, and dependency health. Do not delete volumes as a first fix.
-Registry access is required for initial images and dependency installation.
+Only the web port is published, on loopback. To avoid a port conflict, set
+`WEB_PORT` in an optional root `.env`, or `$env:WEB_PORT = '18080'` in PowerShell.
+For missing-engine errors, start Docker Desktop/check the Linux context. For
+unhealthy services, inspect logs rather than deleting volumes. See
+[container setup, rebuilds and troubleshooting](docs/containers.md) and
+[MongoDB/kernel compatibility](docs/ci-mongodb-compatibility.md).
 
-This remains a trusted local/demo deployment without authentication or TLS, using
-single-host shared image storage. See [container architecture and smoke checks](docs/containers.md)
-for operational details, persistence verification, and limitations.
+## Native development
 
-## Observability and benchmarks
+Use pinned **Node 24.22.0** and **pnpm 10.34.7**; Docker runs only the dependencies:
 
-API and worker logs share request/inspection/job/attempt identifiers. Each has a
-separate process-local metrics registry, accessible only through its loopback
-operator listener (Compose: API 9464, worker 9465); nginx exposes neither.
-The API operator listener also provides a bounded on-demand queue/MongoDB status
-snapshot. See [operator commands and metric definitions](docs/observability.md).
-
-`pnpm benchmark` builds and runs an ownership-verified disposable Compose project,
-measures real mock-inspection acceptance/completion and history reads, then removes
-only its own resources. It never loads a personal demo environment. JSON and text
-results overwrite `.tools/benchmark-latest.*`; optional `--keep-logs` retains one
-bounded diagnostic log. See [workloads, limits and reproducibility](docs/performance.md).
-
-## Native application development
-
-This workflow uses host Node/pnpm with only MongoDB/Redis in Docker. Existing
-compatible local servers can also be used. Prerequisites:
-
-- Node.js **24.22.0**, pinned in `.node-version` and `package.json`.
-- pnpm **10.34.7**, pinned in `package.json`.
-- Docker with Compose v2 for MongoDB **8.0.34** and Redis **8.2.8** development
-  dependencies (or compatible existing servers).
-
-Install the pinned Node version using your preferred version manager or the
-official Node distribution. With that Node version active, install pnpm:
-
-```sh
-npm install --global pnpm@10.34.7
-node --version
-pnpm --version
-```
-
-The versions should print `v24.22.0` and `10.34.7`. Engine checks reject an
-incompatible runtime. MongoDB is required to start the API; Redis and the worker
-are required to execute inspections. Redis can recover after API startup.
-
-### Install and develop
-
-From the repository root:
-
-```sh
+```powershell
 pnpm install --frozen-lockfile
 docker compose -p vip-native -f compose.yaml -f compose.dev.yaml up -d --wait mongodb redis
 pnpm dev
 ```
 
-Open <http://127.0.0.1:5173>. The API listens on
-<http://127.0.0.1:3001/api/v1/health>. Stop development processes with Ctrl+C.
-`GET /api/v1/ready` verifies MongoDB and image storage and reports Redis status.
-`pnpm dev` also starts the worker. The starting page is the upload workflow;
-the existing API-health page is available at `/health`.
+Open **http://127.0.0.1:5173**. This starts web, API and worker on the host.
+MongoDB/Redis host ports are loopback-only. Native images live in `.data/images`;
+native and full-container stores are separate. Defaults work without `.env`;
+see [.env.example](.env.example) and the [development/configuration guide](docs/development.md).
 
-The explicit `compose.dev.yaml` override exposes MongoDB and Redis on loopback
-only. The service names in the command start just these dependencies, not the
-containerized web/API/worker. They use persistent named volumes without
-authentication. Redis uses AOF (`appendfsync everysec`), a 256 MiB memory
-limit, and `noeviction`. These are local development dependencies. To stop them while
-preserving data, run `docker compose -p vip-native -f compose.yaml -f compose.dev.yaml down`.
-Restart with the same startup command. Retain the project name when reusing an
-existing dependency volume; switching names creates a separate environment.
-Do not remove the named volume unless you intend to discard the development DB.
+## Tests and reproducible verification
 
-`pnpm dev` builds contracts and the shared backend first, then watches all packages
-and applications together. To use separate terminals instead:
-
-```sh
-pnpm dev:api
-```
-
-```sh
-pnpm dev:web
-```
-
-```sh
-pnpm dev:worker
-```
-
-The separate commands build shared packages on startup. Use `pnpm dev` when editing
-shared code to keep compiled output up to date automatically.
-
-## Configuration
-
-Native defaults work without an env file once MongoDB and Redis are running. To override them,
-copy `.env.example` to `.env` at the repository root.
-
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `WEB_PORT` | `8080` | Full-container web host port, loopback only |
-| `API_HOST` | `127.0.0.1` | API bind address |
-| `API_PORT` | `3001` | API port; integer from 1 through 65535 |
-| `MONGODB_PORT` | `27017` | Host port published only by `compose.dev.yaml` |
-| `MONGODB_URI` | `mongodb://127.0.0.1:27017/visual_inspection` | API database connection |
-| `ASSET_STORAGE_DIR` | `.data/images` | Image directory; relative paths resolve from the repository root |
-| `MONGODB_TEST_URI` | `mongodb://127.0.0.1:27017` | Integration-test server; tests use a separate random database |
-| `REDIS_PORT` | `6379` | Host port published only by `compose.dev.yaml` |
-| `REDIS_URL` | `redis://127.0.0.1:6379` | Shared API dispatch / worker Redis connection |
-| `REDIS_TEST_URL` | `redis://127.0.0.1:6379` | Integration-test Redis server |
-| `E2E_REDIS_URL` | `REDIS_TEST_URL` with database `/15` | Optional browser-test Redis override; reserve this DB for tests |
-
-If changing `MONGODB_PORT`, update both MongoDB URIs to match. Keep database
-credentials out of source control. The API and integration test command load the
-root `.env`; existing shell environment variables take precedence.
-The worker loads the same `.env` and resolves `ASSET_STORAGE_DIR` from the same
-repository root. If changing `REDIS_PORT`, update both Redis URLs to match.
-API and worker must use the same MongoDB database, Redis URL, and canonical image
-directory. The default queue name represents one application environment.
-
-Full Compose intentionally sets `API_HOST=0.0.0.0`, `API_PORT=3001`,
-`MONGODB_URI=mongodb://mongodb:27017/visual_inspection`,
-`REDIS_URL=redis://redis:6379`, and `ASSET_STORAGE_DIR=/data/images` in the service
-configuration. The native URI/path variables above do not override these container
-values. This avoids accidentally using localhost or a Windows path inside Linux.
-
-The web app requests relative `/api` URLs. Vite's development and preview servers
-proxy them to `127.0.0.1:API_PORT`; keep the API reachable on loopback when using
-these commands. Restart development servers after changing `.env`. Environment
-variables set in the shell take precedence. No secrets or browser environment
-variables are required.
-
-## Validation
-
-Run from the repository root:
-
-```sh
+```powershell
 pnpm lint
 pnpm typecheck
 pnpm test
-pnpm test:integration
 pnpm build
-```
-
-For frontend tests only, run `pnpm --filter @vip/contracts build` followed by
-`pnpm --filter @vip/web test`. These tests mock HTTP responses and exercise upload,
-retry identity, polling, route reloads, validation, and viewer states. jsdom tests
-check normalized style values; Playwright checks actual browser layout.
-
-Install Chromium once, then run the browser suite with MongoDB/Redis available:
-
-```sh
 pnpm --filter @vip/web exec playwright install chromium
-pnpm test:e2e
-```
-
-On a fresh Linux machine, use `playwright install --with-deps chromium` for system
-libraries. `pnpm test:e2e` builds the workspace, then Playwright starts compiled API
-and worker processes and Vite preview on dedicated ports **3003** and **4174**.
-It refuses to reuse existing servers. Tests create a random `vip_browser_test_*`
-database and private `.data/browser-tests` directory; teardown removes only that
-run's data/jobs. An abruptly terminated test runner can leave test resources.
-Redis database **15** is reserved by default; set `E2E_REDIS_URL` for Redis
-configurations with a different test database. No `FLUSHDB` is used.
-
-The browser suite performs real uploads, real queue execution, result rendering,
-mobile resizing, direct-link reloads, empty results, and a lost acceptance response
-followed by an idempotent retry. Separate controlled-HTTP tests expose queued and
-processing states deterministically and test portrait/landscape geometry; those
-tests mock inspection/asset responses and image bytes. The fast real mock provider
-may finish processing between polls. No production inference delays are added.
-
-- **Lint:** ESLint for JavaScript, TypeScript, and React hooks.
-- **Typecheck:** strict TypeScript across production code, tests, and Vite config.
-- **Test:** Vitest contract checks, Fastify injection tests, configuration tests,
-  local-storage tests, and React Testing Library smoke tests in jsdom. `pnpm test`
-  needs neither MongoDB nor a running API.
-- **Integration test:** `pnpm test:integration` requires MongoDB and Redis. Start
-  both with the native dependency startup command above. Tests use genuine servers,
-  isolated `vip_ingestion_test_*` / `vip_inspection_test_*` / `vip_review_test_*` /
-  `vip_history_test_*` databases, unique
-  `inspections-test-*` queues, and private temporary image directories. Cleanup
-  drops only these test databases/queues; it never runs Redis `FLUSHDB`. Missing
-  dependencies fail the command; tests are not silently skipped. Fault cases use
-  controlled providers, events, explicit gates, and lease manipulation.
-- **Build:** contracts and shared backend first, then API/worker JavaScript and
-  frontend assets. Worker startup is also covered by the workspace typecheck.
-
-GitHub Actions runs the same four checks after a frozen-lockfile install on
-Linux and Windows. A separate Linux job runs integration tests with the same
-MongoDB and Redis versions as Compose, followed by the Chromium browser suite.
-A Docker job builds all three runtime targets and verifies a bounded container
-workflow, one browser test through nginx, and persistence across ordinary restart
-and down/up. See [container validation commands](docs/containers.md).
-The workflow does not publish or deploy anything.
-
-## Run compiled output locally
-
-```sh
-pnpm build
-docker compose -p vip-native -f compose.yaml -f compose.dev.yaml up -d --wait mongodb redis
-pnpm --filter @vip/api start
-```
-
-In another terminal:
-
-```sh
-pnpm --filter @vip/web preview
-```
-
-Start the worker in a third terminal:
-
-```sh
-pnpm --filter @vip/worker start
-```
-
-Open <http://127.0.0.1:4173>. Vite preview is a local build check, not a production
-hosting solution. The API does not serve frontend assets. A future deployment
-must route `/api` requests to the API and serve `apps/web/dist` separately.
-
-## Structure and contracts
-
-```text
-apps/api/             Fastify construction, startup, configuration, and tests
-apps/web/             React upload/results routes, viewer, unit and browser tests
-apps/worker/          Independently executable inspection consumer
-packages/contracts/   Browser-safe schemas, derived types, and validation
-packages/backend/     Shared persistence, storage, inference, and queue execution
-fixtures/inspections/  Documented synthetic demo images
-.github/workflows/    CI validation
-compose.yaml          MongoDB/Redis development dependencies and named volumes
-```
-
-`apps/api/src/app.ts` constructs an app without listening or reading environment
-variables. `server.ts` owns startup, database connection/index initialization,
-storage initialization, logging, and signal handling. MongoDB must connect and
-the asset and inspection indexes must initialize before the server listens. The
-database connection is closed with Fastify on shutdown; failed initial startup
-exits unsuccessfully. Disconnected queries do not wait in Mongoose's command buffer.
-Contracts build to `dist` and are consumed as a normal workspace package by both
-applications. No TypeScript path aliases or server dependencies are required in
-the contracts package.
-
-`GET /api/v1/health` returns HTTP 200:
-
-```json
-{
-  "apiVersion": "v1",
-  "service": "visual-inspection-api",
-  "status": "ok"
-}
-```
-
-The endpoint accepts no query parameters. It reports API process liveness even
-when a runtime dependency fails. `/api/v1/ready` returns 200 when MongoDB and
-storage are ready, otherwise 503. Its `dependencies.redis` is `ok` or `unavailable`;
-unavailable dispatch does not disable durable acceptance. This is admission
-readiness, not a guarantee of worker availability or prompt completion. TypeBox defines the
-response schema and derives its TypeScript type; Fastify uses the schema for
-serialization, and the frontend validates received JSON against the same schema.
-Incompatible wire changes require a new API version.
-
-Errors use `{ "error": { "code", "message", "requestId" } }`. Validation failures
-return 400, missing routes return 404, and unexpected server errors return a safe
-500 message while logging exception details on the server.
-
-## Image ingestion API
-
-`POST /api/v1/assets` accepts multipart form data with exactly one **`image`** file
-and optional **`source`** (`browser` or `api`, default `api`). Source is
-caller-supplied metadata; this is the same endpoint for future external clients.
-Source may appear before or after the file. Client filenames and declared MIME
-types do not determine the storage path or accepted decoded format.
-
-```sh
-curl -i -F "image=@/path/to/image.jpg" -F "source=api" http://127.0.0.1:3001/api/v1/assets
-```
-
-On PowerShell, use `curl.exe` to avoid the legacy `curl` alias. A successful
-request returns **201**, a `Location` metadata URL, and:
-
-```json
-{
-  "id": "0123456789abcdef01234567",
-  "mimeType": "image/jpeg",
-  "width": 640,
-  "height": 480,
-  "byteLength": 12345,
-  "sha256": "<64 lowercase hexadecimal characters>",
-  "source": "api",
-  "createdAt": "2026-10-20T00:00:00.000Z",
-  "contentUrl": "/api/v1/assets/0123456789abcdef01234567/content"
-}
-```
-
-`GET /api/v1/assets/:id` returns that metadata. `GET /api/v1/assets/:id/content`
-streams the canonical image with MIME type, content length, checksum ETag,
-`nosniff`, and immutable cache headers. Public responses contain neither storage
-keys nor filesystem paths. Content retrieval verifies the file exists and its
-size matches metadata before sending headers; later I/O failures can interrupt
-the stream rather than return a JSON error after headers have been sent.
-
-### Validation and canonical bytes
-
-- JPEG/PNG only, at most **10 MiB input** and **20,000,000 decoded pixels**.
-- Multipart bytes stream to private staging files. Container/header inspection
-  precedes decoding. Unknown formats return 415; recognized corrupt images return
-  422. GIF/TIFF/WebP are unsupported, including their multi-image variants.
-- APNG animation declarations, MPO multipicture headers, and decoded page/frame
-  metadata are rejected. Container scans have finite structural limits.
-- Sharp fully decodes with strict warning handling and its own pixel cap, applies
-  EXIF rotation/mirroring, converts to sRGB, and strips metadata. No resizing or
-  cropping occurs. Saved dimensions describe the canonical output.
-- JPEG stays JPEG: quality 90, 4:4:4 chroma, nonprogressive, default non-MozJPEG
-  encoder. This is a lossy re-encoding. PNG stays PNG: compression level 9,
-  nonprogressive, no palette quantization or adaptive filtering; alpha is retained.
-  Output is an 8-bit sRGB representation rather than archival source data.
-- Encoding settings are deterministic for the pinned Sharp/libvips stack. The
-  original upload is discarded. Byte length and SHA-256 describe **stored bytes**.
-  Identical uploads are permitted and produce separate asset IDs/storage keys.
-- Canonical output is capped at 80 MiB after encoding. The server limits ingestion
-  to two simultaneous requests, bounds Sharp cache/concurrency, and sets a decode
-  timeout and request timeout. Files stream to disk rather than application buffers.
-
-### Persistence and failure behavior
-
-The `assets` collection contains `_id`, `storageKey`, `mimeType`, dimensions,
-`byteLength`, `sha256`, `source`, and `createdAt`. Only `storageKey` has an added
-unique index; checksum is not unique.
-
-Each upload uses a server-created private directory under the configured image
-root. Canonical encoding completes before an exclusive hard link atomically
-publishes a UUID filename. Staging and published files must share a local
-filesystem supporting hard links (for example, NTFS or ext4). Client paths and
-keys are never accepted. The image directory is trusted application storage,
-not a directory for untrusted local users to modify.
-
-MongoDB metadata is inserted **after** publication. A response is successful only
-after that insert succeeds. Cleanup removes only the request's staging files and
-directory; it never recursively deletes the image root or published files.
-Cleanup failures are logged without hiding the primary outcome.
-
-Filesystem and MongoDB are not a transaction. A crash, failed database insert,
-or lost acknowledgement can leave a published orphan. Published bytes are retained
-on database errors because the insert might have committed; removing them could
-break an existing record. There is no automatic orphan/stale-staging deletion in
-this milestone. Back up/preserve the image directory along with MongoDB metadata.
-Power-loss durability and protection against external file deletion are not claimed.
-
-| Condition | Status / error code |
-| --- | --- |
-| Missing image | 400 `MISSING_IMAGE` |
-| Invalid multipart/source | 400 `INVALID_UPLOAD` / `INVALID_SOURCE` |
-| Unsupported type or multi-image container | 415 `UNSUPPORTED_IMAGE_TYPE` / `MULTIFRAME_IMAGE` |
-| Recognized corrupt image or unsafe decode | 422 `CORRUPT_IMAGE` |
-| Input bytes / decoded pixels over limit | 413 `UPLOAD_TOO_LARGE` / `IMAGE_DIMENSIONS_EXCEEDED` |
-| Invalid asset ID / absent asset | 400 `INVALID_ASSET_ID` / 404 `ASSET_NOT_FOUND` |
-| Storage / database failure | 503 `STORAGE_FAILURE` / `DATABASE_FAILURE` |
-| Both ingestion slots occupied | 503 `INGESTION_BUSY` |
-
-Integration tests cover accepted formats, metadata/content retrieval, checksums,
-rotation/mirroring, duplicates/index enforcement, validation limits, staging
-cleanup, publication failures, database disconnects, and an insert that commits
-before its acknowledgement fails.
-
-## Asynchronous inspection API
-
-Upload a fixture through the asset API, then submit its returned ID:
-
-```sh
-curl -i -X POST http://127.0.0.1:3001/api/v1/inspections \
-  -H 'Content-Type: application/json' -H 'Idempotency-Key: demo-panel-001' \
-  -d '{"assetId":"<asset-id>"}'
-```
-
-For PowerShell, JSON submission can use:
-
-```powershell
-$inspection = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:3001/api/v1/inspections `
-  -ContentType application/json -Headers @{ 'Idempotency-Key' = 'demo-panel-001' } `
-  -Body (@{ assetId = '<asset-id>' } | ConvertTo-Json)
-Invoke-RestMethod -Uri ("http://127.0.0.1:3001" + $inspection.url)
-```
-
-`POST /api/v1/inspections` returns **202** with `{id,status,createdAt,url}` and a
-`Location` header after MongoDB accepts the record. Provider configuration may be
-omitted or explicitly supplied as
-`{"providerId":"mock","modelId":"mock-detector","modelVersion":"1.0.0"}`.
-After sending the response, the API gives its existing reconciler a bounded,
-coalesced prompt-dispatch hint. Redis dispatch happens independently; failed or
-dropped hints leave durable work for startup/periodic repair. The same applies to
-manual retries. `GET /api/v1/inspections/:id` returns the
-current lifecycle state and completed result or safe terminal failure details.
-The frontend polls this endpoint; there are no WebSockets.
-
-`POST /api/v1/inspections/:id/retry`, with an `Idempotency-Key` and no body (or `{}`),
-creates a new inspection linked through `retriedFrom`. Only failed inspections may
-be retried. It preserves the original failed record and returns another **202**.
-
-Keys are case-sensitive, 1–128 ASCII letters/digits/`.`/`_`/`-`. Persistent scopes
-are `inspection:create` and `inspection:retry`. Within a scope, the same key and
-semantic request return the same inspection; different content returns **409**.
-Explicit default provider configuration and omitted defaults are equivalent, as
-are uppercase/lowercase asset IDs. Create and retry scopes are distinct, so a key
-may be reused across those operations. Different keys create distinct runs.
-Retry keys cover the parent inspection ID across the retry scope. Keys have no
-automatic expiry. Replayed responses report the existing inspection's current
-status, which may already be terminal.
-
-The worker uses one queue (`inspections-v1`) and concurrency **1**. Each inspection
-gets at most **3** application attempts, with exponential backoff starting at
-**1 second**. Image loading and inference have a **10-second** deadline within a
-**30-second** MongoDB execution lease. Native queue retries cannot reset the persistent attempt count.
-The API reconciles at startup and every **5 seconds**, checking bounded batches
-of queued work and expired execution leases. API and worker shut down with Ctrl+C;
-interrupted work remains recoverable through the lease and attempt budget.
-
-All outputs from `mock-detector@1.0.0` are explicitly marked `simulated: true` and
-use taxonomy `mock-v1`. See [sample fixtures](fixtures/inspections/README.md).
-The provider emits deterministic identities, boxes, and confidence values derived
-from image content/version, plus curated panel/empty fixtures. Provider duration
-is the deterministic placeholder `0`; measured worker wall time is stored as
-`processingDurationMs`. Neither confidence nor timing implies real ML accuracy
-or throughput. A result can contain zero through **200** detections.
-
-Completed predictions are validated, copied, and committed once using an atomic
-status/token/lease condition. Cross-field validation rejects boxes outside the
-image, nonfinite values, duplicate prediction IDs, and oversized detection sets.
-Human-review data is not implemented.
-
-Both native processes use the same configured canonical image directory. Full
-Compose uses the shared `images` volume at `/data/images`, writable for the API
-and mounted read-only for the worker. It is a separate image store from native
-`.data/images`; container-local paths must not be assumed shared between services.
-
-See [execution and recovery architecture](docs/inspection-pipeline.md) for failure
-windows, ownership rules, and operational limitations. The fixed lease/deadline
-policy, retention of images/idempotency keys, and cleanup of orphaned files remain
-operational considerations. Review saves do not change pipeline execution.
-
-## Browser workflow
-
-1. Start MongoDB, Redis, API, worker, and frontend using the commands above.
-2. Open <http://127.0.0.1:5173> and select one JPEG/PNG up to 10 MiB. For a predictable
-   demo, select `fixtures/inspections/panel.png`; `empty.png` demonstrates zero detections.
-3. Choose **Upload and inspect**. The server validates, auto-orients, and saves the
-   image. After acceptance, the browser navigates to `/inspections/:inspectionId`.
-4. Queued/processing pages poll every two seconds while the tab is visible. Terminal
-   completed/failed states stop interval polling. Brief processing states may not
-   be observed because the mock finishes quickly. Refresh status manually if needed.
-5. Completed results show the canonical image, numbered boxes, class labels,
-   confidence scores, model/provider metadata, and an explicit simulated-inference
-   disclosure. Select a detection to emphasize its box, or choose **Edit local draft**
-   to correct annotations in browser memory without changing original predictions.
-6. Copy the detail URL. Refreshing or opening it directly fetches the saved inspection;
-   Vite supports these routes. Any future static host must route frontend URLs to
-   `index.html` while continuing to route `/api` requests to the API.
-
-Upload and inspection creation are distinct steps. A failed creation request keeps
-the asset and idempotency key in the current upload page. **Retry inspection
-submission** sends the same logical request without uploading again, including
-when the server accepted a request but its response was lost. Selecting another
-file starts a fresh submission with a new key. Reloading/leaving an unfinished
-upload page clears this in-memory submission; it is not a resumable upload session.
-An upload acknowledgement lost before the browser receives an asset ID can leave
-an asset behind; an explicit upload retry may create another asset.
-
-Network-fetch errors are separate from terminal processing failures. Cached
-results remain visible when a background refresh fails, and image-loading errors
-leave prediction details available. Failed inspections provide manual retry with
-idempotent network recovery and links between attempts. See
-[frontend behavior](docs/browser-workflow.md) for implemented boundaries.
-
-## Annotation editing
-
-Open a completed inspection and choose **Edit local draft**. Select an annotation
-from its box or list, drag to move, use handles to resize, or select a class label.
-Predictions start accepted. Reject keeps the prediction in the list but hides its
-box; Restore brings it back. Choose a class and **Add annotation**, then draw a
-rectangle for a missed object. Manual annotations have no model confidence and
-can be removed. Empty inference results also support manual annotation.
-
-The draft shows meaningful unsaved changes. **Reset draft** asks for confirmation
-before restoring the saved baseline (or initial predictions). **View original
-predictions** retains the draft so editing can be resumed. **Save review** persists
-corrections; unsaved drafts are lost on unmount/reload. Application navigation and
-supported browser unload events warn about dirty drafts, subject to browser policy.
-Drafts are not written to localStorage.
-
-The editor uses React/Konva, the shared mock-v1 class vocabulary, normalized
-coordinates, and a ResizeObserver over the canonical displayed image. It prevents
-out-of-image geometry, rotation, flipping, and zero/negative sizes. New drawings
-require 12 displayed pixels per side. See [annotation architecture and limits](docs/annotation-editor.md).
-
-Existing commands include the editor tests:
-
-```sh
-pnpm test
-pnpm --filter @vip/web test src/annotations
-pnpm test:e2e
-```
-
-The browser suite includes real Konva mouse dragging, resizing, drawing, and
-responsive alignment at DPR two; no mocked Konva events establish geometry.
-Saved reviews use the complete-snapshot API described below. They are not an
-immutable audit history.
-
-## Save and reopen human reviews
-
-Open a completed inspection and choose **Edit local draft**. Select an annotation,
-move/resize its box, change its class, or reject/restore it. Choose a class and use
-**Add annotation** to draw a missed object. The limit is 200 entries, including
-rejected predictions. Rejected boxes stay in the list and are hidden on the canvas.
-
-Choose **Save review**, then refresh or reopen the inspection URL to recover the
-saved snapshot. Original predictions/confidence remain unchanged. **View original
-predictions** switches presentation without discarding edits. **Reset draft** returns
-to the last confirmed save (or initial predictions), after confirmation.
-
-Saving uses optimistic revision checks. If another tab saved first, local edits
-remain visible; **Load latest saved review** asks before discarding them. An
-uncertain network response retains the exact save operation and freezes editing
-until **Retry save** confirms it. No localStorage persistence or automatic merging
-is used. Unsaved changes request warnings for links, Back/Forward, and reload/close;
-browser/mobile policies can suppress warnings.
-
-The API accepts complete snapshots through
-`PUT /api/v1/inspections/:id/review`. First revision is 1; identical no-op saves keep
-the revision. A separate write token and the last 32 operation receipts make
-ambiguous retries safe within a bounded window. See [review contracts, example
-payload, concurrency, and limitations](docs/reviews.md) and the
-[editor documentation](docs/annotation-editor.md). This is the current review,
-not an immutable audit history.
-
-The existing validation and CI commands discover review tests automatically.
-`pnpm test:integration` includes real MongoDB concurrent saves;
-`pnpm test:e2e` includes real-stack save/refresh/reopen, lost-response retry,
-and two-tab conflict workflows in Chromium.
-
-## History and failed-inspection recovery
-
-Choose **History** in the main navigation to browse `/inspections`. Filter by
-status and choose **Load more inspections** for another page. The default page
-contains 20 summaries. **Refresh history** restarts at the newest page. Thumbnails
-use the canonical image endpoint; failed previews do not prevent opening a record.
-Saved-review revisions and original detection counts appear on completed entries.
-Opening a result restores its saved review. Returning to history preserves the
-status filter and cached pages where practical. Unsaved annotation edits still
-require the existing navigation confirmation before being discarded.
-
-On a failed inspection, **Retry inspection** creates a new linked inspection.
-If the request fails or its acceptance response is lost, **Retry submission**
-keeps the same idempotency key. **View previous attempt** and **View latest retry**
-connect the new record and preserved failure. Reloading/unmounting loses the
-in-memory retry key; check the latest attempt before intentionally retrying again.
-
-`GET /api/v1/inspections?status=completed&limit=20` returns lightweight summaries,
-`hasMore`, and an optional `nextCursor`. Pass that cursor unchanged with the same
-status for subsequent pages. The maximum limit is 50. Ordering uses creation time
-and ID descending; live status changes and new/backdated inserts mean this is not
-a snapshot-isolated view. Invalid cursors offer a deliberate restart.
-
-See [history contracts, queries/indexes, and recovery semantics](docs/history.md).
-The existing `pnpm test`, `pnpm test:integration`, and `pnpm test:e2e` commands
-include the new cases automatically. The browser recovery test seeds a terminal
-failure only in its private database; subsequent retry and inference are real.
-No new environment variables or dependencies are required.
-
-**Trusted local/demo use:** the application has no authentication; anyone who can
-reach the API can browse all history, retrieve images/reviews, and submit retries.
-It is not intended for unrestricted public deployment. Authentication and
-infrastructure hardening are not part of Task 04.
-
-## Reliability checks and storage maintenance
-
-The MongoDB-first acceptance, bounded retries, execution leases/tokens, and review
-revision semantics remain unchanged. Targeted tests now cover abrupt child-worker
-termination, concurrent repair, real dependency outages and restart persistence.
-
-```sh
-# Builds a fresh disposable full stack, validates ownership before interruptions,
-# runs bounded recovery/storage checks, and removes only its own test volumes.
-pnpm test:reliability
-# Also exercise all native integration/browser tests on its private dependency
-# ports, and the real browser workflow through the containerized web server:
-pnpm test:reliability --native --browser
-```
-
-These explicit checks require Docker plus workspace test tooling; ordinary
-full-container application use still needs no host Node/pnpm. Existing commands
-`pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm test:integration`, `pnpm build`,
-and `pnpm test:e2e` remain supported. The harness never targets `vip-demo` or
-`vip-native` for faults, and never prunes Docker resources.
-
-`pnpm storage:maintenance vip-demo` produces a database-checked, read-only report.
-An explicit offline staging cleanup mode requires all image-volume users stopped;
-published canonical images are **never** deleted. See [reliability evidence,
-maintenance instructions, supervision, and limitations](docs/reliability.md).
-Compose now uses an expiring local worker health observation for dependency
-connectivity and overdue active work; health is not an exactly-once or availability
-guarantee. There is no coordinated backup/disaster recovery solution.
-
-## GitHub Actions and MongoDB kernel compatibility
-
-CI keeps MongoDB **8.0.34**, all real MongoDB/Redis integration tests, native
-Playwright workflows, and full Compose browser/recovery checks. Linux database
-jobs select Ubuntu 24.04 and print actual runner/Docker kernel diagnostics before
-starting services; the Ubuntu label does not guarantee a particular kernel.
-
-An explicitly selected `compose.ci.yaml` enables glibc rseq registration so the
-database uses its non-per-CPU allocator fallback. CI asserts the actual MongoDB
-version and `usingPerCPUCaches: false`. Normal local Compose and named volumes
-are unchanged. To reproduce the CI jobs with native test tooling installed:
-
-```sh
+# Owned disposable dependencies: runs real integration tests and native E2E.
 pnpm test:ci:integration
-pnpm test:reliability --browser --ci-mongodb
+# Owned full stack: smoke, browser, outages, restarts, storage, down/up persistence.
+pnpm test:reliability --browser
 ```
 
-See [root cause, sources, alternatives, and remote validation requirements](docs/ci-mongodb-compatibility.md).
+With dedicated MongoDB/Redis already available, `pnpm test:integration` and
+`pnpm test:e2e` remain available separately. On Linux, Playwright may require
+`playwright install --with-deps chromium`. Direct tests require isolated test
+configuration; avoid personal demo data. Missing dependencies fail tests.
+
+CI runs lint/typecheck/unit/build on Ubuntu and Windows, real MongoDB/Redis plus
+Chromium integration flows, full-container browser/recovery checks, and a bounded
+benchmark-harness smoke. No performance timing threshold gates CI, and CI does
+not publish or deploy. [Final QA evidence and coverage boundaries](docs/release-readiness.md).
+
+`pnpm portfolio:capture` regenerates authentic screenshots in an owned disposable
+stack. `pnpm benchmark` runs an isolated benchmark; both require native tooling.
+See [demo/recording instructions](docs/demo.md), [operations and metrics](docs/observability.md),
+and [reliability evidence](docs/reliability.md).
+
+## Limitations and next steps
+
+- Simulated outputs and scores are not defect recognition, model accuracy, or real inference latency.
+- Trusted local/demo use only: no authentication, authorization, public TLS, or internet hardening.
+- Single-host image storage; no coordinated backups, disaster-recovery or high-availability guarantee.
+- At-least-once attempts can repeat inference. No exactly-once execution promise.
+- Reviews retain the latest snapshot and bounded operation receipts, not an immutable audit history.
+- Unsaved drafts exist in memory. Browser/mobile navigation warnings are best effort.
+- Future real inference can implement the provider boundary; camera ingestion, S3/cloud and
+  orchestration remain optional work, not implemented capabilities.
+
+No repository license has been selected. No license or redistribution grant is
+implied for the whole project; see [portfolio/repository presentation notes](docs/portfolio-summary.md).
+This is release preparation, not a published or tagged release.

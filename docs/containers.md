@@ -162,8 +162,11 @@ pnpm --filter @vip/web exec playwright test --config playwright.container.config
 It uploads, runs inference, drags a real canvas box, relabels, saves, refreshes a
 deep link, and reopens through history. It uses no HTTP doubles or host API/worker.
 The existing `pnpm test:e2e` suite remains independent and starts its native private
-test stack as before. The Docker CI job runs bounded container checks and this
-single browser test, rather than duplicating that entire suite.
+test stack as before. The Docker CI job runs bounded container checks and the
+browser tests, including the curated portfolio workflow, rather than duplicating
+that entire native suite. `pnpm portfolio:capture` runs the portfolio test in a
+new ownership-verified disposable environment and opts into screenshot output;
+ordinary CI does not overwrite tracked screenshots. See [demo capture](demo.md).
 
 Only trusted local/demo access is intended. No authentication, multi-host image
 storage, rolling-deployment guarantees, load measurement, or advanced recovery

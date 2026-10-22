@@ -125,3 +125,9 @@ retry acceptance, lost-response recovery, child execution, and lineage then use
 the real API/worker/MongoDB/Redis stack. Production inference has no new fault
 switch or delay. This browser test does not generate the initial provider failure;
 provider-failure behavior remains covered by pipeline integration tests.
+
+The portfolio container test additionally exercises actual **Load more** browser
+pagination: 21 bounded normal submissions push an older saved review beyond the
+first 20-card page; the next page has unique links and can reopen that review.
+Those extra records are created after presentation screenshots and only within
+the disposable validation/capture stack.

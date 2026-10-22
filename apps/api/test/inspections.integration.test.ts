@@ -356,6 +356,20 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     expect((await completed).result.detections).toEqual([]);
   });
 
+  it.each([
+    ['machined-panel', 'machinedPanel', 1200, 800, 3],
+    ['clean-panel', 'cleanPanel', 1200, 800, 0],
+    ['edge-component', 'edgeComponent', 800, 1100, 1],
+  ] as const)('preserves canonical portfolio fixture %s through ingestion and real queue execution', async (name, key, width, height, count) => {
+    const uploaded = await upload(await readFile(new URL(`../../../fixtures/inspections/${name}.png`, import.meta.url)));
+    expect(uploaded).toMatchObject({ width, height, sha256: MOCK_FIXTURES[key] });
+    const submission = await accepted(name, uploaded.id);
+    const instance = await consumer();
+    const completed = waitForState(instance.worker, submission.id, 'completed');
+    await reconciler.reconcile();
+    expect((await completed).result.detections).toHaveLength(count);
+  });
+
   it('validates asset identifiers, provider configuration, and required idempotency keys', async () => {
     expect((await submit('bad', 'not-an-id')).statusCode).toBe(400);
     expect((await submit('absent', '000000000000000000000000')).statusCode).toBe(404);
