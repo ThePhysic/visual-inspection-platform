@@ -92,7 +92,7 @@ bins, not SLOs. Benchmark percentiles use individual samples instead of bins.
 | `inspection_deliveries_ignored_total` | invalid/unclaimed | No application attempt executed; unclaimed includes duplicate, stale generation, terminal and not-due records |
 | `inspection_failures_total` | retry/terminal, allowlisted failure code | Acknowledged failure state transitions |
 | `inspection_terminals_total`, `inspection_terminal_latency_seconds` | completed/failed | Acknowledged conditional terminal updates; creation-to-terminal persisted wall timestamps, with negative clock shifts clamped |
-| `dispatch_total` | added/present/finished/error | Dispatch observations during repair, not unique inspections |
+| `dispatch_total` | outcome: added/present/finished/error; source: prompt/reconciliation | Dispatch observations, not unique inspections; both paths reuse the same routine |
 | `reconciliation_total` | ok/error | Completed repair passes; concurrent callers sharing a pass do not multiply observations |
 | `lease_repairs_total` | queued/failed | Acknowledged expired-lease repairs |
 
@@ -120,6 +120,11 @@ for a large database. It is not run on normal API requests or processing paths.
 A successful reconciliation pass means its bounded scan finished; dispatch
 errors can still occur within that pass. Check dispatch outcomes and MongoDB
 queued state as well, rather than treating a pass counter as execution readiness.
+Prompt notifications do not increment the recovery-pass counter. Queue scheduling
+and pending-dispatch logs include `dispatchSource` (`prompt` or `reconciliation`)
+alongside the existing request, inspection and generation identifiers. An `added`
+observation describes a successful queue-add call; concurrent producers can
+observe the same generation, so it still does not count unique jobs/results.
 
 Metrics are best-effort observations. A crash or lost MongoDB acknowledgement
 can omit an increment after an authoritative commit. A process crash can leave
@@ -132,3 +137,9 @@ already-unhealthy running worker immediately after its dependency is restored,
 even while the consumer resumes work. The harness now waits up to 45 seconds
 for the actual Docker health observation before its existing Compose/API checks;
 it does not restart the worker, relax health criteria, or change queue semantics.
+The dispatch-optimization rerun exposed the inverse race: cached `healthy`
+could precede the outage's failing probe. Recovery now requires a **new successful
+probe** as well as healthy status, using Docker's probe identity rather than an
+assumed delay or host/container clock comparison. The observed worker had already
+reconnected and completed the accepted inspection; the failure was in the harness
+observation ordering.

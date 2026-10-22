@@ -33,7 +33,7 @@ export class OperationalMetrics {
   private readonly failures = this.counter('inspection_failures_total', 'Committed retry/terminal failure transitions', ['kind', 'code']);
   private readonly terminalDuration = this.histogram('inspection_terminal_latency', 'Persisted creation to terminal timestamp on acknowledged transition', ['status']);
   private readonly committed = this.counter('inspection_terminals_total', 'Acknowledged authoritative terminal transitions', ['status']);
-  private readonly dispatches = this.counter('dispatch_total', 'Dispatch observations, not unique jobs or inspections', ['outcome']);
+  private readonly dispatches = this.counter('dispatch_total', 'Dispatch observations, not unique jobs or inspections', ['outcome', 'source']);
   private readonly reconciliations = this.counter('reconciliation_total', 'Reconciliation pass outcome', ['outcome']);
   private readonly repairs = this.counter('lease_repairs_total', 'Acknowledged expired lease repairs', ['outcome']);
 
@@ -52,7 +52,9 @@ export class OperationalMetrics {
   ignored(reason: 'invalid' | 'unclaimed') { this.deliveries.inc({ reason }); }
   failure(kind: 'retry' | 'terminal', code: string) { this.failures.inc({ kind, code: failureCodes.has(code) ? code : 'OTHER' }); }
   terminal(status: 'completed' | 'failed', ms: number) { this.committed.inc({ status }); this.terminalDuration.observe({ status }, Math.max(0, ms) / 1000); }
-  dispatch(outcome: 'added' | 'present' | 'finished' | 'error') { this.dispatches.inc({ outcome }); }
+  dispatch(outcome: 'added' | 'present' | 'finished' | 'error', source: 'prompt' | 'reconciliation' = 'reconciliation') {
+    this.dispatches.inc({ outcome, source });
+  }
   reconciliation(outcome: 'ok' | 'error') { this.reconciliations.inc({ outcome }); }
   repair(outcome: 'queued' | 'failed') { this.repairs.inc({ outcome }); }
 }

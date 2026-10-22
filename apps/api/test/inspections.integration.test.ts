@@ -24,6 +24,12 @@ import { buildApp } from '../src/app.js';
 const logger: PipelineLogger = { info: () => {}, warn: () => {}, error: () => {} };
 const policy = { ...EXECUTION_POLICY, backoffMs: 20, attemptTimeoutMs: 2000, reconcileIntervalMs: 50, batchSize: 10 };
 
+function barrier() {
+  let resolve!: () => void;
+  const promise = new Promise<void>(done => { resolve = done; });
+  return { promise, resolve };
+}
+
 describe('asynchronous inspections with real MongoDB and Redis', () => {
   const databaseName = `vip_inspection_test_${randomUUID().replaceAll('-', '')}`;
   const redisUrl = process.env.REDIS_TEST_URL ?? 'redis://127.0.0.1:6379';
@@ -129,6 +135,191 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     });
   }
   function payload(id: string, generation = 0): InspectionJob { return { payloadVersion: 'v1', inspectionId: id, generation }; }
+
+  async function enablePromptDispatch() {
+    await app.close();
+    app = buildApp({ assets: { model: assets, storage }, inspections: { assets, inspections }, dispatchQueue: queue,
+      notifyAccepted: id => { reconciler.notify(id); } });
+    // Deliberately do NOT start the periodic timer. Completion must be caused
+    // by the post-response hint, independently of any scan interval.
+  }
+
+  it('promptly completes concurrent idempotent acceptance without a periodic scan or duplicate commit', async () => {
+    await enablePromptDispatch();
+    const instance = await consumer();
+    const responses = await Promise.all(Array.from({ length: 8 }, () => submit('prompt-duplicate')));
+    expect(responses.every(response => response.statusCode === 202)).toBe(true);
+    const id = responses[0]!.json<InspectionAccepted>().id;
+    expect(new Set(responses.map(response => response.json().id)).size).toBe(1);
+    const record = await waitForState(instance.worker, id, 'completed');
+    expect(record.attemptCount).toBe(1);
+    expect(await inspections.countDocuments()).toBe(1);
+    await accepted('prompt-duplicate');
+    reconciler.notify(id);
+    await reconciler.reconcile(); // Terminal replay is a no-op, even after a fresh scan.
+    expect(await inspections.findById(id).lean().orFail()).toEqual(record);
+    expect(await metrics.registry.metrics()).toContain('vip_inspection_terminals_total{status="completed"} 1');
+    expect(await queue.queue.getJobCounts('completed')).toEqual({ completed: 1 });
+  });
+
+  it('does not notify dispatch when MongoDB acceptance fails', async () => {
+    await enablePromptDispatch();
+    const notify = vi.spyOn(reconciler, 'notify');
+    vi.spyOn(inspections, 'create').mockRejectedValueOnce(new Error('private database detail'));
+    const response = await submit();
+    expect(response.statusCode).toBe(503);
+    expect(response.body).not.toContain('private database detail');
+    expect(notify).not.toHaveBeenCalled();
+    expect(await inspections.countDocuments()).toBe(0);
+  });
+
+  it('sends durable 202 before a blocked prompt attempt, then recovers a lost Redis connection through reconciliation', async () => {
+    await enablePromptDispatch();
+    const entered = barrier();
+    const release = barrier();
+    const original = queue.dispatch.bind(queue);
+    const dispatch = vi.spyOn(queue, 'dispatch').mockImplementationOnce(async (...args) => {
+      entered.resolve(); await release.promise; return original(...args);
+    });
+    try {
+      const submission = await accepted(); // Must resolve while the scheduling barrier is still closed.
+      expect(await inspections.findById(submission.id).lean().orFail()).toMatchObject({ status: 'queued', attemptCount: 0 });
+      await entered.promise;
+      queue.redis.disconnect(); release.resolve();
+      await reconciler.reconcile();
+      expect(await metrics.registry.metrics()).toContain('vip_dispatch_total{outcome="error",source="prompt"} 1');
+      expect((await inspections.findById(submission.id).lean().orFail()).status).toBe('queued');
+      await queue.redis.connect();
+      const instance = await consumer();
+      const completed = waitForState(instance.worker, submission.id, 'completed');
+      await reconciler.reconcile();
+      expect((await completed).attemptCount).toBe(1);
+      expect(dispatch).toHaveBeenCalled();
+    } finally { release.resolve(); }
+  });
+
+  it('preserves 202 with Redis already unavailable and repairs it after the dependency returns', async () => {
+    await enablePromptDispatch();
+    queue.redis.disconnect();
+    const submission = await accepted();
+    await reconciler.reconcile();
+    expect((await inspections.findById(submission.id).lean().orFail()).status).toBe('queued');
+    await queue.redis.connect();
+    const instance = await consumer();
+    const completed = waitForState(instance.worker, submission.id, 'completed');
+    await reconciler.reconcile();
+    expect((await completed).attemptCount).toBe(1);
+  });
+
+  it('bounds a real Redis command stalled during prompt dispatch, then reconciles after replies resume', async () => {
+    const sockets = new Set<Socket>();
+    const ping = barrier();
+    let blackhole = false;
+    const target = new URL(redisUrl);
+    const proxy = createServer(socket => {
+      const upstream = connect(Number(target.port || 6379), target.hostname);
+      for (const stream of [socket, upstream]) {
+        sockets.add(stream); stream.on('error', () => {});
+      }
+      socket.on('close', () => { upstream.destroy(); });
+      upstream.on('close', () => { socket.destroy(); });
+      socket.on('data', bytes => {
+        if (blackhole && bytes.toString().toLowerCase().includes('ping')) ping.resolve();
+        upstream.write(bytes);
+      });
+      upstream.on('data', bytes => { if (!blackhole) socket.write(bytes); });
+    });
+    await new Promise<void>(done => { proxy.listen(0, '127.0.0.1', done); });
+    const local = new URL(redisUrl); local.hostname = '127.0.0.1'; local.port = String((proxy.address() as AddressInfo).port);
+    const producer = new InspectionQueue(local.toString(), logger, `inspections-test-${randomUUID()}`, policy);
+    const prompt = new InspectionReconciler(inspections, producer, logger, policy, metrics);
+    let instance: Awaited<ReturnType<typeof consumer>> | undefined;
+    try {
+      await producer.queue.waitUntilReady();
+      const timeout = barrier();
+      const healthPing = vi.spyOn(producer.redis, 'ping');
+      const dispatch = producer.dispatch.bind(producer);
+      const observed: unknown[] = [];
+      vi.spyOn(producer, 'dispatch').mockImplementation(async (...args) => {
+        try { return await dispatch(...args); }
+        catch (error) { observed.push(error); timeout.resolve(); throw error; }
+      });
+      await app.close();
+      app = buildApp({ assets: { model: assets, storage }, inspections: { assets, inspections },
+        notifyAccepted: id => { prompt.notify(id); } });
+      blackhole = true;
+      const submission = await accepted();
+      await ping.promise; await timeout.promise; // Actual ioredis command deadline, no assumed delay.
+      // healthy() deliberately maps the low-level timeout to unavailable.
+      await expect(healthPing.mock.results[0]?.value).rejects.toThrow('Command timed out');
+      expect(String(observed[0])).toContain('REDIS_UNAVAILABLE');
+      expect((await inspections.findById(submission.id).lean().orFail()).status).toBe('queued');
+      blackhole = false;
+      // A discarded RESP reply leaves the stream out of sync. Restore the
+      // transport, not just forwarding, as with a real broken TCP connection.
+      const reconnected = once(producer.redis, 'ready', { signal: AbortSignal.timeout(5000) });
+      for (const socket of sockets) socket.destroy();
+      await reconnected;
+      instance = startInspectionWorker(redisUrl, dependencies(), producer.queue.name);
+      await instance.worker.waitUntilReady();
+      const completed = waitForState(instance.worker, submission.id, 'completed');
+      await prompt.reconcile();
+      expect((await completed).attemptCount).toBe(1);
+    } finally {
+      blackhole = false;
+      try {
+        await instance?.close(); await prompt.close();
+        await producer.queue.obliterate({ force: true });
+      } finally {
+        try { await producer.close(); }
+        finally {
+          for (const socket of sockets) socket.destroy();
+          await new Promise<void>((done, reject) => { proxy.close(error => error ? reject(error) : done()); });
+        }
+      }
+    }
+  });
+
+  it('promptly schedules a manual retry while preserving the failed predecessor', async () => {
+    const previous = await accepted();
+    await inspections.updateOne({ _id: previous.id }, { $set: { status: 'failed', completedAt: new Date(),
+      failure: { code: 'INFERENCE_FAILED', message: 'Simulated inference failed.' } } });
+    const original = await inspections.findById(previous.id).lean().orFail();
+    await enablePromptDispatch();
+    const instance = await consumer();
+    const responses = await Promise.all(Array.from({ length: 4 }, () => app.inject({ method: 'POST',
+      url: `${previous.url}/retry`, headers: { 'idempotency-key': 'prompt-retry' } })));
+    expect(responses.map(response => response.statusCode)).toEqual([202, 202, 202, 202]);
+    expect(new Set(responses.map(response => response.json().id)).size).toBe(1);
+    const record = await waitForState(instance.worker, responses[0]!.json().id, 'completed');
+    expect(record.retriedFrom?.toString()).toBe(previous.id);
+    expect(record.attemptCount).toBe(1);
+    expect(await inspections.findById(previous.id).lean().orFail()).toEqual(original);
+  });
+
+  it('arbitrates prompt dispatch and an independent concurrent recovery scan using generation job IDs and worker claims', async () => {
+    await enablePromptDispatch();
+    const entered = barrier();
+    const release = barrier();
+    const original = queue.dispatch.bind(queue);
+    vi.spyOn(queue, 'dispatch').mockImplementationOnce(async (...args) => {
+      entered.resolve(); await release.promise; return original(...args);
+    });
+    const other = new InspectionReconciler(inspections, queue, logger, policy);
+    try {
+      const submission = await accepted(); await entered.promise;
+      reconciler.notify(submission.id); reconciler.notify(submission.id);
+      // This independent pass schedules the same generation before the blocked hint.
+      await other.reconcile();
+      release.resolve(); await reconciler.reconcile();
+      expect(await queue.queue.getJobCounts('waiting')).toEqual({ waiting: 1, paused: 0 });
+      const instance = await consumer();
+      const record = await waitForState(instance.worker, submission.id, 'completed');
+      await createInspectionProcessor(dependencies())({ id: 'redelivery', data: payload(submission.id) });
+      expect(record.attemptCount).toBe(1);
+      expect(await inspections.findById(submission.id).lean().orFail()).toEqual(record);
+    } finally { release.resolve(); await other.close(); }
+  });
 
   it('durably accepts, executes, and retrieves a simulated result with safe metadata', async () => {
     const submission = await accepted();

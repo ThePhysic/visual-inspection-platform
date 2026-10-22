@@ -189,3 +189,138 @@ no component-specific bottleneck or optimization benefit is claimed. Follow-up
 work should first decide whether the existing dispatch cadence meets demo needs,
 then collect larger samples and representative image sizes before proposing an
 optimization or performance objective.
+
+## Task 05C-OPT: prompt dispatch measurement method
+
+The preceding reports remain the **pre-optimization baseline**. Inspection
+submission previously wrote MongoDB and returned 202, with no notification to
+the dispatcher; only startup and five-second repair scans scheduled jobs.
+The implementation now sends 202 and hints the existing reconciler to dispatch
+that ID. Periodic repair, worker concurrency, attempts, leases, backoff and the
+deterministic mock are unchanged. See [dispatch lifecycle and bounded notification
+behavior](inspection-pipeline.md#prompt-dispatch-retries-and-repair).
+
+Reproduction commands (each generates and cleans its own owned environment):
+
+```sh
+pnpm benchmark --count 8 --concurrency 4 --history-size 200 --history-samples 10 --poll-ms 100 --duration-ms 120000 --keep-logs
+pnpm benchmark --count 8 --concurrency 4 --history-size 1000 --history-samples 10 --poll-ms 100 --duration-ms 120000 --keep-logs
+pnpm benchmark --count 24 --concurrency 4 --history-size 1000 --history-samples 10 --poll-ms 100 --duration-ms 120000 --keep-logs
+```
+
+The harness and fixtures are unchanged. Its scenario name `baseline` means the
+sequential workload, including in post-optimization JSON; the filename and this
+comparison identify before versus after. Copy `.tools/benchmark-latest.json`
+after each invocation before it is overwritten. The original measured reports
+are preserved; post-optimization results have distinct filenames.
+
+`queueDelayMs` is **persisted creation to processing-start timestamp**, including
+insertion time, not an exact HTTP-acknowledgement-to-claim interval. No separate
+durable commit/response-sent timestamp is invented. Visibility latency starts
+after the parsed 202 and includes sequential 100 ms polling resolution; a quick
+completion can be visible on the first GET. Throughput includes those waits and
+is a closed-loop workload observation, not maximum processing capacity.
+
+The eight-sample comparisons are exploratory: their nearest-rank p95 is the
+largest observation. The additional 24-sample workload improves sample coverage
+modestly but does not establish population percentiles, a service-level promise,
+or real-model performance. Failure/timeout accounting, warm-ups, history seed
+policy and first-request separation remain unchanged.
+
+## Task 05C-OPT: observed results
+
+Executed **2026-10-22 UTC**, consecutively after validation finished, with no
+deliberately competing test workloads:
+
+- [Post-optimization, history 200, n=8 per scenario](performance-results/task05c-opt-post-windows-history-200.json), 02:27:16–02:27:19 UTC.
+- [Post-optimization, history 1,000, n=8 per scenario](performance-results/task05c-opt-post-windows-history-1000.json), 02:29:17–02:29:20 UTC.
+- [Post-optimization, history 1,000, n=24 per scenario](performance-results/task05c-opt-post-windows-count24-history-1000.json), 02:30:40–02:30:45 UTC.
+
+All used the same host, Docker resource configuration, database/Redis/runtime
+versions, worker concurrency, execution policy, fixture and indexes recorded in
+the baseline: Windows 10.0.26200, Ryzen 9 7940HS, 33,515,835,392 bytes host RAM;
+Docker Desktop 29.9.1, 16 logical CPUs, 16,353,484,800 bytes VM RAM, WSL2
+6.18.54.1; Linux x64, Node 24.22.0, MongoDB 8.0.34, Redis 8.2.8, concurrency one.
+The canonical fixture remains PNG 64×64, 189 bytes, with the same checksum above.
+No container CPU/memory quotas were introduced. These use ordinary local Compose,
+not the CI allocator override. Source reports HEAD
+`84e41b219ac8758ba45c2f156b00f37f95fbffdb` plus a dirty working tree containing
+this optimization; HEAD alone does not reproduce it. Host contention, power
+state and cache effects were not independently controlled.
+
+All **80 measured inspections** and nine first-request/warm-up inspections
+completed. There were **zero errors, terminal failures, timeouts, unconfirmed
+acceptances, unsubmitted or incomplete jobs**. All **120 timed history reads**
+succeeded. Each scenario has one logged attempt and acknowledged completion per
+inspection. API metrics recorded **19, 19 and 51 prompt `added` observations**
+respectively (including first-request/warm-ups), with no recovery dispatch
+observations. Recovery scans remained active. This supports the code audit's
+explanation: normal scheduling now happens through the prompt path.
+
+Direct comparison to the original **200-record run**, all latencies **p50 / p95
+milliseconds, n=8** in each distribution:
+
+| Measurement | Before sequential | After sequential | Before four outstanding | After four outstanding |
+| --- | ---: | ---: | ---: | ---: |
+| 202 acceptance | 12.370 / 13.859 | 10.279 / 14.656 | 13.916 / 36.266 | 23.369 / 38.660 |
+| Terminal visible after acceptance | 4955.314 / 5046.764 | 113.262 / 115.845 | 4962.566 / 5070.846 | 119.790 / 129.193 |
+| Persisted creation to terminal | 4926 / 4980 | 16 / 20 | 4957 / 4974 | 34 / 44 |
+| Creation to processing claim | 4916 / 4972 | 10 / 12 | 4949 / 4969 | 26 / 39 |
+| Worker attempt | 7.340 / 13.768 | 6.639 / 8.598 | 6.193 / 7.405 | 5.982 / 8.529 |
+| Mock provider invocation | 0.077 / 0.135 | 0.068 / 0.129 | 0.044 / 0.062 | 0.047 / 0.175 |
+| Completed inspections/s | 0.200 | 8.054 | 0.796 | 26.259 |
+
+Sequential visibility p50 fell **4,842.052 ms (97.71%)**; four-outstanding p50
+fell **4,842.776 ms (97.59%)**. Creation-to-claim p50 fell **4,906 ms (99.80%)**
+and **4,923 ms (99.47%)**. Observed completion throughput increased **7.854/s
+(3,921.7%)** and **25.463/s (3,198.0%)** in these closed-loop scenarios. These
+are workload observations, not capacity or real-model speed claims.
+
+Acceptance is not uniformly faster: sequential p50 changed **−2.091 ms
+(−16.90%)**, but concurrent p50 changed **+9.453 ms (+67.93%)**. The matching
+1,000-record run reproduced the visibility improvement (**97.72% / 97.47%**
+p50 reductions), while concurrent acceptance p50 increased **10.227 ms
+(74.32%)**. Immediate background work now overlaps concurrent submissions;
+these measurements do not isolate its resource cost from run variability.
+No acceptance or history optimization is claimed.
+
+Additional post-optimization measurements (**p50 / p95 ms**); the n=24 run is
+additional evidence, not a matched 24-sample before/after comparison:
+
+| Measurement | Run 1,000 sequential n=8 | Run 1,000 concurrent n=8 | Sequential n=24 | Concurrent n=24 |
+| --- | ---: | ---: | ---: | ---: |
+| 202 acceptance | 10.525 / 12.465 | 23.989 / 37.377 | 9.433 / 12.540 | 12.366 / 22.986 |
+| Terminal visible after acceptance | 113.364 / 114.503 | 125.170 / 129.983 | 111.862 / 115.854 | 116.701 / 121.519 |
+| Persisted creation to terminal | 17 / 21 | 35 / 42 | 15 / 23 | 21 / 34 |
+| Creation to processing claim | 10 / 12 | 29 / 36 | 9 / 13 | 16 / 29 |
+| Worker attempt | 7.738 / 15.866 | 6.333 / 9.635 | 6.302 / 11.371 | 5.117 / 6.674 |
+| Mock provider invocation | 0.072 / 0.143 | 0.047 / 0.069 | 0.056 / 0.199 | 0.047 / 0.116 |
+| Completed inspections/s | 8.067 | 25.819 | 8.183 | 30.095 |
+
+Queueing remains measurable at concurrency four, while most observed visibility
+latency now comes after persisted completion: wall-clock visibility-lag p50 was
+**100 / 93 ms** in run 200 and **100 / 97 ms** in the n=24 run. The unchanged
+100 ms poll interval explains this observation floor for jobs not completed on
+the first GET. Worker/provider times remain tiny synthetic-workload measurements;
+their variation is not evidence of an inference optimization.
+
+History regression observations (**p50 / p95 ms, n=10**, zero failures):
+
+| Page | Before 200 | After 200 | Before 1,000 | After 1,000 |
+| --- | ---: | ---: | ---: | ---: |
+| First, limit 20 | 6.484 / 6.963 | 8.072 / 9.574 | 6.817 / 10.398 | 8.322 / 12.998 |
+| After three pages, limit 20 | 6.125 / 8.664 | 7.207 / 9.439 | 6.411 / 8.192 | 7.337 / 9.968 |
+| First, limit 50 | 7.892 / 9.221 | 8.888 / 9.871 | 6.204 / 7.881 | 9.051 / 10.144 |
+| After three pages, limit 50 | 7.908 / 13.636 | 8.733 / 10.440 | 7.139 / 10.401 | 9.095 / 11.936 |
+
+These history medians are **0.825–2.847 ms higher**, not an improvement. History
+queries/indexes did not change. The later n=24 run's history medians ranged
+7.028–8.119 ms; the available samples do not attribute the difference to a
+specific component or establish a sustained regression. Recheck with larger,
+controlled read samples if this becomes a product concern. No unrelated tuning
+or CI performance threshold was added.
+
+The notification remains an optimization: overflow, Redis/database outages,
+shutdown and crashes can leave work for the unchanged five-second recovery
+cadence and bounded scans. The observed normal-path gains do not establish an
+outage SLA, exactly-once execution, or broader image/model performance.

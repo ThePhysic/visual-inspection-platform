@@ -18,10 +18,15 @@ async function workerRecovered() {
   await test.verifyOwnership();
   const id = await test.compose(['ps', '-q', '--no-trunc', 'worker']);
   if (!/^[a-f0-9]{64}$/.test(id)) throw new Error(`Expected one owned worker (identifier length ${id.length})`);
+  const initial = JSON.parse(await command('docker', ['inspect', '--format', '{{json .State.Health}}', id], { timeout: 5000 }));
+  const previousProbe = initial.Log?.at(-1)?.End;
   const deadline = Date.now() + 45_000;
   while (Date.now() < deadline) {
-    const health = await command('docker', ['inspect', '--format', '{{.State.Health.Status}}', id], { timeout: 5000 });
-    if (health === 'healthy') return;
+    const health = JSON.parse(await command('docker', ['inspect', '--format', '{{json .State.Health}}', id], { timeout: 5000 }));
+    const probe = health.Log?.at(-1);
+    // A cached healthy status may precede the outage's failing probe. Require
+    // a NEW successful observation, not merely the previous healthy status.
+    if (health.Status === 'healthy' && probe?.ExitCode === 0 && probe.End !== previousProbe) return;
     await pause(250); // Bounded state polling, not an assumed recovery delay.
   }
   throw new Error('Worker did not regain Docker health after dependency recovery');

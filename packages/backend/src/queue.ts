@@ -64,7 +64,8 @@ export class InspectionQueue {
     try { return await this.redis.ping() === 'PONG'; } catch { return false; }
   }
 
-  async dispatch(payload: InspectionJob, nextAttemptAt: Date, context: { requestId?: string; assetId?: string; retriedFrom?: string } = {}) {
+  async dispatch(payload: InspectionJob, nextAttemptAt: Date,
+    context: { requestId?: string; assetId?: string; retriedFrom?: string; dispatchSource?: 'prompt' | 'reconciliation' } = {}) {
     if (!await this.healthy()) throw new Error('REDIS_UNAVAILABLE');
     const id = jobId(payload);
     const job = await this.queue.getJob(id);

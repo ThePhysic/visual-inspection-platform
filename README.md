@@ -452,7 +452,10 @@ Invoke-RestMethod -Uri ("http://127.0.0.1:3001" + $inspection.url)
 `Location` header after MongoDB accepts the record. Provider configuration may be
 omitted or explicitly supplied as
 `{"providerId":"mock","modelId":"mock-detector","modelVersion":"1.0.0"}`.
-Redis dispatch happens independently. `GET /api/v1/inspections/:id` returns the
+After sending the response, the API gives its existing reconciler a bounded,
+coalesced prompt-dispatch hint. Redis dispatch happens independently; failed or
+dropped hints leave durable work for startup/periodic repair. The same applies to
+manual retries. `GET /api/v1/inspections/:id` returns the
 current lifecycle state and completed result or safe terminal failure details.
 The frontend polls this endpoint; there are no WebSockets.
 

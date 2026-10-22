@@ -1,0 +1,745 @@
+{
+  "schemaVersion": 1,
+  "simulatedInference": true,
+  "project": "vip-reliability-bb39fec798a4412d847a580a01631eb4",
+  "config": {
+    "count": 8,
+    "concurrency": 4,
+    "historySize": 1000,
+    "historySamples": 10,
+    "pollMs": 100,
+    "durationMs": 120000,
+    "keepLogs": true,
+    "ciMongoCompatibility": false
+  },
+  "startedAt": "2026-10-22T02:29:17.525Z",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "concurrency": 1,
+      "planned": 8,
+      "offered": 8,
+      "accepted": 8,
+      "completed": 8,
+      "failed": 0,
+      "errors": 0,
+      "acceptanceUnconfirmed": 0,
+      "timeouts": 0,
+      "notSubmitted": 0,
+      "incomplete": 0,
+      "elapsedMs": 991.6953120000001,
+      "completedPerSecond": 8.066993867164715,
+      "acceptanceMs": {
+        "samples": 8,
+        "p50": 10.525318000000198,
+        "p95": 12.46511200000009
+      },
+      "visibleAfterAcceptanceMs": {
+        "samples": 8,
+        "p50": 113.36368399999992,
+        "p95": 114.50252
+      },
+      "persistedTerminalMs": {
+        "samples": 8,
+        "p50": 17,
+        "p95": 21
+      },
+      "queueDelayMs": {
+        "samples": 8,
+        "p50": 10,
+        "p95": 12
+      },
+      "visibilityLagMs": {
+        "samples": 8,
+        "p50": 100,
+        "p95": 103
+      },
+      "offeringMs": 880.2493710000003,
+      "offeredRequestsPerSecondDuringSubmissionWindow": 9.088333674026558,
+      "acceptedPerSecondDuringSubmissionWindow": 9.088333674026558,
+      "samples": [
+        {
+          "status": "completed",
+          "startedMs": 1554.726675,
+          "submissionFinishedMs": 1565.251993,
+          "id": "6ad974fecddb4be78dc9b030",
+          "acceptanceMs": 10.525318000000198,
+          "visibleAfterAcceptanceMs": 114.4757259999999,
+          "persistedTerminalMs": 21,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 98
+        },
+        {
+          "status": "completed",
+          "startedMs": 1679.756825,
+          "submissionFinishedMs": 1690.561498,
+          "id": "6ad974fecddb4be78dc9b031",
+          "acceptanceMs": 10.804673000000093,
+          "visibleAfterAcceptanceMs": 114.38969100000008,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 1805.028449,
+          "submissionFinishedMs": 1817.493561,
+          "id": "6ad974fecddb4be78dc9b032",
+          "acceptanceMs": 12.46511200000009,
+          "visibleAfterAcceptanceMs": 113.70221199999992,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 1931.222334,
+          "submissionFinishedMs": 1940.093735,
+          "id": "6ad974fecddb4be78dc9b033",
+          "acceptanceMs": 8.871400999999878,
+          "visibleAfterAcceptanceMs": 113.24530300000015,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 2053.364016,
+          "submissionFinishedMs": 2063.11443,
+          "id": "6ad974fecddb4be78dc9b034",
+          "acceptanceMs": 9.750414000000092,
+          "visibleAfterAcceptanceMs": 114.50252,
+          "persistedTerminalMs": 16,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 103
+        },
+        {
+          "status": "completed",
+          "startedMs": 2177.651597,
+          "submissionFinishedMs": 2189.606616,
+          "id": "6ad974fecddb4be78dc9b035",
+          "acceptanceMs": 11.955018999999993,
+          "visibleAfterAcceptanceMs": 113.36368399999992,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 2302.99051,
+          "submissionFinishedMs": 2312.506924,
+          "id": "6ad974fecddb4be78dc9b036",
+          "acceptanceMs": 9.516413999999713,
+          "visibleAfterAcceptanceMs": 110.73900700000013,
+          "persistedTerminalMs": 20,
+          "queueDelayMs": 12,
+          "visibilityLagMs": 95
+        },
+        {
+          "status": "completed",
+          "startedMs": 2423.263305,
+          "submissionFinishedMs": 2434.976046,
+          "id": "6ad974ffcddb4be78dc9b037",
+          "acceptanceMs": 11.712741000000278,
+          "visibleAfterAcceptanceMs": 111.30312399999957,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 100
+        }
+      ],
+      "worker": {
+        "loggedAttempts": 8,
+        "committedCompletions": 8,
+        "attemptMs": {
+          "samples": 8,
+          "p50": 7.7376750000003085,
+          "p95": 15.865888999998788
+        },
+        "providerMs": {
+          "samples": 8,
+          "p50": 0.07180999999945925,
+          "p95": 0.14290799999980663
+        }
+      }
+    },
+    {
+      "name": "moderate",
+      "concurrency": 4,
+      "planned": 8,
+      "offered": 8,
+      "accepted": 8,
+      "completed": 8,
+      "failed": 0,
+      "errors": 0,
+      "acceptanceUnconfirmed": 0,
+      "timeouts": 0,
+      "notSubmitted": 0,
+      "incomplete": 0,
+      "elapsedMs": 309.84412699999984,
+      "completedPerSecond": 25.819434040781427,
+      "acceptanceMs": {
+        "samples": 8,
+        "p50": 23.988934999999856,
+        "p95": 37.37660300000016
+      },
+      "visibleAfterAcceptanceMs": {
+        "samples": 8,
+        "p50": 125.16960400000016,
+        "p95": 129.982669
+      },
+      "persistedTerminalMs": {
+        "samples": 8,
+        "p50": 35,
+        "p95": 42
+      },
+      "queueDelayMs": {
+        "samples": 8,
+        "p50": 29,
+        "p95": 36
+      },
+      "visibilityLagMs": {
+        "samples": 8,
+        "p50": 94,
+        "p95": 107
+      },
+      "offeringMs": 190.341539,
+      "offeredRequestsPerSecondDuringSubmissionWindow": 42.029711654270066,
+      "acceptedPerSecondDuringSubmissionWindow": 42.029711654270066,
+      "samples": [
+        {
+          "status": "completed",
+          "startedMs": 2547.076121,
+          "submissionFinishedMs": 2566.863732,
+          "id": "6ad974ffcddb4be78dc9b039",
+          "acceptanceMs": 19.787610999999742,
+          "visibleAfterAcceptanceMs": 129.982669,
+          "persistedTerminalMs": 42,
+          "queueDelayMs": 36,
+          "visibilityLagMs": 94
+        },
+        {
+          "status": "completed",
+          "startedMs": 2547.456852,
+          "submissionFinishedMs": 2574.74821,
+          "id": "6ad974ffcddb4be78dc9b03a",
+          "acceptanceMs": 27.2913580000004,
+          "visibleAfterAcceptanceMs": 127.74103999999988,
+          "persistedTerminalMs": 40,
+          "queueDelayMs": 35,
+          "visibilityLagMs": 91
+        },
+        {
+          "status": "completed",
+          "startedMs": 2547.744762,
+          "submissionFinishedMs": 2565.238029,
+          "id": "6ad974ffcddb4be78dc9b038",
+          "acceptanceMs": 17.493267000000287,
+          "visibleAfterAcceptanceMs": 124.64021199999979,
+          "persistedTerminalMs": 32,
+          "queueDelayMs": 25,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 2547.966403,
+          "submissionFinishedMs": 2585.343006,
+          "id": "6ad974ffcddb4be78dc9b03b",
+          "acceptanceMs": 37.37660300000016,
+          "visibleAfterAcceptanceMs": 125.16960400000016,
+          "persistedTerminalMs": 42,
+          "queueDelayMs": 36,
+          "visibilityLagMs": 89
+        },
+        {
+          "status": "completed",
+          "startedMs": 2689.907889,
+          "submissionFinishedMs": 2704.286637,
+          "id": "6ad974ffcddb4be78dc9b03c",
+          "acceptanceMs": 14.378748000000087,
+          "visibleAfterAcceptanceMs": 128.33963300000005,
+          "persistedTerminalMs": 27,
+          "queueDelayMs": 20,
+          "visibilityLagMs": 107
+        },
+        {
+          "status": "completed",
+          "startedMs": 2696.870528,
+          "submissionFinishedMs": 2720.859463,
+          "id": "6ad974ffcddb4be78dc9b03d",
+          "acceptanceMs": 23.988934999999856,
+          "visibleAfterAcceptanceMs": 128.76033000000007,
+          "persistedTerminalMs": 31,
+          "queueDelayMs": 25,
+          "visibilityLagMs": 103
+        },
+        {
+          "status": "completed",
+          "startedMs": 2702.505091,
+          "submissionFinishedMs": 2729.720572,
+          "id": "6ad974ffcddb4be78dc9b03e",
+          "acceptanceMs": 27.21548100000018,
+          "visibleAfterAcceptanceMs": 124.24181099999987,
+          "persistedTerminalMs": 35,
+          "queueDelayMs": 29,
+          "visibilityLagMs": 96
+        },
+        {
+          "status": "completed",
+          "startedMs": 2710.540895,
+          "submissionFinishedMs": 2737.41766,
+          "id": "6ad974ffcddb4be78dc9b03f",
+          "acceptanceMs": 26.876764999999978,
+          "visibleAfterAcceptanceMs": 119.45915299999979,
+          "persistedTerminalMs": 37,
+          "queueDelayMs": 30,
+          "visibilityLagMs": 87
+        }
+      ],
+      "worker": {
+        "loggedAttempts": 8,
+        "committedCompletions": 8,
+        "attemptMs": {
+          "samples": 8,
+          "p50": 6.333352999999988,
+          "p95": 9.634825000001001
+        },
+        "providerMs": {
+          "samples": 8,
+          "p50": 0.04703200000039942,
+          "p95": 0.06947500000023865
+        }
+      }
+    }
+  ],
+  "environment": {
+    "platform": "linux",
+    "release": "6.18.54.1-microsoft-standard-WSL2",
+    "arch": "x64",
+    "node": "v24.22.0",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics",
+    "availableParallelism": 16,
+    "totalMemoryBytes": 16353484800,
+    "mongodb": "8.0.34",
+    "redis": "8.2.8",
+    "workerConcurrency": 1,
+    "executionPolicy": {
+      "attemptTimeoutMs": 10000,
+      "leaseMs": 30000,
+      "backoffMs": 1000,
+      "reconcileIntervalMs": 5000,
+      "batchSize": 50
+    },
+    "fixture": {
+      "format": "png",
+      "inputBytes": 189,
+      "inputSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+      "canonicalBytes": 189,
+      "canonicalSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+      "width": 64,
+      "height": 64
+    },
+    "indexes": [
+      {
+        "name": "_id_",
+        "key": {
+          "_id": 1
+        }
+      },
+      {
+        "name": "requestScope_1_requestKey_1",
+        "key": {
+          "requestScope": 1,
+          "requestKey": 1
+        }
+      },
+      {
+        "name": "createdAt_-1__id_-1",
+        "key": {
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "status_1_createdAt_-1__id_-1",
+        "key": {
+          "status": 1,
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "retriedFrom_1_createdAt_-1__id_-1",
+        "key": {
+          "retriedFrom": 1,
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "status_1_updatedAt_1",
+        "key": {
+          "status": 1,
+          "updatedAt": 1
+        }
+      }
+    ]
+  },
+  "firstPostStartupInspection": {
+    "status": "completed",
+    "startedMs": 1003.606125,
+    "submissionFinishedMs": 1037.580824,
+    "id": "6ad974fdcddb4be78dc9b02d",
+    "acceptanceMs": 33.97469899999987,
+    "visibleAfterAcceptanceMs": 257.633188,
+    "persistedTerminalMs": 75,
+    "queueDelayMs": 45,
+    "visibilityLagMs": 199
+  },
+  "warmup": [
+    {
+      "status": "completed",
+      "startedMs": 1295.356129,
+      "submissionFinishedMs": 1307.520802,
+      "id": "6ad974fdcddb4be78dc9b02e",
+      "acceptanceMs": 12.164672999999993,
+      "visibleAfterAcceptanceMs": 116.68956600000001,
+      "persistedTerminalMs": 21,
+      "queueDelayMs": 12,
+      "visibilityLagMs": 100
+    },
+    {
+      "status": "completed",
+      "startedMs": 1424.240617,
+      "submissionFinishedMs": 1436.757528,
+      "id": "6ad974fecddb4be78dc9b02f",
+      "acceptanceMs": 12.516911000000164,
+      "visibleAfterAcceptanceMs": 117.85576700000001,
+      "persistedTerminalMs": 21,
+      "queueDelayMs": 12,
+      "visibilityLagMs": 101
+    }
+  ],
+  "history": {
+    "actualRecords": 1000,
+    "seededRecords": 981,
+    "cases": [
+      {
+        "name": "first",
+        "limit": 20,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 8.444119000000228,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.124628999999914,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.505122000000028,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 10.592160999999578,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.9920680000000175,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 12.997691000000032,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.321983000000273,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.580179000000044,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.797394000000168,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.978065000000242,
+            "returned": 20
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 8.321983000000273,
+          "p95": 12.997691000000032
+        }
+      },
+      {
+        "name": "afterThreePages",
+        "limit": 20,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 9.46093699999983,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.245789000000059,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.0959569999999985,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.967583999999988,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.437340999999833,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.344861000000037,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.551719000000048,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.723572000000331,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.337225000000217,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.967313999999988,
+            "returned": 20
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 7.337225000000217,
+          "p95": 9.967583999999988
+        }
+      },
+      {
+        "name": "first",
+        "limit": 50,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 9.917097000000012,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.06253199999992,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.051372999999785,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.545364999999947,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.101114000000052,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.24769699999979,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.124443000000156,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.604456000000027,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 10.14373599999999,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.209650999999667,
+            "returned": 50
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 9.051372999999785,
+          "p95": 10.14373599999999
+        }
+      },
+      {
+        "name": "afterThreePages",
+        "limit": 50,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 8.796513000000232,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.981989999999769,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.983452999999827,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.297461999999996,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.09528599999976,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 11.935675000000174,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 11.262211999999636,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.38677400000006,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.229711999999836,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.451035000000047,
+            "returned": 50
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 9.09528599999976,
+          "p95": 11.935675000000174
+        }
+      }
+    ]
+  },
+  "finishedAt": "2026-10-22T02:29:20.435Z",
+  "host": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics     ",
+    "memoryBytes": 33515835392,
+    "node": "v24.22.0"
+  },
+  "docker": {
+    "serverVersion": "29.9.1",
+    "kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "cpus": 16,
+    "memoryBytes": 16353484800,
+    "operatingSystem": "Docker Desktop"
+  },
+  "containers": [
+    {
+      "service": "api",
+      "imageId": "sha256:f8f4ea8a934f0024521299d1252f0d5bd591e2fdcf7230f4a41a306a5670cde8",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "mongodb",
+      "imageId": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "redis",
+      "imageId": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "web",
+      "imageId": "sha256:a5260d36e20bb2c6a8f5d0884c7981ef1432360a3b0739fdbfff7c3a2decd775",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "worker",
+      "imageId": "sha256:5b952f7e45ef9ad5f22a614e4305b63cefb903dbbc82315f31c341e3f1e77940",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    }
+  ],
+  "source": {
+    "head": "84e41b219ac8758ba45c2f156b00f37f95fbffdb",
+    "workingTreeDirty": true
+  },
+  "metrics": {
+    "api": "# HELP vip_http_requests_total Completed HTTP responses\n# TYPE vip_http_requests_total counter\nvip_http_requests_total{route=\"/api/v1/ready\",method=\"GET\",status_class=\"2xx\"} 2\nvip_http_requests_total{route=\"/api/v1/assets\",method=\"POST\",status_class=\"2xx\"} 1\nvip_http_requests_total{route=\"/api/v1/inspections\",method=\"POST\",status_class=\"2xx\"} 19\nvip_http_requests_total{route=\"/api/v1/inspections/:id\",method=\"GET\",status_class=\"2xx\"} 38\nvip_http_requests_total{route=\"/api/v1/inspections\",method=\"GET\",status_class=\"2xx\"} 46\n\n# HELP vip_http_request_duration_seconds HTTP response duration, including response streaming\n# TYPE vip_http_request_duration_seconds histogram\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/ready\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/ready\",method=\"GET\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/ready\",method=\"GET\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_sum{route=\"/api/v1/ready\",method=\"GET\"} 0.020852722000000542\nvip_http_request_duration_seconds_count{route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_sum{route=\"/api/v1/assets\",method=\"POST\"} 0.04670327099999849\nvip_http_request_duration_seconds_count{route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections\",method=\"POST\"} 10\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections\",method=\"POST\"} 18\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections\",method=\"POST\"} 0.22625916599999615\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 28\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 36\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 36\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 37\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections/:id\",method=\"GET\"} 0.29121884399999903\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections/:id\",method=\"GET\"} 38\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections\",method=\"GET\"} 5\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections\",method=\"GET\"} 44\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections\",method=\"GET\"} 45\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections\",method=\"GET\"} 0.3303795390000122\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections\",method=\"GET\"} 46\n\n# HELP vip_http_errors_total HTTP error responses, once per response\n# TYPE vip_http_errors_total counter\n\n# HELP vip_inspection_attempts_started_total Successfully claimed application attempts\n# TYPE vip_inspection_attempts_started_total counter\nvip_inspection_attempts_started_total 0\n\n# HELP vip_inspection_attempts_finished_total Observed attempt outcomes; process crashes may leave starts unmatched\n# TYPE vip_inspection_attempts_finished_total counter\n\n# HELP vip_inspection_attempt_duration_seconds Claimed attempt execution duration\n# TYPE vip_inspection_attempt_duration_seconds histogram\n\n# HELP vip_provider_duration_seconds Observed provider invocation duration, distinct from deterministic result.durationMs\n# TYPE vip_provider_duration_seconds histogram\n\n# HELP vip_inspection_deliveries_ignored_total Invalid or unclaimed deliveries that execute no attempt\n# TYPE vip_inspection_deliveries_ignored_total counter\n\n# HELP vip_inspection_failures_total Committed retry/terminal failure transitions\n# TYPE vip_inspection_failures_total counter\n\n# HELP vip_inspection_terminal_latency_seconds Persisted creation to terminal timestamp on acknowledged transition\n# TYPE vip_inspection_terminal_latency_seconds histogram\n\n# HELP vip_inspection_terminals_total Acknowledged authoritative terminal transitions\n# TYPE vip_inspection_terminals_total counter\n\n# HELP vip_dispatch_total Dispatch observations, not unique jobs or inspections\n# TYPE vip_dispatch_total counter\nvip_dispatch_total{outcome=\"added\",source=\"prompt\"} 19\n\n# HELP vip_reconciliation_total Reconciliation pass outcome\n# TYPE vip_reconciliation_total counter\nvip_reconciliation_total{outcome=\"ok\"} 5\n\n# HELP vip_lease_repairs_total Acknowledged expired lease repairs\n# TYPE vip_lease_repairs_total counter",
+    "worker": "# HELP vip_http_requests_total Completed HTTP responses\n# TYPE vip_http_requests_total counter\n\n# HELP vip_http_request_duration_seconds HTTP response duration, including response streaming\n# TYPE vip_http_request_duration_seconds histogram\n\n# HELP vip_http_errors_total HTTP error responses, once per response\n# TYPE vip_http_errors_total counter\n\n# HELP vip_inspection_attempts_started_total Successfully claimed application attempts\n# TYPE vip_inspection_attempts_started_total counter\nvip_inspection_attempts_started_total 19\n\n# HELP vip_inspection_attempts_finished_total Observed attempt outcomes; process crashes may leave starts unmatched\n# TYPE vip_inspection_attempts_finished_total counter\nvip_inspection_attempts_finished_total{outcome=\"completed\"} 19\n\n# HELP vip_inspection_attempt_duration_seconds Claimed attempt execution duration\n# TYPE vip_inspection_attempt_duration_seconds histogram\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.001\",outcome=\"completed\"} 0\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.005\",outcome=\"completed\"} 0\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.01\",outcome=\"completed\"} 16\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.025\",outcome=\"completed\"} 18\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.05\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.1\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.25\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.5\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"1\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"2.5\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"5\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"10\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"30\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"60\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"+Inf\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_sum{outcome=\"completed\"} 0.17304696600000535\nvip_inspection_attempt_duration_seconds_count{outcome=\"completed\"} 19\n\n# HELP vip_provider_duration_seconds Observed provider invocation duration, distinct from deterministic result.durationMs\n# TYPE vip_provider_duration_seconds histogram\nvip_provider_duration_seconds_bucket{le=\"0.001\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.005\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.01\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.025\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.05\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.1\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.25\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.5\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"1\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"2.5\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"5\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"10\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"30\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"60\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"+Inf\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_sum{outcome=\"returned\"} 0.001783235999993849\nvip_provider_duration_seconds_count{outcome=\"returned\"} 19\n\n# HELP vip_inspection_deliveries_ignored_total Invalid or unclaimed deliveries that execute no attempt\n# TYPE vip_inspection_deliveries_ignored_total counter\n\n# HELP vip_inspection_failures_total Committed retry/terminal failure transitions\n# TYPE vip_inspection_failures_total counter\n\n# HELP vip_inspection_terminal_latency_seconds Persisted creation to terminal timestamp on acknowledged transition\n# TYPE vip_inspection_terminal_latency_seconds histogram\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.001\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.005\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.01\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.025\",status=\"completed\"} 10\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.05\",status=\"completed\"} 18\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.1\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.25\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.5\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"1\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"2.5\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"5\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"10\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"30\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"60\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"+Inf\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_sum{status=\"completed\"} 0.545\nvip_inspection_terminal_latency_seconds_count{status=\"completed\"} 19\n\n# HELP vip_inspection_terminals_total Acknowledged authoritative terminal transitions\n# TYPE vip_inspection_terminals_total counter\nvip_inspection_terminals_total{status=\"completed\"} 19\n\n# HELP vip_dispatch_total Dispatch observations, not unique jobs or inspections\n# TYPE vip_dispatch_total counter\n\n# HELP vip_reconciliation_total Reconciliation pass outcome\n# TYPE vip_reconciliation_total counter\n\n# HELP vip_lease_repairs_total Acknowledged expired lease repairs\n# TYPE vip_lease_repairs_total counter"
+  }
+}

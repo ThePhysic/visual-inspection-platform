@@ -1,0 +1,1097 @@
+{
+  "schemaVersion": 1,
+  "simulatedInference": true,
+  "project": "vip-reliability-82da502056b7401c93385972d2bf7fe3",
+  "config": {
+    "count": 24,
+    "concurrency": 4,
+    "historySize": 1000,
+    "historySamples": 10,
+    "pollMs": 100,
+    "durationMs": 120000,
+    "keepLogs": true,
+    "ciMongoCompatibility": false
+  },
+  "startedAt": "2026-10-22T02:30:40.393Z",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "concurrency": 1,
+      "planned": 24,
+      "offered": 24,
+      "accepted": 24,
+      "completed": 24,
+      "failed": 0,
+      "errors": 0,
+      "acceptanceUnconfirmed": 0,
+      "timeouts": 0,
+      "notSubmitted": 0,
+      "incomplete": 0,
+      "elapsedMs": 2932.8320730000005,
+      "completedPerSecond": 8.183216564271389,
+      "acceptanceMs": {
+        "samples": 24,
+        "p50": 9.433100999999624,
+        "p95": 12.540182000000186
+      },
+      "visibleAfterAcceptanceMs": {
+        "samples": 24,
+        "p50": 111.86187099999961,
+        "p95": 115.85445500000014
+      },
+      "persistedTerminalMs": {
+        "samples": 24,
+        "p50": 15,
+        "p95": 23
+      },
+      "queueDelayMs": {
+        "samples": 24,
+        "p50": 9,
+        "p95": 13
+      },
+      "visibilityLagMs": {
+        "samples": 24,
+        "p50": 100,
+        "p95": 102
+      },
+      "offeringMs": 2821.7506260000005,
+      "offeredRequestsPerSecondDuringSubmissionWindow": 8.505358261945858,
+      "acceptedPerSecondDuringSubmissionWindow": 8.505358261945858,
+      "samples": [
+        {
+          "status": "completed",
+          "startedMs": 1561.653449,
+          "submissionFinishedMs": 1576.725759,
+          "id": "6ad97551dc211285710c5e0f",
+          "acceptanceMs": 15.072310000000016,
+          "visibleAfterAcceptanceMs": 117.33686899999998,
+          "persistedTerminalMs": 20,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 103
+        },
+        {
+          "status": "completed",
+          "startedMs": 1694.095001,
+          "submissionFinishedMs": 1706.629274,
+          "id": "6ad97551dc211285710c5e10",
+          "acceptanceMs": 12.534272999999985,
+          "visibleAfterAcceptanceMs": 114.6080350000002,
+          "persistedTerminalMs": 19,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 1821.260825,
+          "submissionFinishedMs": 1832.172968,
+          "id": "6ad97551dc211285710c5e11",
+          "acceptanceMs": 10.912143000000015,
+          "visibleAfterAcceptanceMs": 112.73453499999982,
+          "persistedTerminalMs": 19,
+          "queueDelayMs": 12,
+          "visibilityLagMs": 98
+        },
+        {
+          "status": "completed",
+          "startedMs": 1944.946429,
+          "submissionFinishedMs": 1954.522872,
+          "id": "6ad97551dc211285710c5e12",
+          "acceptanceMs": 9.576442999999927,
+          "visibleAfterAcceptanceMs": 115.85445500000014,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 9,
+          "visibilityLagMs": 102
+        },
+        {
+          "status": "completed",
+          "startedMs": 2070.412616,
+          "submissionFinishedMs": 2082.253099,
+          "id": "6ad97551dc211285710c5e13",
+          "acceptanceMs": 11.84048299999995,
+          "visibleAfterAcceptanceMs": 112.6914240000001,
+          "persistedTerminalMs": 21,
+          "queueDelayMs": 12,
+          "visibilityLagMs": 96
+        },
+        {
+          "status": "completed",
+          "startedMs": 2194.983469,
+          "submissionFinishedMs": 2207.523651,
+          "id": "6ad97551dc211285710c5e14",
+          "acceptanceMs": 12.540182000000186,
+          "visibleAfterAcceptanceMs": 112.21769700000004,
+          "persistedTerminalMs": 26,
+          "queueDelayMs": 12,
+          "visibilityLagMs": 91
+        },
+        {
+          "status": "completed",
+          "startedMs": 2319.769714,
+          "submissionFinishedMs": 2327.948536,
+          "id": "6ad97551dc211285710c5e15",
+          "acceptanceMs": 8.178821999999855,
+          "visibleAfterAcceptanceMs": 111.26725800000031,
+          "persistedTerminalMs": 15,
+          "queueDelayMs": 8,
+          "visibilityLagMs": 99
+        },
+        {
+          "status": "completed",
+          "startedMs": 2439.235352,
+          "submissionFinishedMs": 2450.940355,
+          "id": "6ad97551dc211285710c5e16",
+          "acceptanceMs": 11.705003000000033,
+          "visibleAfterAcceptanceMs": 113.56870600000002,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 102
+        },
+        {
+          "status": "completed",
+          "startedMs": 2564.535412,
+          "submissionFinishedMs": 2573.968513,
+          "id": "6ad97552dc211285710c5e17",
+          "acceptanceMs": 9.433100999999624,
+          "visibleAfterAcceptanceMs": 111.24694100000033,
+          "persistedTerminalMs": 16,
+          "queueDelayMs": 9,
+          "visibilityLagMs": 99
+        },
+        {
+          "status": "completed",
+          "startedMs": 2685.302103,
+          "submissionFinishedMs": 2696.308084,
+          "id": "6ad97552dc211285710c5e18",
+          "acceptanceMs": 11.005980999999792,
+          "visibleAfterAcceptanceMs": 112.93452100000013,
+          "persistedTerminalMs": 15,
+          "queueDelayMs": 9,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 2809.293224,
+          "submissionFinishedMs": 2818.916618,
+          "id": "6ad97552dc211285710c5e19",
+          "acceptanceMs": 9.62339400000019,
+          "visibleAfterAcceptanceMs": 111.33153399999992,
+          "persistedTerminalMs": 13,
+          "queueDelayMs": 8,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 2930.26738,
+          "submissionFinishedMs": 2940.352407,
+          "id": "6ad97552dc211285710c5e1a",
+          "acceptanceMs": 10.085027000000082,
+          "visibleAfterAcceptanceMs": 115.50043099999994,
+          "persistedTerminalMs": 23,
+          "queueDelayMs": 14,
+          "visibilityLagMs": 97
+        },
+        {
+          "status": "completed",
+          "startedMs": 3055.870833,
+          "submissionFinishedMs": 3067.318431,
+          "id": "6ad97552dc211285710c5e1b",
+          "acceptanceMs": 11.447598000000198,
+          "visibleAfterAcceptanceMs": 112.55695999999989,
+          "persistedTerminalMs": 19,
+          "queueDelayMs": 13,
+          "visibilityLagMs": 98
+        },
+        {
+          "status": "completed",
+          "startedMs": 3179.893316,
+          "submissionFinishedMs": 3187.616747,
+          "id": "6ad97552dc211285710c5e1c",
+          "acceptanceMs": 7.723430999999891,
+          "visibleAfterAcceptanceMs": 110.92977000000019,
+          "persistedTerminalMs": 14,
+          "queueDelayMs": 7,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 3298.563781,
+          "submissionFinishedMs": 3306.099646,
+          "id": "6ad97552dc211285710c5e1d",
+          "acceptanceMs": 7.535865000000285,
+          "visibleAfterAcceptanceMs": 110.53334499999983,
+          "persistedTerminalMs": 15,
+          "queueDelayMs": 7,
+          "visibilityLagMs": 99
+        },
+        {
+          "status": "completed",
+          "startedMs": 3416.650124,
+          "submissionFinishedMs": 3424.046166,
+          "id": "6ad97552dc211285710c5e1e",
+          "acceptanceMs": 7.396042000000307,
+          "visibleAfterAcceptanceMs": 112.14726799999971,
+          "persistedTerminalMs": 16,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 99
+        },
+        {
+          "status": "completed",
+          "startedMs": 3536.253952,
+          "submissionFinishedMs": 3545.701895,
+          "id": "6ad97553dc211285710c5e1f",
+          "acceptanceMs": 9.447943000000123,
+          "visibleAfterAcceptanceMs": 111.98239699999976,
+          "persistedTerminalMs": 15,
+          "queueDelayMs": 9,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 3657.698801,
+          "submissionFinishedMs": 3665.965702,
+          "id": "6ad97553dc211285710c5e20",
+          "acceptanceMs": 8.266900999999962,
+          "visibleAfterAcceptanceMs": 110.03409099999999,
+          "persistedTerminalMs": 12,
+          "queueDelayMs": 7,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 3776.019792,
+          "submissionFinishedMs": 3784.798992,
+          "id": "6ad97553dc211285710c5e21",
+          "acceptanceMs": 8.779199999999946,
+          "visibleAfterAcceptanceMs": 111.23161200000004,
+          "persistedTerminalMs": 14,
+          "queueDelayMs": 9,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 3896.047917,
+          "submissionFinishedMs": 3905.142568,
+          "id": "6ad97553dc211285710c5e22",
+          "acceptanceMs": 9.09465100000034,
+          "visibleAfterAcceptanceMs": 111.61755399999993,
+          "persistedTerminalMs": 14,
+          "queueDelayMs": 8,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 4016.775702,
+          "submissionFinishedMs": 4025.041544,
+          "id": "6ad97553dc211285710c5e23",
+          "acceptanceMs": 8.265842000000248,
+          "visibleAfterAcceptanceMs": 111.86187099999961,
+          "persistedTerminalMs": 14,
+          "queueDelayMs": 8,
+          "visibilityLagMs": 101
+        },
+        {
+          "status": "completed",
+          "startedMs": 4137.017959,
+          "submissionFinishedMs": 4145.470896,
+          "id": "6ad97553dc211285710c5e24",
+          "acceptanceMs": 8.45293700000002,
+          "visibleAfterAcceptanceMs": 111.43969000000016,
+          "persistedTerminalMs": 12,
+          "queueDelayMs": 7,
+          "visibilityLagMs": 102
+        },
+        {
+          "status": "completed",
+          "startedMs": 4256.934362,
+          "submissionFinishedMs": 4265.072992,
+          "id": "6ad97553dc211285710c5e25",
+          "acceptanceMs": 8.138630000000376,
+          "visibleAfterAcceptanceMs": 110.55474999999933,
+          "persistedTerminalMs": 12,
+          "queueDelayMs": 7,
+          "visibilityLagMs": 102
+        },
+        {
+          "status": "completed",
+          "startedMs": 4375.643833,
+          "submissionFinishedMs": 4383.404075,
+          "id": "6ad97553dc211285710c5e26",
+          "acceptanceMs": 7.760242000000289,
+          "visibleAfterAcceptanceMs": 110.84060699999918,
+          "persistedTerminalMs": 11,
+          "queueDelayMs": 7,
+          "visibilityLagMs": 102
+        }
+      ],
+      "worker": {
+        "loggedAttempts": 24,
+        "committedCompletions": 24,
+        "attemptMs": {
+          "samples": 24,
+          "p50": 6.301564000001235,
+          "p95": 11.370586999999432
+        },
+        "providerMs": {
+          "samples": 24,
+          "p50": 0.05623999999988882,
+          "p95": 0.19893899999988207
+        }
+      }
+    },
+    {
+      "name": "moderate",
+      "concurrency": 4,
+      "planned": 24,
+      "offered": 24,
+      "accepted": 24,
+      "completed": 24,
+      "failed": 0,
+      "errors": 0,
+      "acceptanceUnconfirmed": 0,
+      "timeouts": 0,
+      "notSubmitted": 0,
+      "incomplete": 0,
+      "elapsedMs": 797.477554,
+      "completedPerSecond": 30.094890921531814,
+      "acceptanceMs": {
+        "samples": 24,
+        "p50": 12.36589400000048,
+        "p95": 22.985821999999644
+      },
+      "visibleAfterAcceptanceMs": {
+        "samples": 24,
+        "p50": 116.70093600000018,
+        "p95": 121.51890000000003
+      },
+      "persistedTerminalMs": {
+        "samples": 24,
+        "p50": 21,
+        "p95": 34
+      },
+      "queueDelayMs": {
+        "samples": 24,
+        "p50": 16,
+        "p95": 29
+      },
+      "visibilityLagMs": {
+        "samples": 24,
+        "p50": 97,
+        "p95": 107
+      },
+      "offeringMs": 686.4982659999996,
+      "offeredRequestsPerSecondDuringSubmissionWindow": 34.96003003742476,
+      "acceptedPerSecondDuringSubmissionWindow": 34.96003003742476,
+      "samples": [
+        {
+          "status": "completed",
+          "startedMs": 4495.432713,
+          "submissionFinishedMs": 4507.708618,
+          "id": "6ad97553dc211285710c5e27",
+          "acceptanceMs": 12.275904999999511,
+          "visibleAfterAcceptanceMs": 121.14024100000006,
+          "persistedTerminalMs": 29,
+          "queueDelayMs": 23,
+          "visibilityLagMs": 97
+        },
+        {
+          "status": "completed",
+          "startedMs": 4495.829138,
+          "submissionFinishedMs": 4520.158114,
+          "id": "6ad97554dc211285710c5e2a",
+          "acceptanceMs": 24.328975999999784,
+          "visibleAfterAcceptanceMs": 120.08115100000032,
+          "persistedTerminalMs": 40,
+          "queueDelayMs": 35,
+          "visibilityLagMs": 85
+        },
+        {
+          "status": "completed",
+          "startedMs": 4496.159964,
+          "submissionFinishedMs": 4510.585849,
+          "id": "6ad97553dc211285710c5e28",
+          "acceptanceMs": 14.425884999999653,
+          "visibleAfterAcceptanceMs": 120.09036000000015,
+          "persistedTerminalMs": 33,
+          "queueDelayMs": 29,
+          "visibilityLagMs": 92
+        },
+        {
+          "status": "completed",
+          "startedMs": 4496.528725,
+          "submissionFinishedMs": 4519.514547,
+          "id": "6ad97554dc211285710c5e29",
+          "acceptanceMs": 22.985821999999644,
+          "visibleAfterAcceptanceMs": 118.14544900000055,
+          "persistedTerminalMs": 34,
+          "queueDelayMs": 29,
+          "visibilityLagMs": 91
+        },
+        {
+          "status": "completed",
+          "startedMs": 4628.875822,
+          "submissionFinishedMs": 4638.53728,
+          "id": "6ad97554dc211285710c5e2b",
+          "acceptanceMs": 9.661457999999584,
+          "visibleAfterAcceptanceMs": 121.51890000000003,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 13,
+          "visibilityLagMs": 108
+        },
+        {
+          "status": "completed",
+          "startedMs": 4630.688473,
+          "submissionFinishedMs": 4645.751237,
+          "id": "6ad97554dc211285710c5e2c",
+          "acceptanceMs": 15.062764000000243,
+          "visibleAfterAcceptanceMs": 119.22753299999931,
+          "persistedTerminalMs": 26,
+          "queueDelayMs": 20,
+          "visibilityLagMs": 97
+        },
+        {
+          "status": "completed",
+          "startedMs": 4637.673853,
+          "submissionFinishedMs": 4653.057903,
+          "id": "6ad97554dc211285710c5e2d",
+          "acceptanceMs": 15.384049999999661,
+          "visibleAfterAcceptanceMs": 116.07680700000037,
+          "persistedTerminalMs": 25,
+          "queueDelayMs": 21,
+          "visibilityLagMs": 94
+        },
+        {
+          "status": "completed",
+          "startedMs": 4640.253052,
+          "submissionFinishedMs": 4660.000718,
+          "id": "6ad97554dc211285710c5e2e",
+          "acceptanceMs": 19.74766600000021,
+          "visibleAfterAcceptanceMs": 115.5726139999997,
+          "persistedTerminalMs": 26,
+          "queueDelayMs": 21,
+          "visibilityLagMs": 93
+        },
+        {
+          "status": "completed",
+          "startedMs": 4760.076901,
+          "submissionFinishedMs": 4770.387418,
+          "id": "6ad97554dc211285710c5e2f",
+          "acceptanceMs": 10.31051699999989,
+          "visibleAfterAcceptanceMs": 122.96407499999987,
+          "persistedTerminalMs": 22,
+          "queueDelayMs": 16,
+          "visibilityLagMs": 104
+        },
+        {
+          "status": "completed",
+          "startedMs": 4764.99408,
+          "submissionFinishedMs": 4780.334214,
+          "id": "6ad97554dc211285710c5e30",
+          "acceptanceMs": 15.340134000000035,
+          "visibleAfterAcceptanceMs": 119.47915599999942,
+          "persistedTerminalMs": 31,
+          "queueDelayMs": 25,
+          "visibilityLagMs": 93
+        },
+        {
+          "status": "completed",
+          "startedMs": 4769.151143,
+          "submissionFinishedMs": 4789.319099,
+          "id": "6ad97554dc211285710c5e31",
+          "acceptanceMs": 20.16795600000023,
+          "visibleAfterAcceptanceMs": 121.0538719999995,
+          "persistedTerminalMs": 30,
+          "queueDelayMs": 25,
+          "visibilityLagMs": 95
+        },
+        {
+          "status": "completed",
+          "startedMs": 4775.59797,
+          "submissionFinishedMs": 4796.930792,
+          "id": "6ad97554dc211285710c5e32",
+          "acceptanceMs": 21.332822000000306,
+          "visibleAfterAcceptanceMs": 118.74997100000019,
+          "persistedTerminalMs": 30,
+          "queueDelayMs": 25,
+          "visibilityLagMs": 93
+        },
+        {
+          "status": "completed",
+          "startedMs": 4893.367545,
+          "submissionFinishedMs": 4902.791337,
+          "id": "6ad97554dc211285710c5e33",
+          "acceptanceMs": 9.423791999999594,
+          "visibleAfterAcceptanceMs": 116.4897660000006,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 102
+        },
+        {
+          "status": "completed",
+          "startedMs": 4899.829882,
+          "submissionFinishedMs": 4908.678851,
+          "id": "6ad97554dc211285710c5e34",
+          "acceptanceMs": 8.84896899999967,
+          "visibleAfterAcceptanceMs": 116.70093600000018,
+          "persistedTerminalMs": 21,
+          "queueDelayMs": 16,
+          "visibilityLagMs": 98
+        },
+        {
+          "status": "completed",
+          "startedMs": 4910.392749,
+          "submissionFinishedMs": 4926.658283,
+          "id": "6ad97554dc211285710c5e35",
+          "acceptanceMs": 16.265534000000116,
+          "visibleAfterAcceptanceMs": 117.19582400000036,
+          "persistedTerminalMs": 14,
+          "queueDelayMs": 9,
+          "visibilityLagMs": 107
+        },
+        {
+          "status": "completed",
+          "startedMs": 4915.700661,
+          "submissionFinishedMs": 4928.066555,
+          "id": "6ad97554dc211285710c5e36",
+          "acceptanceMs": 12.36589400000048,
+          "visibleAfterAcceptanceMs": 119.298632,
+          "persistedTerminalMs": 20,
+          "queueDelayMs": 15,
+          "visibilityLagMs": 102
+        },
+        {
+          "status": "completed",
+          "startedMs": 5019.296944,
+          "submissionFinishedMs": 5028.00695,
+          "id": "6ad97554dc211285710c5e37",
+          "acceptanceMs": 8.710006000000249,
+          "visibleAfterAcceptanceMs": 110.90689800000018,
+          "persistedTerminalMs": 16,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 98
+        },
+        {
+          "status": "completed",
+          "startedMs": 5025.401359,
+          "submissionFinishedMs": 5034.253506,
+          "id": "6ad97554dc211285710c5e38",
+          "acceptanceMs": 8.852146999999604,
+          "visibleAfterAcceptanceMs": 110.8750600000003,
+          "persistedTerminalMs": 21,
+          "queueDelayMs": 16,
+          "visibilityLagMs": 93
+        },
+        {
+          "status": "completed",
+          "startedMs": 5043.875468,
+          "submissionFinishedMs": 5056.715055,
+          "id": "6ad97554dc211285710c5e39",
+          "acceptanceMs": 12.839586999999483,
+          "visibleAfterAcceptanceMs": 111.08914300000015,
+          "persistedTerminalMs": 16,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 100
+        },
+        {
+          "status": "completed",
+          "startedMs": 5047.382481,
+          "submissionFinishedMs": 5060.596789,
+          "id": "6ad97554dc211285710c5e3a",
+          "acceptanceMs": 13.214308000000528,
+          "visibleAfterAcceptanceMs": 112.27734499999951,
+          "persistedTerminalMs": 19,
+          "queueDelayMs": 14,
+          "visibilityLagMs": 96
+        },
+        {
+          "status": "completed",
+          "startedMs": 5138.940811,
+          "submissionFinishedMs": 5147.487899,
+          "id": "6ad97554dc211285710c5e3b",
+          "acceptanceMs": 8.547087999999349,
+          "visibleAfterAcceptanceMs": 110.72861700000067,
+          "persistedTerminalMs": 14,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 99
+        },
+        {
+          "status": "completed",
+          "startedMs": 5145.143255,
+          "submissionFinishedMs": 5153.40407,
+          "id": "6ad97554dc211285710c5e3c",
+          "acceptanceMs": 8.260814999999639,
+          "visibleAfterAcceptanceMs": 108.91714800000045,
+          "persistedTerminalMs": 16,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 95
+        },
+        {
+          "status": "completed",
+          "startedMs": 5167.82043,
+          "submissionFinishedMs": 5174.703829,
+          "id": "6ad97554dc211285710c5e3d",
+          "acceptanceMs": 6.883399000000281,
+          "visibleAfterAcceptanceMs": 112.70212400000037,
+          "persistedTerminalMs": 15,
+          "queueDelayMs": 10,
+          "visibilityLagMs": 99
+        },
+        {
+          "status": "completed",
+          "startedMs": 5172.890877,
+          "submissionFinishedMs": 5181.930979,
+          "id": "6ad97554dc211285710c5e3e",
+          "acceptanceMs": 9.040101999999933,
+          "visibleAfterAcceptanceMs": 110.93146500000057,
+          "persistedTerminalMs": 17,
+          "queueDelayMs": 11,
+          "visibilityLagMs": 97
+        }
+      ],
+      "worker": {
+        "loggedAttempts": 24,
+        "committedCompletions": 24,
+        "attemptMs": {
+          "samples": 24,
+          "p50": 5.116502000000764,
+          "p95": 6.674211000001378
+        },
+        "providerMs": {
+          "samples": 24,
+          "p50": 0.04658200000085344,
+          "p95": 0.115775999998732
+        }
+      }
+    }
+  ],
+  "environment": {
+    "platform": "linux",
+    "release": "6.18.54.1-microsoft-standard-WSL2",
+    "arch": "x64",
+    "node": "v24.22.0",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics",
+    "availableParallelism": 16,
+    "totalMemoryBytes": 16353484800,
+    "mongodb": "8.0.34",
+    "redis": "8.2.8",
+    "workerConcurrency": 1,
+    "executionPolicy": {
+      "attemptTimeoutMs": 10000,
+      "leaseMs": 30000,
+      "backoffMs": 1000,
+      "reconcileIntervalMs": 5000,
+      "batchSize": 50
+    },
+    "fixture": {
+      "format": "png",
+      "inputBytes": 189,
+      "inputSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+      "canonicalBytes": 189,
+      "canonicalSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+      "width": 64,
+      "height": 64
+    },
+    "indexes": [
+      {
+        "name": "_id_",
+        "key": {
+          "_id": 1
+        }
+      },
+      {
+        "name": "requestScope_1_requestKey_1",
+        "key": {
+          "requestScope": 1,
+          "requestKey": 1
+        }
+      },
+      {
+        "name": "createdAt_-1__id_-1",
+        "key": {
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "status_1_createdAt_-1__id_-1",
+        "key": {
+          "status": 1,
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "retriedFrom_1_createdAt_-1__id_-1",
+        "key": {
+          "retriedFrom": 1,
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "status_1_updatedAt_1",
+        "key": {
+          "status": 1,
+          "updatedAt": 1
+        }
+      }
+    ]
+  },
+  "firstPostStartupInspection": {
+    "status": "completed",
+    "startedMs": 1016.255823,
+    "submissionFinishedMs": 1045.495787,
+    "id": "6ad97550dc211285710c5e0c",
+    "acceptanceMs": 29.2399640000001,
+    "visibleAfterAcceptanceMs": 253.72713699999986,
+    "persistedTerminalMs": 57,
+    "queueDelayMs": 28,
+    "visibilityLagMs": 209
+  },
+  "warmup": [
+    {
+      "status": "completed",
+      "startedMs": 1299.442524,
+      "submissionFinishedMs": 1311.890587,
+      "id": "6ad97550dc211285710c5e0d",
+      "acceptanceMs": 12.448063000000047,
+      "visibleAfterAcceptanceMs": 117.89170100000001,
+      "persistedTerminalMs": 19,
+      "queueDelayMs": 12,
+      "visibilityLagMs": 104
+    },
+    {
+      "status": "completed",
+      "startedMs": 1429.822126,
+      "submissionFinishedMs": 1442.338755,
+      "id": "6ad97550dc211285710c5e0e",
+      "acceptanceMs": 12.516628999999966,
+      "visibleAfterAcceptanceMs": 119.01380599999993,
+      "persistedTerminalMs": 20,
+      "queueDelayMs": 12,
+      "visibilityLagMs": 103
+    }
+  ],
+  "history": {
+    "actualRecords": 1000,
+    "seededRecords": 949,
+    "cases": [
+      {
+        "name": "first",
+        "limit": 20,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 16.064226999999846,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.36788499999966,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 10.628249000000324,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.928353000000243,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.225046999999904,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.118594999999914,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.768474999999853,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.33381399999962,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.281426999999894,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.666677000000163,
+            "returned": 20
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 8.118594999999914,
+          "p95": 16.064226999999846
+        }
+      },
+      {
+        "name": "afterThreePages",
+        "limit": 20,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 9.840007000000696,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.194791999999325,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.615780999999515,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.554882999999791,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.719247999999425,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.427536999999575,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.024535999999898,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.507674999999836,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.896485999999641,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.027710000000297,
+            "returned": 20
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 7.027710000000297,
+          "p95": 9.840007000000696
+        }
+      },
+      {
+        "name": "first",
+        "limit": 50,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 7.676449000000503,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 10.50421599999936,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.761384000000362,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.669909999999618,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.858866999999918,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.013318999999683,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.152188000000024,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.386937000000216,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.474075000000084,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.64512299999933,
+            "returned": 50
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 8.013318999999683,
+          "p95": 10.50421599999936
+        }
+      },
+      {
+        "name": "afterThreePages",
+        "limit": 50,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 7.979228999999577,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.546626999999717,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.584020000000237,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.958791000000019,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.4212720000005,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.241250000000036,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.7461560000001555,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 11.760377999999946,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.985924999999952,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.53815399999985,
+            "returned": 50
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 7.958791000000019,
+          "p95": 11.760377999999946
+        }
+      }
+    ]
+  },
+  "finishedAt": "2026-10-22T02:30:45.706Z",
+  "host": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics     ",
+    "memoryBytes": 33515835392,
+    "node": "v24.22.0"
+  },
+  "docker": {
+    "serverVersion": "29.9.1",
+    "kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "cpus": 16,
+    "memoryBytes": 16353484800,
+    "operatingSystem": "Docker Desktop"
+  },
+  "containers": [
+    {
+      "service": "api",
+      "imageId": "sha256:a39cf54c360883d5e272e31dc18f61d6ad884699eecfa615b0a88bda42c259f2",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "mongodb",
+      "imageId": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "redis",
+      "imageId": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "web",
+      "imageId": "sha256:f87e4ac1c6d9d20a158bf52f7a9c1fbf560955ddd62816777f4abe038350ae6f",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "worker",
+      "imageId": "sha256:3a41335d296471cf896140cfafb6938d1482d39e66869f535c3e0ac42f484334",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    }
+  ],
+  "source": {
+    "head": "84e41b219ac8758ba45c2f156b00f37f95fbffdb",
+    "workingTreeDirty": true
+  },
+  "metrics": {
+    "api": "# HELP vip_http_requests_total Completed HTTP responses\n# TYPE vip_http_requests_total counter\nvip_http_requests_total{route=\"/api/v1/ready\",method=\"GET\",status_class=\"2xx\"} 2\nvip_http_requests_total{route=\"/api/v1/assets\",method=\"POST\",status_class=\"2xx\"} 1\nvip_http_requests_total{route=\"/api/v1/inspections\",method=\"POST\",status_class=\"2xx\"} 51\nvip_http_requests_total{route=\"/api/v1/inspections/:id\",method=\"GET\",status_class=\"2xx\"} 102\nvip_http_requests_total{route=\"/api/v1/inspections\",method=\"GET\",status_class=\"2xx\"} 46\n\n# HELP vip_http_request_duration_seconds HTTP response duration, including response streaming\n# TYPE vip_http_request_duration_seconds histogram\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/ready\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/ready\",method=\"GET\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/ready\",method=\"GET\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_sum{route=\"/api/v1/ready\",method=\"GET\"} 0.020724882000000437\nvip_http_request_duration_seconds_count{route=\"/api/v1/ready\",method=\"GET\"} 2\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_sum{route=\"/api/v1/assets\",method=\"POST\"} 0.049365857000000686\nvip_http_request_duration_seconds_count{route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections\",method=\"POST\"} 44\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections\",method=\"POST\"} 0.40900080500000324\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections\",method=\"POST\"} 51\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 94\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 100\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 100\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 101\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections/:id\",method=\"GET\"} 0.4488253359999802\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections/:id\",method=\"GET\"} 102\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections\",method=\"GET\"} 10\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections\",method=\"GET\"} 44\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections\",method=\"GET\"} 45\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections\",method=\"GET\"} 0.29796108199999427\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections\",method=\"GET\"} 46\n\n# HELP vip_http_errors_total HTTP error responses, once per response\n# TYPE vip_http_errors_total counter\n\n# HELP vip_inspection_attempts_started_total Successfully claimed application attempts\n# TYPE vip_inspection_attempts_started_total counter\nvip_inspection_attempts_started_total 0\n\n# HELP vip_inspection_attempts_finished_total Observed attempt outcomes; process crashes may leave starts unmatched\n# TYPE vip_inspection_attempts_finished_total counter\n\n# HELP vip_inspection_attempt_duration_seconds Claimed attempt execution duration\n# TYPE vip_inspection_attempt_duration_seconds histogram\n\n# HELP vip_provider_duration_seconds Observed provider invocation duration, distinct from deterministic result.durationMs\n# TYPE vip_provider_duration_seconds histogram\n\n# HELP vip_inspection_deliveries_ignored_total Invalid or unclaimed deliveries that execute no attempt\n# TYPE vip_inspection_deliveries_ignored_total counter\n\n# HELP vip_inspection_failures_total Committed retry/terminal failure transitions\n# TYPE vip_inspection_failures_total counter\n\n# HELP vip_inspection_terminal_latency_seconds Persisted creation to terminal timestamp on acknowledged transition\n# TYPE vip_inspection_terminal_latency_seconds histogram\n\n# HELP vip_inspection_terminals_total Acknowledged authoritative terminal transitions\n# TYPE vip_inspection_terminals_total counter\n\n# HELP vip_dispatch_total Dispatch observations, not unique jobs or inspections\n# TYPE vip_dispatch_total counter\nvip_dispatch_total{outcome=\"added\",source=\"prompt\"} 51\n\n# HELP vip_reconciliation_total Reconciliation pass outcome\n# TYPE vip_reconciliation_total counter\nvip_reconciliation_total{outcome=\"ok\"} 5\n\n# HELP vip_lease_repairs_total Acknowledged expired lease repairs\n# TYPE vip_lease_repairs_total counter",
+    "worker": "# HELP vip_http_requests_total Completed HTTP responses\n# TYPE vip_http_requests_total counter\n\n# HELP vip_http_request_duration_seconds HTTP response duration, including response streaming\n# TYPE vip_http_request_duration_seconds histogram\n\n# HELP vip_http_errors_total HTTP error responses, once per response\n# TYPE vip_http_errors_total counter\n\n# HELP vip_inspection_attempts_started_total Successfully claimed application attempts\n# TYPE vip_inspection_attempts_started_total counter\nvip_inspection_attempts_started_total 51\n\n# HELP vip_inspection_attempts_finished_total Observed attempt outcomes; process crashes may leave starts unmatched\n# TYPE vip_inspection_attempts_finished_total counter\nvip_inspection_attempts_finished_total{outcome=\"completed\"} 51\n\n# HELP vip_inspection_attempt_duration_seconds Claimed attempt execution duration\n# TYPE vip_inspection_attempt_duration_seconds histogram\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.001\",outcome=\"completed\"} 0\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.005\",outcome=\"completed\"} 6\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.01\",outcome=\"completed\"} 47\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.025\",outcome=\"completed\"} 50\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.05\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.1\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.25\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.5\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"1\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"2.5\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"5\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"10\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"30\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"60\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_bucket{le=\"+Inf\",outcome=\"completed\"} 51\nvip_inspection_attempt_duration_seconds_sum{outcome=\"completed\"} 0.3472550619999947\nvip_inspection_attempt_duration_seconds_count{outcome=\"completed\"} 51\n\n# HELP vip_provider_duration_seconds Observed provider invocation duration, distinct from deterministic result.durationMs\n# TYPE vip_provider_duration_seconds histogram\nvip_provider_duration_seconds_bucket{le=\"0.001\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.005\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.01\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.025\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.05\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.1\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.25\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"0.5\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"1\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"2.5\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"5\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"10\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"30\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"60\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_bucket{le=\"+Inf\",outcome=\"returned\"} 51\nvip_provider_duration_seconds_sum{outcome=\"returned\"} 0.003943617999995693\nvip_provider_duration_seconds_count{outcome=\"returned\"} 51\n\n# HELP vip_inspection_deliveries_ignored_total Invalid or unclaimed deliveries that execute no attempt\n# TYPE vip_inspection_deliveries_ignored_total counter\n\n# HELP vip_inspection_failures_total Committed retry/terminal failure transitions\n# TYPE vip_inspection_failures_total counter\n\n# HELP vip_inspection_terminal_latency_seconds Persisted creation to terminal timestamp on acknowledged transition\n# TYPE vip_inspection_terminal_latency_seconds histogram\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.001\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.005\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.01\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.025\",status=\"completed\"} 40\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.05\",status=\"completed\"} 50\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.1\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.25\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.5\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"1\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"2.5\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"5\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"10\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"30\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"60\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_bucket{le=\"+Inf\",status=\"completed\"} 51\nvip_inspection_terminal_latency_seconds_sum{status=\"completed\"} 1.0340000000000005\nvip_inspection_terminal_latency_seconds_count{status=\"completed\"} 51\n\n# HELP vip_inspection_terminals_total Acknowledged authoritative terminal transitions\n# TYPE vip_inspection_terminals_total counter\nvip_inspection_terminals_total{status=\"completed\"} 51\n\n# HELP vip_dispatch_total Dispatch observations, not unique jobs or inspections\n# TYPE vip_dispatch_total counter\n\n# HELP vip_reconciliation_total Reconciliation pass outcome\n# TYPE vip_reconciliation_total counter\n\n# HELP vip_lease_repairs_total Acknowledged expired lease repairs\n# TYPE vip_lease_repairs_total counter"
+  }
+}

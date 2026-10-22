@@ -19,6 +19,7 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   assets?: AssetDependencies;
   inspections?: InspectionDependencies;
   dispatchQueue?: Pick<InspectionQueue, 'healthy'>;
+  notifyAccepted?: (inspectionId: string) => void;
   metrics?: OperationalMetrics;
 } = {}) {
   const app = Fastify({
@@ -70,7 +71,7 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
 
   app.register(multipart, { limits: multipartLimits });
   registerAssetRoutes(app, options.assets, options.dispatchQueue);
-  registerInspectionRoutes(app, options.inspections);
+  registerInspectionRoutes(app, options.inspections, options.notifyAccepted);
 
   app.setNotFoundHandler((request, reply) => {
     const response: ApiErrorResponse = {

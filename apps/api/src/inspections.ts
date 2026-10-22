@@ -1,4 +1,4 @@
-import { type FastifyInstance } from 'fastify';
+import { type FastifyInstance, type FastifyRequest } from 'fastify';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { Type } from 'typebox';
 import { Value } from 'typebox/value';
@@ -14,8 +14,17 @@ import {
   inspectionHistory,
 } from '@vip/backend';
 
-export function registerInspectionRoutes(instance: FastifyInstance, dependencies?: InspectionDependencies) {
+export function registerInspectionRoutes(instance: FastifyInstance, dependencies?: InspectionDependencies,
+  notifyAccepted?: (inspectionId: string) => void) {
   const app = instance.withTypeProvider<TypeBoxTypeProvider>();
+  const accepted = new WeakMap<FastifyRequest, string>();
+  app.addHook('onResponse', async (request, reply) => {
+    const id = accepted.get(request);
+    accepted.delete(request);
+    // The response is already sent: Redis cannot change durable acceptance or
+    // hold the HTTP request open. The reconciler owns/coalesces background work.
+    if (id && reply.statusCode === 202) notifyAccepted?.(id);
+  });
   const errors = { 400: ApiErrorResponseSchema, 404: ApiErrorResponseSchema, 409: ApiErrorResponseSchema, 503: ApiErrorResponseSchema };
   function requireDependencies() { if (!dependencies) throw databaseFailure(); return dependencies; }
 
@@ -31,6 +40,7 @@ export function registerInspectionRoutes(instance: FastifyInstance, dependencies
       ...request.body, key: request.headers['idempotency-key'], requestId: request.id,
     });
     const response = acceptedResponse(record);
+    if (record.status === 'queued') accepted.set(request, response.id);
     request.log.info({ inspectionId: response.id, assetId: record.assetId.toString(), status: response.status,
       acceptanceRequestId: record.requestId, dispatchGeneration: record.dispatchGeneration }, 'Inspection durably accepted');
     return reply.code(202).header('Location', response.url).send(response);
@@ -74,6 +84,7 @@ export function registerInspectionRoutes(instance: FastifyInstance, dependencies
       inspectionId: request.params.id, key: request.headers['idempotency-key'], requestId: request.id,
     });
     const response = acceptedResponse(record);
+    if (record.status === 'queued') accepted.set(request, response.id);
     request.log.info({ inspectionId: response.id, assetId: record.assetId.toString(), retriedFrom: request.params.id,
       acceptanceRequestId: record.requestId, dispatchGeneration: record.dispatchGeneration }, 'Inspection retry durably accepted');
     return reply.code(202).header('Location', response.url).send(response);
