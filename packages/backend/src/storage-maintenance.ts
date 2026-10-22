@@ -1,5 +1,5 @@
 import { lstat, opendir, realpath, unlink, rmdir } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { isImageStorageKey } from './storage.js';
 
 const stagePattern = /^\.upload-[a-zA-Z0-9]{6}$/;
@@ -18,10 +18,28 @@ export interface StorageReport {
 
 async function checkedRoot(directory: string) {
   const root = resolve(directory);
-  if ((await lstat(root)).isSymbolicLink() || await realpath(root) !== root) {
-    throw new Error('Maintenance requires a real storage root without symlink components.');
+  const info = await lstat(root, { bigint: true });
+  const canonical = await realpath(root);
+  const invalid = () => new Error('Maintenance requires a real storage root without symlink components.');
+  if (!info.isDirectory() || info.isSymbolicLink()) throw invalid();
+  if (canonical !== root) {
+    if (process.platform !== 'win32') throw invalid();
+    // Windows realpath expands DOS 8.3 aliases and restores on-disk casing.
+    // Text inequality does not establish a link; case folding alone also cannot
+    // distinguish aliases from junction traversal. Inspect each lexical directory
+    // entry up to the volume root (which is not a parent directory entry),
+    // because lstat(root) does not reveal a junction in an ancestor directory.
+    for (let component = root; component !== dirname(component); component = dirname(component)) {
+      const entry = await lstat(component);
+      if (!entry.isDirectory() || entry.isSymbolicLink()) throw invalid();
+    }
+    const target = await lstat(canonical, { bigint: true });
+    // File IDs can exceed Number's exact integer range. Unknown (zero) IDs
+    // cannot establish identity, so fail closed rather than guessing by spelling.
+    if (!target.isDirectory() || target.isSymbolicLink()
+      || info.ino === 0n || info.dev !== target.dev || info.ino !== target.ino) throw invalid();
   }
-  return root;
+  return canonical;
 }
 
 function settings(options: MaintenanceOptions) {

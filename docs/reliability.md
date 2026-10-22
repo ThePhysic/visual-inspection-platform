@@ -112,6 +112,24 @@ syntax and are checked against the authoritative `assets.storageKey` index with
 a healthy database before and after scanning. A report is not proof of orphan
 ownership: an uncertain or in-flight MongoDB write may still establish a reference.
 
+Windows path spelling needs special care: `resolve()` can retain DOS 8.3 names
+or alternate casing while `realpath()` returns long, on-disk names. These are
+valid aliases, not proof of a junction. Maintenance accepts a differing Windows
+spelling only after checking its lexical directory entries for symlinks/junctions
+and matching the original/canonical directory's BigInt device and file IDs. It
+then operates on the canonical path. It does not lowercase paths to infer
+identity. POSIX retains the strict canonical-path comparison. Root links,
+ancestor junctions and staging links remain rejected/skipped; offline exclusivity
+and the existing age/database safeguards still apply. No path diagnostics are
+enabled in normal execution.
+
+The Windows regressions exercise actual case variants, extended paths and DOS
+aliases read through Windows' filesystem API. The DOS-specific test is explicitly
+reported as unsupported if a volume provides no short alias. Junction security
+tests run without requiring Windows file-symlink creation privileges. POSIX runs
+the same junction cases as directory symlinks and additionally checks distinct
+case-sensitive directories; platform-specific spelling tests are conditional.
+
 **Published images are never deleted**, whether referenced, orphaned, or associated
 with an inspection whose asset reference needs investigation. There is no orphan
 apply option. This avoids destroying bytes after a lost insert acknowledgement
