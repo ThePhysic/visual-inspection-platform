@@ -16,11 +16,12 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@prometheus-io/client": "0.16.1",
     "@vip/contracts": "workspace:*",
-    "mongoose": "9.11.2",
-    "typebox": "1.4.2",
     "bullmq": "5.81.5",
     "ioredis": "5.11.1",
-    "pino": "10.4.0"
+    "mongoose": "9.11.2",
+    "pino": "10.4.0",
+    "typebox": "1.4.2"
   }
 }

@@ -65,6 +65,15 @@ async function verifyStored(state) {
 const ready = (await json('/api/v1/ready')).body;
 assert.equal(ready.dependencies.mongodb, 'ok'); assert.equal(ready.dependencies.storage, 'ok'); assert.equal(ready.dependencies.redis, 'ok');
 await json('/api/v1/health');
+// Operator metrics stay on each process's loopback listener, off the web proxy.
+await json('/api/v1/metrics', 404);
+const operator = await fetch('http://127.0.0.1:9464/metrics');
+assert.equal(operator.status, 200);
+assert.match(await operator.text(), /vip_http_requests_total/);
+const queueSnapshot = await fetch('http://127.0.0.1:9464/queue');
+assert.equal(queueSnapshot.status, 200);
+const counts = await queueSnapshot.json();
+assert.ok(counts.redisJobs && counts.mongoInspections);
 const root = await fetch(origin); assert.equal(root.status, 200);
 assert.match(root.headers.get('cache-control'), /no-cache/);
 const html = await root.text(); assert.match(html, /id="root"/);

@@ -154,12 +154,14 @@ export function registerAssetRoutes(instance: FastifyInstance, dependencies?: As
         throw databaseFailure(cause);
       }
       const response = toResponse(asset);
+      request.log.info({ assetId: response.id, mimeType: response.mimeType,
+        width: response.width, height: response.height, byteLength: response.byteLength }, 'Canonical asset persisted');
       reply.code(201).header('Location', `${ASSETS_PATH}/${response.id}`);
       return response;
     } finally {
       if (stage) {
-        await storage.discard(stage).catch((error: unknown) => {
-          request.log.error({ err: error }, 'Could not clean private upload staging files');
+        await storage.discard(stage).catch(() => {
+          request.log.error({ failureCode: 'STORAGE_FAILURE' }, 'Could not clean private upload staging files');
         });
       }
       activeUploads--;

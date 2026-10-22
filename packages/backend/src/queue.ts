@@ -64,7 +64,7 @@ export class InspectionQueue {
     try { return await this.redis.ping() === 'PONG'; } catch { return false; }
   }
 
-  async dispatch(payload: InspectionJob, nextAttemptAt: Date) {
+  async dispatch(payload: InspectionJob, nextAttemptAt: Date, context: { requestId?: string; assetId?: string; retriedFrom?: string } = {}) {
     if (!await this.healthy()) throw new Error('REDIS_UNAVAILABLE');
     const id = jobId(payload);
     const job = await this.queue.getJob(id);
@@ -74,7 +74,7 @@ export class InspectionQueue {
       return 'finished' as const;
     }
     await this.queue.add('inspect', payload, { jobId: id, delay: Math.max(0, nextAttemptAt.getTime() - Date.now()) });
-    this.logger.info({ inspectionId: payload.inspectionId, jobId: id }, 'Inspection dispatched');
+    this.logger.info({ ...context, inspectionId: payload.inspectionId, jobId: id, dispatchGeneration: payload.generation }, 'Inspection dispatched');
     return 'added' as const;
   }
 

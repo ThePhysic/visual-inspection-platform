@@ -11,6 +11,7 @@ import { type InspectionModel } from './inspection-model.js';
 import { isImageStorageKey, type LocalImageStorage } from './storage.js';
 import { InferenceError, type InferenceProvider, type CanonicalImage } from './provider.js';
 import { EXECUTION_POLICY, INSPECTION_QUEUE, redisConnection, closeRedisClients, type ExecutionPolicy, type PipelineLogger } from './queue.js';
+import { type OperationalMetrics, type AttemptOutcome } from './metrics.js';
 
 const messages: Record<InspectionFailure['code'], string> = {
   PROVIDER_UNAVAILABLE: 'The inference provider is temporarily unavailable.',
@@ -85,15 +86,17 @@ export interface ExecutionDependencies {
   logger: PipelineLogger;
   policy?: ExecutionPolicy;
   shutdown?: AbortSignal;
+  metrics?: OperationalMetrics;
 }
 
 export function createInspectionProcessor(dependencies: ExecutionDependencies) {
-  const { inspections, assets, storage, provider, logger } = dependencies;
+  const { inspections, assets, storage, provider, logger, metrics } = dependencies;
   const policy = dependencies.policy ?? EXECUTION_POLICY;
   if (policy.leaseMs <= policy.attemptTimeoutMs) throw new Error('Execution lease must exceed the execution deadline.');
 
   return async function process(job: Pick<Job<InspectionJob>, 'id' | 'data'>) {
     if (!Value.Check(InspectionJobSchema, job.data)) {
+      metrics?.ignored('invalid');
       logger.warn({ jobId: job.id }, 'Invalid inspection queue payload discarded');
       return;
     }
@@ -107,60 +110,86 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
         leaseExpiresAt: new Date(now.getTime() + policy.leaseMs) },
       $inc: { attemptCount: 1 }, $unset: { failure: 1 },
     }, { returnDocument: 'after' }).lean().exec();
-    if (!record) return; // terminal, duplicate, old generation, or not due
+    if (!record) { metrics?.ignored('unclaimed'); return; } // terminal, duplicate, old generation, or not due
 
-    const context = { requestId: record.requestId, inspectionId: record._id.toString(), jobId: job.id,
-      attemptId, attemptCount: record.attemptCount };
-    logger.info({ ...context, from: 'queued', to: 'processing' }, 'Inspection claimed');
-    const owned = () => ({ _id: record._id, status: 'processing' as const, attemptId,
-      dispatchGeneration: job.data.generation, leaseExpiresAt: { $gt: new Date() } });
-    let result: unknown;
+    const attemptStarted = performance.now();
+    metrics?.attemptStarted();
+    let outcome: AttemptOutcome = 'persistence_error';
+    let providerDurationMs: number | undefined;
     try {
-      result = await withDeadline(async signal => {
-        if (!Value.Check(ProviderConfigurationSchema, record.requested)) throw new InferenceError('INVALID_INSPECTION', false);
-        const image = await loadImage(assets, storage, record.assetId.toString(), signal);
-        signal.throwIfAborted();
-        return provider.infer(image, signal);
-      }, policy.attemptTimeoutMs, dependencies.shutdown);
-      if (!isInferenceResult(result) || result.providerId !== record.requested.providerId
-        || result.modelId !== record.requested.modelId || result.modelVersion !== record.requested.modelVersion
-        || result.taxonomyVersion !== 'mock-v1' || !result.simulated
-        || result.detections.some(detection => !MOCK_LABELS.some(label => label.classId === detection.classId && label.label === detection.label))) {
-        throw new InferenceError('INVALID_INFERENCE_RESULT', false);
+      const context = { requestId: record.requestId, inspectionId: record._id.toString(), jobId: job.id,
+        assetId: record.assetId.toString(), dispatchGeneration: job.data.generation,
+        ...(record.retriedFrom ? { retriedFrom: record.retriedFrom.toString() } : {}), attemptId, attemptCount: record.attemptCount };
+      logger.info({ ...context, from: 'queued', to: 'processing' }, 'Inspection claimed');
+      const owned = () => ({ _id: record._id, status: 'processing' as const, attemptId,
+        dispatchGeneration: job.data.generation, leaseExpiresAt: { $gt: new Date() } });
+      let result: unknown;
+      try {
+        result = await withDeadline(async signal => {
+          if (!Value.Check(ProviderConfigurationSchema, record.requested)) throw new InferenceError('INVALID_INSPECTION', false);
+          const image = await loadImage(assets, storage, record.assetId.toString(), signal);
+          signal.throwIfAborted();
+          const started = performance.now();
+          let observed = false;
+          const observe = (state: 'returned' | 'error' | 'cancelled') => {
+            if (observed) return;
+            observed = true;
+            providerDurationMs = Math.max(0, performance.now() - started);
+            metrics?.providerFinished(state, providerDurationMs);
+          };
+          const cancelled = () => { observe('cancelled'); };
+          signal.addEventListener('abort', cancelled, { once: true });
+          try { const output = await provider.infer(image, signal); observe('returned'); return output; }
+          catch (error) { observe('error'); throw error; }
+          finally { signal.removeEventListener('abort', cancelled); }
+        }, policy.attemptTimeoutMs, dependencies.shutdown);
+        if (!isInferenceResult(result) || result.providerId !== record.requested.providerId
+          || result.modelId !== record.requested.modelId || result.modelVersion !== record.requested.modelVersion
+          || result.taxonomyVersion !== 'mock-v1' || !result.simulated
+          || result.detections.some(detection => !MOCK_LABELS.some(label => label.classId === detection.classId && label.label === detection.label))) {
+          throw new InferenceError('INVALID_INFERENCE_RESULT', false);
+        }
+        result = structuredClone(result);
+      } catch (cause) {
+        const failure = cause instanceof InferenceError ? cause : new InferenceError('INFERENCE_FAILED', false);
+        const retry = failure.retryable && record.attemptCount < record.maxAttempts;
+        const date = new Date();
+        const changed = await inspections.updateOne(owned(), {
+          $set: { status: retry ? 'queued' : 'failed', updatedAt: date, failure: safeFailure(failure.code),
+            ...(retry ? { nextAttemptAt: new Date(date.getTime() + retryDelay(record.attemptCount, policy)) } : { completedAt: date }) },
+          $unset: { attemptId: 1, leaseExpiresAt: 1 },
+        }).exec();
+        if (!changed.modifiedCount) { outcome = 'stale'; logger.warn(context, 'Stale failure ignored'); return; }
+        outcome = retry ? 'retry' : 'failed';
+        metrics?.failure(retry ? 'retry' : 'terminal', failure.code);
+        if (!retry) metrics?.terminal('failed', date.getTime() - record.createdAt.getTime());
+        logger.warn({ ...context, from: 'processing', to: retry ? 'queued' : 'failed', failureCode: failure.code,
+          providerDurationMs, attemptDurationMs: Math.max(0, performance.now() - attemptStarted),
+          processingDurationMs: Math.max(0, date.getTime() - now.getTime()) },
+          retry ? 'Inspection retry scheduled' : 'Inspection failed');
+        if (retry) throw new Error(failure.code, { cause });
+        throw new UnrecoverableError(failure.code);
       }
-      result = structuredClone(result);
-    } catch (cause) {
-      const failure = cause instanceof InferenceError ? cause : new InferenceError('INFERENCE_FAILED', false);
-      const retry = failure.retryable && record.attemptCount < record.maxAttempts;
-      const date = new Date();
-      const changed = await inspections.updateOne(owned(), {
-        $set: { status: retry ? 'queued' : 'failed', updatedAt: date, failure: safeFailure(failure.code),
-          ...(retry ? { nextAttemptAt: new Date(date.getTime() + retryDelay(record.attemptCount, policy)) } : { completedAt: date }) },
-        $unset: { attemptId: 1, leaseExpiresAt: 1 },
-      }).exec();
-      if (!changed.modifiedCount) { logger.warn(context, 'Stale failure ignored'); return; }
-      logger.warn({ ...context, from: 'processing', to: retry ? 'queued' : 'failed', failureCode: failure.code,
-        processingDurationMs: Math.max(0, date.getTime() - now.getTime()) },
-        retry ? 'Inspection retry scheduled' : 'Inspection failed');
-      if (retry) throw new Error(failure.code, { cause });
-      throw new UnrecoverableError(failure.code);
-    }
 
-    // Keep persistence outside the provider-error handler. A lost acknowledgement
-    // must never turn an already committed result into a failure or retry.
-    const finished = new Date();
-    const processingDurationMs = Math.max(0, finished.getTime() - now.getTime());
-    try {
-      const changed = await inspections.updateOne({ ...owned(), result: { $exists: false } }, {
-        $set: { status: 'completed', updatedAt: finished, completedAt: finished, result, processingDurationMs },
-        $unset: { attemptId: 1, leaseExpiresAt: 1, failure: 1 },
-      }, { runValidators: true }).exec();
-      if (!changed.modifiedCount) { logger.warn(context, 'Stale result ignored'); return; }
-      logger.info({ ...context, from: 'processing', to: 'completed', processingDurationMs }, 'Inspection completed');
-    } catch {
-      logger.error({ ...context, failureCode: 'DATABASE_UNAVAILABLE' }, 'Inspection result persistence unavailable');
-      throw new Error('DATABASE_UNAVAILABLE');
-    }
+      // Keep persistence outside the provider-error handler. A lost acknowledgement
+      // must never turn an already committed result into a failure or retry.
+      const finished = new Date();
+      const processingDurationMs = Math.max(0, finished.getTime() - now.getTime());
+      try {
+        const changed = await inspections.updateOne({ ...owned(), result: { $exists: false } }, {
+          $set: { status: 'completed', updatedAt: finished, completedAt: finished, result, processingDurationMs },
+          $unset: { attemptId: 1, leaseExpiresAt: 1, failure: 1 },
+        }, { runValidators: true }).exec();
+        if (!changed.modifiedCount) { outcome = 'stale'; logger.warn(context, 'Stale result ignored'); return; }
+        outcome = 'completed';
+        metrics?.terminal('completed', finished.getTime() - record.createdAt.getTime());
+        logger.info({ ...context, from: 'processing', to: 'completed', processingDurationMs, providerDurationMs,
+          attemptDurationMs: Math.max(0, performance.now() - attemptStarted) }, 'Inspection completed');
+      } catch {
+        logger.error({ ...context, failureCode: 'DATABASE_UNAVAILABLE' }, 'Inspection result persistence unavailable');
+        throw new Error('DATABASE_UNAVAILABLE');
+      }
+    } finally { metrics?.attemptFinished(outcome, Math.max(0, performance.now() - attemptStarted)); }
   };
 }
 

@@ -87,3 +87,7 @@ jobs:
       # Native integration/e2e coverage remains in the integration job above.
       - name: Isolated container reliability and browser smoke
         run: pnpm test:reliability --browser --ci-mongodb
+      # Correctness smoke only: no latency thresholds or heavy PR load test.
+      - name: Bounded isolated benchmark harness smoke
+        timeout-minutes: 4
+        run: pnpm benchmark --count 2 --concurrency 2 --history-size 200 --history-samples 2 --duration-ms 60000 --ci-mongodb

@@ -17,7 +17,7 @@ import {
   connectDatabase, createAssetModel, createInspectionModel, LocalImageStorage,
   InspectionQueue, InspectionReconciler, MockInferenceProvider, MOCK_FIXTURES,
   startInspectionWorker, createInspectionProcessor, InferenceError, EXECUTION_POLICY, jobId, redisConnection,
-  type InferenceProvider, type PipelineLogger, type InspectionRecord,
+  type InferenceProvider, type PipelineLogger, type InspectionRecord, OperationalMetrics, sampleQueue,
 } from '@vip/backend';
 import { buildApp } from '../src/app.js';
 
@@ -38,6 +38,7 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
   let asset: AssetResponse;
   let consumers: Array<() => Promise<void>>;
   let panel: Buffer;
+  let metrics: OperationalMetrics;
 
   beforeAll(async () => {
     connection = await connectDatabase(process.env.MONGODB_TEST_URI ?? 'mongodb://127.0.0.1:27017', databaseName);
@@ -58,13 +59,14 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
   }
 
   beforeEach(async () => {
+    metrics = new OperationalMetrics();
     await Promise.all([assets.deleteMany({}), inspections.deleteMany({})]);
     consumers = [];
     directory = await mkdtemp(join(tmpdir(), 'vip-pipeline-test-'));
     storage = new LocalImageStorage(directory); await storage.initialize();
     queue = new InspectionQueue(redisUrl, logger, `inspections-test-${randomUUID()}`, policy);
     await queue.queue.waitUntilReady();
-    reconciler = new InspectionReconciler(inspections, queue, logger, policy);
+    reconciler = new InspectionReconciler(inspections, queue, logger, policy, metrics);
     app = buildApp({ assets: { model: assets, storage }, inspections: { assets, inspections }, dispatchQueue: queue });
     asset = await upload(panel);
     expect(asset.sha256).toBe(MOCK_FIXTURES.panel);
@@ -106,7 +108,7 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     return result;
   }
   function dependencies(provider: InferenceProvider = new MockInferenceProvider()) {
-    return { inspections, assets, storage, provider, logger, policy };
+    return { inspections, assets, storage, provider, logger, policy, metrics };
   }
   async function consumer(provider?: InferenceProvider) {
     const instance = startInspectionWorker(redisUrl, dependencies(provider), queue.queue.name);
@@ -146,6 +148,11 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     expect(response.body).not.toMatch(/requestKey|requestFingerprint|attemptId|leaseExpiresAt|storageKey|stack/);
     const job = await queue.queue.getJob(jobId(payload(submission.id)));
     expect(job?.data).toEqual(payload(submission.id));
+    await createInspectionProcessor(dependencies())({ id: jobId(payload(submission.id)), data: payload(submission.id) });
+    const observations = await metrics.registry.metrics();
+    expect(observations).toContain('vip_inspection_attempts_started_total 1');
+    expect(observations).toContain('vip_inspection_terminals_total{status="completed"} 1');
+    expect(observations).toContain('vip_inspection_deliveries_ignored_total{reason="unclaimed"} 1');
   });
 
   it('completes a valid zero-detection curated image', async () => {
@@ -201,6 +208,7 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
   it('recovers dispatch failure after acceptance and admits requests while Redis is unavailable', async () => {
     const beforeOutage = await accepted('before-redis-outage');
     queue.redis.disconnect();
+    await expect(sampleQueue(queue, inspections)).rejects.toThrow('OPERATION_UNAVAILABLE');
     const submission = await accepted();
     await reconciler.reconcile();
     expect((await inspections.findById(submission.id).lean().orFail()).status).toBe('queued');
@@ -335,6 +343,10 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     await reconciler.reconcile();
     expect((await completed).attemptCount).toBe(2);
     expect(infer).toHaveBeenCalledTimes(2);
+    const observations = await metrics.registry.metrics();
+    expect(observations).toContain('vip_inspection_attempts_started_total 2');
+    expect(observations).toContain('vip_inspection_failures_total{kind="retry",code="PROVIDER_UNAVAILABLE"} 1');
+    expect(observations).toContain('vip_inspection_terminals_total{status="completed"} 1');
   });
 
   it.each(['permanent', 'invalid-output', 'wrong-model', 'outside-image'] as const)('terminates %s failures without retrying', async mode => {
@@ -383,6 +395,10 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     expect(record.attemptCount).toBe(3);
     expect(record.failure?.code).toBe('PROVIDER_TIMEOUT');
     expect(infer).toHaveBeenCalledTimes(3);
+    const observations = await metrics.registry.metrics();
+    expect(observations).toContain('vip_inspection_attempts_started_total 3');
+    expect(observations).toContain('vip_inspection_terminals_total{status="failed"} 1');
+    expect(observations).toContain('vip_provider_duration_seconds_count{outcome="cancelled"} 3');
     await createInspectionProcessor(dependencies({ infer }))({ id: 'duplicate', data: payload(submission.id) });
     await reconciler.reconcile();
     expect(infer).toHaveBeenCalledTimes(3);
@@ -432,6 +448,9 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     const completed = await inspections.findById(submission.id).lean().orFail();
     expect(completed.status).toBe('completed'); expect(completed.attemptCount).toBe(2);
     expect(completed.result.detections[0].confidence).toBe(0.94);
+    const observations = await metrics.registry.metrics();
+    expect(observations).toContain('vip_inspection_attempts_finished_total{outcome="stale"} 1');
+    expect(observations).toContain('vip_inspection_terminals_total{status="completed"} 1');
   });
 
   it('preserves a committed result when delivery fails before BullMQ acknowledgement', async () => {

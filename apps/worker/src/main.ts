@@ -2,7 +2,7 @@ import { pino } from 'pino';
 import {
   readBackendConfig, connectDatabase, createAssetModel, createInspectionModel,
   LocalImageStorage, MockInferenceProvider, startInspectionWorker,
-  checkDatabase, EXECUTION_POLICY,
+  checkDatabase, EXECUTION_POLICY, OperationalMetrics, operatorPort, startOperatorServer,
 } from '@vip/backend';
 import { startHealthFile } from './health.js';
 
@@ -10,6 +10,8 @@ const logger = pino({ name: 'inspection-worker' });
 
 async function main() {
   const config = readBackendConfig(process.env);
+  const operationsPort = operatorPort(process.env.WORKER_OPERATOR_PORT);
+  const metrics = new OperationalMetrics();
   const connection = await connectDatabase(config.mongodbUri);
   connection.on('error', () => { logger.error('MongoDB connection error'); });
   const assets = createAssetModel(connection);
@@ -19,7 +21,7 @@ async function main() {
 
   const consumer = startInspectionWorker(config.redisUrl, {
     inspections, assets, storage: new LocalImageStorage(config.storageDirectory),
-    provider: new MockInferenceProvider(), logger,
+    provider: new MockInferenceProvider(), logger, metrics,
   });
   const active = new Map<string, number>();
   let lastCompletedAt: number | null = null;
@@ -32,17 +34,21 @@ async function main() {
       oldestActiveAt: active.size ? Math.min(...active.values()) : null, lastCompletedAt };
   }, EXECUTION_POLICY.leaseMs + 10_000) : undefined;
   let closing = false;
+  let operations: Awaited<ReturnType<typeof startOperatorServer>> | undefined;
   async function shutdown(signal: string) {
     if (closing) return;
     closing = true;
     logger.info({ signal }, 'Worker shutting down');
     try { await consumer.close(); }
     catch { logger.error('Worker shutdown failed'); process.exitCode = 1; }
-    finally { await health?.close(); await connection.close(); }
+    finally { await operations?.close(); await health?.close(); await connection.close(); }
   }
   process.once('SIGINT', () => { void shutdown('SIGINT'); });
   process.once('SIGTERM', () => { void shutdown('SIGTERM'); });
-  try { await consumer.worker.waitUntilReady(); }
+  try {
+    if (operationsPort) operations = await startOperatorServer(metrics, operationsPort);
+    await consumer.worker.waitUntilReady();
+  }
   catch (error) { await shutdown('startup-failure'); throw error; }
   if (!closing) logger.info('Inspection worker ready; inference is simulated');
 }

@@ -1,0 +1,745 @@
+{
+  "schemaVersion": 1,
+  "simulatedInference": true,
+  "project": "vip-reliability-012b987ede5b47e6a1bec04f548acdb6",
+  "config": {
+    "count": 8,
+    "concurrency": 4,
+    "historySize": 200,
+    "historySamples": 10,
+    "pollMs": 100,
+    "durationMs": 120000,
+    "keepLogs": true,
+    "ciMongoCompatibility": false
+  },
+  "startedAt": "2026-10-22T01:28:27.295Z",
+  "scenarios": [
+    {
+      "name": "baseline",
+      "concurrency": 1,
+      "planned": 8,
+      "offered": 8,
+      "accepted": 8,
+      "completed": 8,
+      "failed": 0,
+      "errors": 0,
+      "acceptanceUnconfirmed": 0,
+      "timeouts": 0,
+      "notSubmitted": 0,
+      "incomplete": 0,
+      "elapsedMs": 39946.449414,
+      "completedPerSecond": 0.20026811186869206,
+      "acceptanceMs": {
+        "samples": 8,
+        "p50": 12.369991000006848,
+        "p95": 13.85941499999899
+      },
+      "visibleAfterAcceptanceMs": {
+        "samples": 8,
+        "p50": 4955.314030000001,
+        "p95": 5046.764261000004
+      },
+      "persistedTerminalMs": {
+        "samples": 8,
+        "p50": 4926,
+        "p95": 4980
+      },
+      "queueDelayMs": {
+        "samples": 8,
+        "p50": 4916,
+        "p95": 4972
+      },
+      "visibilityLagMs": {
+        "samples": 8,
+        "p50": 45,
+        "p95": 85
+      },
+      "offeringMs": 34995.058519,
+      "offeredRequestsPerSecondDuringSubmissionWindow": 0.2286037040245705,
+      "acceptedPerSecondDuringSubmissionWindow": 0.2286037040245705,
+      "samples": [
+        {
+          "status": "completed",
+          "startedMs": 14357.685983,
+          "submissionFinishedMs": 14368.612323,
+          "id": "6ad966c803bb55982110cbc9",
+          "acceptanceMs": 10.926339999999982,
+          "visibleAfterAcceptanceMs": 4982.03579,
+          "persistedTerminalMs": 4899,
+          "queueDelayMs": 4892,
+          "visibilityLagMs": 85
+        },
+        {
+          "status": "completed",
+          "startedMs": 19350.675697,
+          "submissionFinishedMs": 19363.986284,
+          "id": "6ad966cd03bb55982110cbca",
+          "acceptanceMs": 13.310586999999941,
+          "visibleAfterAcceptanceMs": 4978.717979000001,
+          "persistedTerminalMs": 4904,
+          "queueDelayMs": 4898,
+          "visibilityLagMs": 78
+        },
+        {
+          "status": "completed",
+          "startedMs": 24342.722729,
+          "submissionFinishedMs": 24356.582144,
+          "id": "6ad966d203bb55982110cbcb",
+          "acceptanceMs": 13.85941499999899,
+          "visibleAfterAcceptanceMs": 4954.352639000001,
+          "persistedTerminalMs": 4911,
+          "queueDelayMs": 4904,
+          "visibilityLagMs": 45
+        },
+        {
+          "status": "completed",
+          "startedMs": 29311.01554,
+          "submissionFinishedMs": 29324.015105,
+          "id": "6ad966d703bb55982110cbcc",
+          "acceptanceMs": 12.999564999998256,
+          "visibleAfterAcceptanceMs": 4955.314030000001,
+          "persistedTerminalMs": 4945,
+          "queueDelayMs": 4939,
+          "visibilityLagMs": 15
+        },
+        {
+          "status": "completed",
+          "startedMs": 34279.346169,
+          "submissionFinishedMs": 34291.234907,
+          "id": "6ad966dc03bb55982110cbcd",
+          "acceptanceMs": 11.888738000001467,
+          "visibleAfterAcceptanceMs": 5046.764261000004,
+          "persistedTerminalMs": 4980,
+          "queueDelayMs": 4972,
+          "visibilityLagMs": 71
+        },
+        {
+          "status": "completed",
+          "startedMs": 39338.030509,
+          "submissionFinishedMs": 39350.4005,
+          "id": "6ad966e103bb55982110cbce",
+          "acceptanceMs": 12.369991000006848,
+          "visibleAfterAcceptanceMs": 4939.713899999995,
+          "persistedTerminalMs": 4926,
+          "queueDelayMs": 4916,
+          "visibilityLagMs": 18
+        },
+        {
+          "status": "completed",
+          "startedMs": 44290.181521,
+          "submissionFinishedMs": 44303.264284,
+          "id": "6ad966e603bb55982110cbcf",
+          "acceptanceMs": 13.082762999998522,
+          "visibleAfterAcceptanceMs": 5041.520494000004,
+          "persistedTerminalMs": 4962,
+          "queueDelayMs": 4957,
+          "visibilityLagMs": 83
+        },
+        {
+          "status": "completed",
+          "startedMs": 49344.806641,
+          "submissionFinishedMs": 49352.744502,
+          "id": "6ad966eb03bb55982110cbd0",
+          "acceptanceMs": 7.93786099999852,
+          "visibleAfterAcceptanceMs": 4951.120826999999,
+          "persistedTerminalMs": 4926,
+          "queueDelayMs": 4918,
+          "visibilityLagMs": 27
+        }
+      ],
+      "worker": {
+        "loggedAttempts": 8,
+        "committedCompletions": 8,
+        "attemptMs": {
+          "samples": 8,
+          "p50": 7.3398529999976745,
+          "p95": 13.767679999997199
+        },
+        "providerMs": {
+          "samples": 8,
+          "p50": 0.07726099999854341,
+          "p95": 0.1353339999986929
+        }
+      }
+    },
+    {
+      "name": "moderate",
+      "concurrency": 4,
+      "planned": 8,
+      "offered": 8,
+      "accepted": 8,
+      "completed": 8,
+      "failed": 0,
+      "errors": 0,
+      "acceptanceUnconfirmed": 0,
+      "timeouts": 0,
+      "notSubmitted": 0,
+      "incomplete": 0,
+      "elapsedMs": 10047.628115,
+      "completedPerSecond": 0.7962078122753053,
+      "acceptanceMs": {
+        "samples": 8,
+        "p50": 13.916082999996434,
+        "p95": 36.26637599999958
+      },
+      "visibleAfterAcceptanceMs": {
+        "samples": 8,
+        "p50": 4962.565925000003,
+        "p95": 5070.845538000001
+      },
+      "persistedTerminalMs": {
+        "samples": 8,
+        "p50": 4957,
+        "p95": 4974
+      },
+      "queueDelayMs": {
+        "samples": 8,
+        "p50": 4949,
+        "p95": 4969
+      },
+      "visibilityLagMs": {
+        "samples": 8,
+        "p50": 77,
+        "p95": 107
+      },
+      "offeringMs": 5112.541977000001,
+      "offeredRequestsPerSecondDuringSubmissionWindow": 1.5647793281678513,
+      "acceptedPerSecondDuringSubmissionWindow": 1.5647793281678513,
+      "samples": [
+        {
+          "status": "completed",
+          "startedMs": 54304.860659,
+          "submissionFinishedMs": 54322.218957,
+          "id": "6ad966f003bb55982110cbd1",
+          "acceptanceMs": 17.358297999999195,
+          "visibleAfterAcceptanceMs": 4962.565925000003,
+          "persistedTerminalMs": 4957,
+          "queueDelayMs": 4949,
+          "visibilityLagMs": 9
+        },
+        {
+          "status": "completed",
+          "startedMs": 54305.258935,
+          "submissionFinishedMs": 54327.461659,
+          "id": "6ad966f003bb55982110cbd2",
+          "acceptanceMs": 22.20272400000249,
+          "visibleAfterAcceptanceMs": 5065.221543,
+          "persistedTerminalMs": 4961,
+          "queueDelayMs": 4956,
+          "visibilityLagMs": 107
+        },
+        {
+          "status": "completed",
+          "startedMs": 54305.650878,
+          "submissionFinishedMs": 54341.917254,
+          "id": "6ad966f003bb55982110cbd4",
+          "acceptanceMs": 36.26637599999958,
+          "visibleAfterAcceptanceMs": 5052.794129000002,
+          "persistedTerminalMs": 4965,
+          "queueDelayMs": 4959,
+          "visibilityLagMs": 87
+        },
+        {
+          "status": "completed",
+          "startedMs": 54305.888791,
+          "submissionFinishedMs": 54332.619724,
+          "id": "6ad966f003bb55982110cbd3",
+          "acceptanceMs": 26.730932999998913,
+          "visibleAfterAcceptanceMs": 5070.845538000001,
+          "persistedTerminalMs": 4968,
+          "queueDelayMs": 4961,
+          "visibilityLagMs": 105
+        },
+        {
+          "status": "completed",
+          "startedMs": 59284.811183,
+          "submissionFinishedMs": 59294.215799,
+          "id": "6ad966f503bb55982110cbd5",
+          "acceptanceMs": 9.404615999999805,
+          "visibleAfterAcceptanceMs": 5055.5306340000025,
+          "persistedTerminalMs": 4974,
+          "queueDelayMs": 4969,
+          "visibilityLagMs": 85
+        },
+        {
+          "status": "completed",
+          "startedMs": 59392.701167,
+          "submissionFinishedMs": 59400.376966,
+          "id": "6ad966f503bb55982110cbd6",
+          "acceptanceMs": 7.67579900000419,
+          "visibleAfterAcceptanceMs": 4951.476217999996,
+          "persistedTerminalMs": 4878,
+          "queueDelayMs": 4872,
+          "visibilityLagMs": 77
+        },
+        {
+          "status": "completed",
+          "startedMs": 59394.726903,
+          "submissionFinishedMs": 59406.449514,
+          "id": "6ad966f503bb55982110cbd7",
+          "acceptanceMs": 11.722610999997414,
+          "visibleAfterAcceptanceMs": 4941.326474000001,
+          "persistedTerminalMs": 4882,
+          "queueDelayMs": 4876,
+          "visibilityLagMs": 63
+        },
+        {
+          "status": "completed",
+          "startedMs": 59403.486553,
+          "submissionFinishedMs": 59417.402636,
+          "id": "6ad966f503bb55982110cbd8",
+          "acceptanceMs": 13.916082999996434,
+          "visibleAfterAcceptanceMs": 4935.044897,
+          "persistedTerminalMs": 4882,
+          "queueDelayMs": 4875,
+          "visibilityLagMs": 56
+        }
+      ],
+      "worker": {
+        "loggedAttempts": 8,
+        "committedCompletions": 8,
+        "attemptMs": {
+          "samples": 8,
+          "p50": 6.192643999995198,
+          "p95": 7.405324000006658
+        },
+        "providerMs": {
+          "samples": 8,
+          "p50": 0.04429599999275524,
+          "p95": 0.06237200000032317
+        }
+      }
+    }
+  ],
+  "environment": {
+    "platform": "linux",
+    "release": "6.18.54.1-microsoft-standard-WSL2",
+    "arch": "x64",
+    "node": "v24.22.0",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics",
+    "availableParallelism": 16,
+    "totalMemoryBytes": 16353484800,
+    "mongodb": "8.0.34",
+    "redis": "8.2.8",
+    "workerConcurrency": 1,
+    "executionPolicy": {
+      "attemptTimeoutMs": 10000,
+      "leaseMs": 30000,
+      "backoffMs": 1000,
+      "reconcileIntervalMs": 5000,
+      "batchSize": 50
+    },
+    "fixture": {
+      "format": "png",
+      "inputBytes": 189,
+      "inputSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+      "canonicalBytes": 189,
+      "canonicalSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+      "width": 64,
+      "height": 64
+    },
+    "indexes": [
+      {
+        "name": "_id_",
+        "key": {
+          "_id": 1
+        }
+      },
+      {
+        "name": "requestScope_1_requestKey_1",
+        "key": {
+          "requestScope": 1,
+          "requestKey": 1
+        }
+      },
+      {
+        "name": "createdAt_-1__id_-1",
+        "key": {
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "status_1_createdAt_-1__id_-1",
+        "key": {
+          "status": 1,
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "retriedFrom_1_createdAt_-1__id_-1",
+        "key": {
+          "retriedFrom": 1,
+          "createdAt": -1,
+          "_id": -1
+        }
+      },
+      {
+        "name": "status_1_updatedAt_1",
+        "key": {
+          "status": 1,
+          "updatedAt": 1
+        }
+      }
+    ]
+  },
+  "firstPostStartupInspection": {
+    "status": "completed",
+    "startedMs": 874.809348,
+    "submissionFinishedMs": 899.301001,
+    "id": "6ad966bb03bb55982110cbc6",
+    "acceptanceMs": 24.491653000000042,
+    "visibleAfterAcceptanceMs": 3429.8616540000003,
+    "persistedTerminalMs": 3396,
+    "queueDelayMs": 3375,
+    "visibilityLagMs": 45
+  },
+  "warmup": [
+    {
+      "status": "completed",
+      "startedMs": 4329.303871,
+      "submissionFinishedMs": 4345.963216,
+      "id": "6ad966be03bb55982110cbc7",
+      "acceptanceMs": 16.65934500000003,
+      "visibleAfterAcceptanceMs": 5010.971251999999,
+      "persistedTerminalMs": 4925,
+      "queueDelayMs": 4918,
+      "visibilityLagMs": 93
+    },
+    {
+      "status": "completed",
+      "startedMs": 9356.955008,
+      "submissionFinishedMs": 9369.149927,
+      "id": "6ad966c303bb55982110cbc8",
+      "acceptanceMs": 12.194918999999572,
+      "visibleAfterAcceptanceMs": 4988.361455,
+      "persistedTerminalMs": 4902,
+      "queueDelayMs": 4893,
+      "visibilityLagMs": 90
+    }
+  ],
+  "history": {
+    "actualRecords": 200,
+    "seededRecords": 181,
+    "cases": [
+      {
+        "name": "first",
+        "limit": 20,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 6.963086000003386,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.951021000000765,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.687796999998682,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.670252999996592,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.906125000001339,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 5.4554839999982505,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.483728999999585,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.236116000000038,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 5.7473640000025625,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 5.990026999999827,
+            "returned": 20
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 6.483728999999585,
+          "p95": 6.963086000003386
+        }
+      },
+      {
+        "name": "afterThreePages",
+        "limit": 20,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 6.738644999997632,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 4.971097000001464,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 4.306141000000935,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 5.168394000000262,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.147694999999658,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.664261999998416,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.461136000005354,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.125330000002577,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 5.287064000003738,
+            "returned": 20
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.392713000001095,
+            "returned": 20
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 6.125330000002577,
+          "p95": 8.664261999998416
+        }
+      },
+      {
+        "name": "first",
+        "limit": 50,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 6.7761610000015935,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.120089999996708,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.178905000000668,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.314160000001721,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 5.079901999997674,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.841998999996576,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.110775000001013,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.9879670000009355,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 9.221378999995068,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.892347000000882,
+            "returned": 50
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 7.892347000000882,
+          "p95": 9.221378999995068
+        }
+      },
+      {
+        "name": "afterThreePages",
+        "limit": 50,
+        "samples": [
+          {
+            "status": "ok",
+            "durationMs": 8.36373900000035,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.433430999997654,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.8570570000010775,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.4925789999979315,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 7.907815999999002,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 6.18428600000334,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.65671999999904,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 13.635780999997223,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 8.705005000003439,
+            "returned": 50
+          },
+          {
+            "status": "ok",
+            "durationMs": 11.653564000000188,
+            "returned": 50
+          }
+        ],
+        "failures": 0,
+        "timeouts": 0,
+        "durationMs": {
+          "samples": 10,
+          "p50": 7.907815999999002,
+          "p95": 13.635780999997223
+        }
+      }
+    ]
+  },
+  "finishedAt": "2026-10-22T01:29:31.417Z",
+  "host": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics     ",
+    "memoryBytes": 33515835392,
+    "node": "v24.22.0"
+  },
+  "docker": {
+    "serverVersion": "29.9.1",
+    "kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "cpus": 16,
+    "memoryBytes": 16353484800,
+    "operatingSystem": "Docker Desktop"
+  },
+  "containers": [
+    {
+      "service": "api",
+      "imageId": "sha256:47368a2b3d32d24c01e4e2d858e3e3200af44ac83be092bf0de6af1d341572dc",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "mongodb",
+      "imageId": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "redis",
+      "imageId": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "web",
+      "imageId": "sha256:ba22eca9dcbd112b12fbf79b80433d7c9b91c8b8f34627bf568b8b27c1446b2e",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    },
+    {
+      "service": "worker",
+      "imageId": "sha256:71c1dcdf3361b0218c8a5a9311790c78498681aa15a21ebd844e20c6bb04b3ba",
+      "memoryLimitBytes": 0,
+      "nanoCpus": 0,
+      "cpuQuota": 0,
+      "cpuPeriod": 0
+    }
+  ],
+  "source": {
+    "head": "08a3a1f70d5a26088313534fc991c18b8ea1e849",
+    "workingTreeDirty": true
+  },
+  "metrics": {
+    "api": "# HELP vip_http_requests_total Completed HTTP responses\n# TYPE vip_http_requests_total counter\nvip_http_requests_total{route=\"/api/v1/ready\",method=\"GET\",status_class=\"2xx\"} 8\nvip_http_requests_total{route=\"/api/v1/assets\",method=\"POST\",status_class=\"2xx\"} 1\nvip_http_requests_total{route=\"/api/v1/inspections\",method=\"POST\",status_class=\"2xx\"} 19\nvip_http_requests_total{route=\"/api/v1/inspections/:id\",method=\"GET\",status_class=\"2xx\"} 902\nvip_http_requests_total{route=\"/api/v1/inspections\",method=\"GET\",status_class=\"2xx\"} 46\n\n# HELP vip_http_request_duration_seconds HTTP response duration, including response streaming\n# TYPE vip_http_request_duration_seconds histogram\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/ready\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/ready\",method=\"GET\"} 4\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/ready\",method=\"GET\"} 7\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_sum{route=\"/api/v1/ready\",method=\"GET\"} 0.049559923000008894\nvip_http_request_duration_seconds_count{route=\"/api/v1/ready\",method=\"GET\"} 8\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/assets\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_sum{route=\"/api/v1/assets\",method=\"POST\"} 0.04459642799999711\nvip_http_request_duration_seconds_count{route=\"/api/v1/assets\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections\",method=\"POST\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections\",method=\"POST\"} 1\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections\",method=\"POST\"} 13\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections\",method=\"POST\"} 0.1911681810000082\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections\",method=\"POST\"} 19\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 6\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 889\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 900\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 900\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 901\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections/:id\",method=\"GET\"} 2.363146574999938\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections/:id\",method=\"GET\"} 902\nvip_http_request_duration_seconds_bucket{le=\"0.001\",route=\"/api/v1/inspections\",method=\"GET\"} 0\nvip_http_request_duration_seconds_bucket{le=\"0.005\",route=\"/api/v1/inspections\",method=\"GET\"} 21\nvip_http_request_duration_seconds_bucket{le=\"0.01\",route=\"/api/v1/inspections\",method=\"GET\"} 45\nvip_http_request_duration_seconds_bucket{le=\"0.025\",route=\"/api/v1/inspections\",method=\"GET\"} 45\nvip_http_request_duration_seconds_bucket{le=\"0.05\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.1\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.25\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"0.5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"1\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"2.5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"5\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"10\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"30\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"60\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_bucket{le=\"+Inf\",route=\"/api/v1/inspections\",method=\"GET\"} 46\nvip_http_request_duration_seconds_sum{route=\"/api/v1/inspections\",method=\"GET\"} 0.27598554299995887\nvip_http_request_duration_seconds_count{route=\"/api/v1/inspections\",method=\"GET\"} 46\n\n# HELP vip_http_errors_total HTTP error responses, once per response\n# TYPE vip_http_errors_total counter\n\n# HELP vip_inspection_attempts_started_total Successfully claimed application attempts\n# TYPE vip_inspection_attempts_started_total counter\nvip_inspection_attempts_started_total 0\n\n# HELP vip_inspection_attempts_finished_total Observed attempt outcomes; process crashes may leave starts unmatched\n# TYPE vip_inspection_attempts_finished_total counter\n\n# HELP vip_inspection_attempt_duration_seconds Claimed attempt execution duration\n# TYPE vip_inspection_attempt_duration_seconds histogram\n\n# HELP vip_provider_duration_seconds Observed provider invocation duration, distinct from deterministic result.durationMs\n# TYPE vip_provider_duration_seconds histogram\n\n# HELP vip_inspection_deliveries_ignored_total Invalid or unclaimed deliveries that execute no attempt\n# TYPE vip_inspection_deliveries_ignored_total counter\n\n# HELP vip_inspection_failures_total Committed retry/terminal failure transitions\n# TYPE vip_inspection_failures_total counter\n\n# HELP vip_inspection_terminal_latency_seconds Persisted creation to terminal timestamp on acknowledged transition\n# TYPE vip_inspection_terminal_latency_seconds histogram\n\n# HELP vip_inspection_terminals_total Acknowledged authoritative terminal transitions\n# TYPE vip_inspection_terminals_total counter\n\n# HELP vip_dispatch_total Dispatch observations, not unique jobs or inspections\n# TYPE vip_dispatch_total counter\nvip_dispatch_total{outcome=\"added\"} 19\n\n# HELP vip_reconciliation_total Reconciliation pass outcome\n# TYPE vip_reconciliation_total counter\nvip_reconciliation_total{outcome=\"ok\"} 17\n\n# HELP vip_lease_repairs_total Acknowledged expired lease repairs\n# TYPE vip_lease_repairs_total counter",
+    "worker": "# HELP vip_http_requests_total Completed HTTP responses\n# TYPE vip_http_requests_total counter\n\n# HELP vip_http_request_duration_seconds HTTP response duration, including response streaming\n# TYPE vip_http_request_duration_seconds histogram\n\n# HELP vip_http_errors_total HTTP error responses, once per response\n# TYPE vip_http_errors_total counter\n\n# HELP vip_inspection_attempts_started_total Successfully claimed application attempts\n# TYPE vip_inspection_attempts_started_total counter\nvip_inspection_attempts_started_total 19\n\n# HELP vip_inspection_attempts_finished_total Observed attempt outcomes; process crashes may leave starts unmatched\n# TYPE vip_inspection_attempts_finished_total counter\nvip_inspection_attempts_finished_total{outcome=\"completed\"} 19\n\n# HELP vip_inspection_attempt_duration_seconds Claimed attempt execution duration\n# TYPE vip_inspection_attempt_duration_seconds histogram\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.001\",outcome=\"completed\"} 0\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.005\",outcome=\"completed\"} 0\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.01\",outcome=\"completed\"} 17\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.025\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.05\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.1\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.25\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"0.5\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"1\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"2.5\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"5\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"10\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"30\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"60\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_bucket{le=\"+Inf\",outcome=\"completed\"} 19\nvip_inspection_attempt_duration_seconds_sum{outcome=\"completed\"} 0.15090739700000266\nvip_inspection_attempt_duration_seconds_count{outcome=\"completed\"} 19\n\n# HELP vip_provider_duration_seconds Observed provider invocation duration, distinct from deterministic result.durationMs\n# TYPE vip_provider_duration_seconds histogram\nvip_provider_duration_seconds_bucket{le=\"0.001\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.005\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.01\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.025\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.05\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.1\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.25\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"0.5\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"1\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"2.5\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"5\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"10\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"30\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"60\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_bucket{le=\"+Inf\",outcome=\"returned\"} 19\nvip_provider_duration_seconds_sum{outcome=\"returned\"} 0.0014123659999913797\nvip_provider_duration_seconds_count{outcome=\"returned\"} 19\n\n# HELP vip_inspection_deliveries_ignored_total Invalid or unclaimed deliveries that execute no attempt\n# TYPE vip_inspection_deliveries_ignored_total counter\n\n# HELP vip_inspection_failures_total Committed retry/terminal failure transitions\n# TYPE vip_inspection_failures_total counter\n\n# HELP vip_inspection_terminal_latency_seconds Persisted creation to terminal timestamp on acknowledged transition\n# TYPE vip_inspection_terminal_latency_seconds histogram\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.001\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.005\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.01\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.025\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.05\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.1\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.25\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"0.5\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"1\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"2.5\",status=\"completed\"} 0\nvip_inspection_terminal_latency_seconds_bucket{le=\"5\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"10\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"30\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"60\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_bucket{le=\"+Inf\",status=\"completed\"} 19\nvip_inspection_terminal_latency_seconds_sum{status=\"completed\"} 92.14300000000001\nvip_inspection_terminal_latency_seconds_count{status=\"completed\"} 19\n\n# HELP vip_inspection_terminals_total Acknowledged authoritative terminal transitions\n# TYPE vip_inspection_terminals_total counter\nvip_inspection_terminals_total{status=\"completed\"} 19\n\n# HELP vip_dispatch_total Dispatch observations, not unique jobs or inspections\n# TYPE vip_dispatch_total counter\n\n# HELP vip_reconciliation_total Reconciliation pass outcome\n# TYPE vip_reconciliation_total counter\n\n# HELP vip_lease_repairs_total Acknowledged expired lease repairs\n# TYPE vip_lease_repairs_total counter"
+  }
+}

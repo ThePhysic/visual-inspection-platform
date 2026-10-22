@@ -37,7 +37,15 @@ async function freePort() {
   return port;
 }
 
-export async function disposableEnvironment({ ciMongoCompatibility = false } = {}) {
+export function assertOwnedBuildImage(image, project, owner) {
+  assert.equal(project, `vip-reliability-${owner}`);
+  assert.match(owner, /^[a-f0-9]{32}$/);
+  assert.equal(image.Config.Labels['io.vip.disposable-owner'], owner, 'Foreign image: refusing cleanup');
+  assert.ok(image.RepoTags?.length);
+  for (const tag of image.RepoTags) assert.ok(['api', 'worker', 'web'].some(service => tag === `${project}-${service}:latest`), 'Unexpected image tag');
+}
+
+export async function disposableEnvironment({ ciMongoCompatibility = false, cleanupBuiltImages = false } = {}) {
   const owner = randomUUID().replaceAll('-', '');
   const project = `vip-reliability-${owner}`;
   const webPort = await freePort(); const mongoPort = await freePort(); const redisPort = await freePort();
@@ -50,10 +58,15 @@ export async function disposableEnvironment({ ciMongoCompatibility = false } = {
     const args = kind === 'container' ? ['ps', '-aq'] : [kind, 'ls', '-q'];
     assert.equal(await command('docker', [...args, '--filter', `label=com.docker.compose.project=${project}`]), '');
   }
+  if (cleanupBuiltImages) assert.equal(await command('docker', ['image', 'ls', '-q', '--filter', `reference=${project}-*`]), '');
   await mkdir(resolve(root, '.tools'), { recursive: true });
   const override = { services: Object.fromEntries(services.map(service => [service, { labels: { [label]: owner } }])),
     volumes: Object.fromEntries(['images', 'mongodb-data', 'redis-data'].map(name => [name, { labels: { [label]: owner } }])),
     networks: { default: { labels: { [label]: owner } } } };
+  if (cleanupBuiltImages) {
+    // Unique labels prove ownership of benchmark image tags, including partial builds.
+    for (const service of ['api', 'worker', 'web']) override.services[service].build = { labels: { [label]: owner } };
+  }
   for (const service of ['api', 'worker']) override.services[service].environment = {
     MONGODB_URI: `mongodb://mongodb:27017/vip_reliability_${owner}`,
   };
@@ -106,7 +119,14 @@ export async function disposableEnvironment({ ciMongoCompatibility = false } = {
     async cleanup() {
       // Always prove ownership again, including after Compose down/up. Never
       // interpolate a user project name or remove another project's volumes.
+      const images = cleanupBuiltImages ? (await command('docker', ['image', 'ls', '--format', '{{.Repository}}:{{.Tag}}',
+        '--filter', `reference=${project}-*`])).split(/\s+/).filter(Boolean) : [];
+      for (const name of images) {
+        const [image] = JSON.parse(await command('docker', ['image', 'inspect', name]));
+        assertOwnedBuildImage(image, project, owner);
+      }
       await disruptive(['down', '--volumes', '--remove-orphans']);
+      if (images.length) await command('docker', ['image', 'rm', ...images]); // No force/prune; layers may remain shared/cache-owned.
       await unlink(file);
     } };
 }

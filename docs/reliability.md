@@ -198,5 +198,7 @@ Docker `restart: unless-stopped` restarts exits, **not** unhealthy containers.
   arbitrary network partitions, multi-region failover, or every possible crash
   interleaving. Filesystem errors and uncertain writes use controlled injection;
   container outages exercise real dependency processes in a disposable project.
-- No authentication/public deployment hardening, metrics platform, tracing, load
-  benchmarking, or real ML inference is introduced. Task 05C remains separate.
+- No authentication/public deployment hardening, centralized monitoring/tracing
+  platform, or real ML inference is introduced. Task 05C's separate
+  [process instrumentation](observability.md) and [bounded benchmarks](performance.md)
+  do not extend these durability guarantees.

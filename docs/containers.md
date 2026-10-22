@@ -70,6 +70,11 @@ MongoDB/normal-and-blocking-Redis connectivity, consumer state and bounded activ
 work. Compose checks that observation; smoke-test completion separately verifies
 actual consumption. See [consumer supervision and limitations](reliability.md).
 
+Optional operator HTTP listeners bind only to loopback in their own API/worker
+containers (9464/9465). They are not published, advertised to browsers or routed
+through nginx, and do not replace the health-file checks. See
+[metrics access and process boundaries](observability.md).
+
 Startup conditions do not replace runtime recovery. MongoDB/ioredis reconnect,
 API reconciliation, leases, bounded attempts, and idempotency are unchanged.
 During Redis interruption the API can remain admission-ready and durably accept

@@ -43,7 +43,8 @@ docker compose -p vip-demo logs -f worker
 
 Readiness is available at <http://127.0.0.1:8080/api/v1/ready>, liveness at
 `/api/v1/health`, and nginx health at `/healthz`. Compose waits for MongoDB,
-Redis, API readiness, and web health. The worker has no HTTP server: Docker's
+Redis, API readiness, and web health. The worker's optional operator listener is
+container-local; health uses an expiring observation file, and Docker's
 init/restart supervision watches its real process. Its ready log and an actual
 completed inspection establish consumer operation; `--wait` alone does not.
 An unhealthy container is not automatically restarted merely for being unhealthy.
@@ -74,6 +75,20 @@ Registry access is required for initial images and dependency installation.
 This remains a trusted local/demo deployment without authentication or TLS, using
 single-host shared image storage. See [container architecture and smoke checks](docs/containers.md)
 for operational details, persistence verification, and limitations.
+
+## Observability and benchmarks
+
+API and worker logs share request/inspection/job/attempt identifiers. Each has a
+separate process-local metrics registry, accessible only through its loopback
+operator listener (Compose: API 9464, worker 9465); nginx exposes neither.
+The API operator listener also provides a bounded on-demand queue/MongoDB status
+snapshot. See [operator commands and metric definitions](docs/observability.md).
+
+`pnpm benchmark` builds and runs an ownership-verified disposable Compose project,
+measures real mock-inspection acceptance/completion and history reads, then removes
+only its own resources. It never loads a personal demo environment. JSON and text
+results overwrite `.tools/benchmark-latest.*`; optional `--keep-logs` retains one
+bounded diagnostic log. See [workloads, limits and reproducibility](docs/performance.md).
 
 ## Native application development
 

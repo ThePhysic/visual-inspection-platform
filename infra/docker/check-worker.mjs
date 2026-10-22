@@ -9,6 +9,9 @@ assert.equal(process.env.NODE_ENV, 'production');
 assert.equal(process.env.ASSET_STORAGE_DIR, '/data/images');
 assert.equal(new URL(process.env.MONGODB_URI).hostname, 'mongodb');
 assert.equal(new URL(process.env.REDIS_URL).hostname, 'redis');
+const metrics = await fetch('http://127.0.0.1:9465/metrics', { signal: AbortSignal.timeout(3000) });
+assert.equal(metrics.status, 200);
+assert.match(await metrics.text(), /vip_inspection_attempts_started_total/);
 const require = createRequire(`${process.cwd()}/package.json`);
 for (const dependency of ['typescript', 'tsx', 'vite', 'vitest', 'sharp']) {
   assert.throws(() => require.resolve(dependency), { code: 'MODULE_NOT_FOUND' });

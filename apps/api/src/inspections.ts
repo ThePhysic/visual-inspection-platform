@@ -31,7 +31,8 @@ export function registerInspectionRoutes(instance: FastifyInstance, dependencies
       ...request.body, key: request.headers['idempotency-key'], requestId: request.id,
     });
     const response = acceptedResponse(record);
-    request.log.info({ inspectionId: response.id, status: response.status }, 'Inspection durably accepted');
+    request.log.info({ inspectionId: response.id, assetId: record.assetId.toString(), status: response.status,
+      acceptanceRequestId: record.requestId, dispatchGeneration: record.dispatchGeneration }, 'Inspection durably accepted');
     return reply.code(202).header('Location', response.url).send(response);
   });
 
@@ -73,7 +74,8 @@ export function registerInspectionRoutes(instance: FastifyInstance, dependencies
       inspectionId: request.params.id, key: request.headers['idempotency-key'], requestId: request.id,
     });
     const response = acceptedResponse(record);
-    request.log.info({ inspectionId: response.id, retriedFrom: request.params.id }, 'Inspection retry durably accepted');
+    request.log.info({ inspectionId: response.id, assetId: record.assetId.toString(), retriedFrom: request.params.id,
+      acceptanceRequestId: record.requestId, dispatchGeneration: record.dispatchGeneration }, 'Inspection retry durably accepted');
     return reply.code(202).header('Location', response.url).send(response);
   });
 }

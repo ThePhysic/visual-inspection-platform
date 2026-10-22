@@ -1,4 +1,4 @@
-import Fastify, { type FastifyError, type FastifyServerOptions } from 'fastify';
+import Fastify, { LogController, type FastifyError, type FastifyServerOptions } from 'fastify';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import multipart from '@fastify/multipart';
 import { Type } from 'typebox';
@@ -13,19 +13,33 @@ import {
 import { ApiError } from './errors.js';
 import { registerAssetRoutes, multipartLimits, type AssetDependencies } from './assets.js';
 import { registerInspectionRoutes } from './inspections.js';
-import { type InspectionDependencies, type InspectionQueue } from '@vip/backend';
+import { OperationalMetrics, errorCategory, type InspectionDependencies, type InspectionQueue } from '@vip/backend';
 
 export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   assets?: AssetDependencies;
   inspections?: InspectionDependencies;
   dispatchQueue?: Pick<InspectionQueue, 'healthy'>;
+  metrics?: OperationalMetrics;
 } = {}) {
   const app = Fastify({
     logger: false,
+    logController: new LogController({ requestIdLogLabel: 'requestId' }),
     ...(options.logger === undefined ? {} : { logger: options.logger }),
     requestTimeout: 30_000,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false } },
   }).withTypeProvider<TypeBoxTypeProvider>();
+
+  const metrics = options.metrics ?? new OperationalMetrics();
+  const starts = new WeakMap<object, number>();
+  app.addHook('onRequest', async (request, reply) => {
+    starts.set(request, metrics.now());
+    reply.header('X-Request-Id', request.id);
+  });
+  app.addHook('onResponse', async (request, reply) => {
+    const start = starts.get(request);
+    if (start !== undefined) metrics.http(request.routeOptions.url, request.method, reply.statusCode, metrics.elapsed(start));
+    starts.delete(request);
+  });
 
   app.setErrorHandler<FastifyError>((error, request, reply) => {
     const statusCode = error.validation ? 400 : (error.statusCode ?? 500);
@@ -33,7 +47,8 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
     const inspectionId = request.routeOptions.url?.startsWith(INSPECTIONS_PATH);
 
     if (serverError) {
-      request.log.error({ err: error }, 'Request failed');
+      request.log.error({ statusCode, errorCategory: errorCategory(statusCode),
+        failureCode: error instanceof ApiError ? error.code : 'INTERNAL_ERROR' }, 'Request failed');
     }
 
     const response: ApiErrorResponse = {

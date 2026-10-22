@@ -29,6 +29,7 @@ services:
       MONGODB_URI: mongodb://mongodb:27017/visual_inspection
       REDIS_URL: redis://redis:6379
       ASSET_STORAGE_DIR: /data/images
+      API_OPERATOR_PORT: "9464"
     volumes:
       - images:/data/images
     depends_on:
@@ -54,6 +55,7 @@ services:
     environment:
       <<: *backend-environment
       WORKER_HEALTH_FILE: /tmp/vip-worker-health.json
+      WORKER_OPERATOR_PORT: "9465"
     volumes:
       - images:/data/images:ro
     depends_on:

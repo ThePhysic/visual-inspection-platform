@@ -3,10 +3,12 @@ import { readConfig } from './config.js';
 import { connectDatabase, createAssetModel } from './database.js';
 import { LocalImageStorage } from './storage.js';
 import sharp from 'sharp';
-import { createInspectionModel, InspectionQueue, InspectionReconciler } from '@vip/backend';
+import { createInspectionModel, InspectionQueue, InspectionReconciler, OperationalMetrics, operatorPort, startOperatorServer, sampleQueue } from '@vip/backend';
 
 async function main() {
   const config = readConfig(process.env);
+  const operationsPort = operatorPort(process.env.API_OPERATOR_PORT);
+  const metrics = new OperationalMetrics();
   sharp.cache({ memory: 32, files: 0, items: 32 });
   sharp.concurrency(2);
   const storage = new LocalImageStorage(config.storageDirectory);
@@ -22,10 +24,12 @@ async function main() {
     throw error;
   }
   const redisStatus: Pick<InspectionQueue, 'healthy'> = { healthy: () => queue.healthy() };
-  const app = buildApp({ logger: true, assets: { model, storage }, inspections: { inspections, assets: model }, dispatchQueue: redisStatus });
+  const app = buildApp({ logger: true, metrics, assets: { model, storage }, inspections: { inspections, assets: model }, dispatchQueue: redisStatus });
   const queue = new InspectionQueue(config.redisUrl, app.log);
-  const reconciler = new InspectionReconciler(inspections, queue, app.log);
+  const reconciler = new InspectionReconciler(inspections, queue, app.log, undefined, metrics);
+  let operations: Awaited<ReturnType<typeof startOperatorServer>> | undefined;
   app.addHook('onClose', async () => {
+    await operations?.close();
     try { await reconciler.close(); } finally {
       try { await queue.close(); } finally { await connection.close(); }
     }
@@ -36,8 +40,8 @@ async function main() {
     app.log.info({ signal }, 'Shutting down API');
     try {
       await app.close();
-    } catch (error) {
-      app.log.error({ err: error }, 'API shutdown failed');
+    } catch {
+      app.log.error({ failureCode: 'SHUTDOWN_FAILED' }, 'API shutdown failed');
       process.exitCode = 1;
     }
   }
@@ -46,6 +50,7 @@ async function main() {
   process.once('SIGTERM', () => { void shutdown('SIGTERM'); });
 
   try {
+    if (operationsPort) operations = await startOperatorServer(metrics, operationsPort, () => sampleQueue(queue, inspections));
     await app.listen({ host: config.host, port: config.port });
     reconciler.start();
   } catch (error) {

@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { disposableEnvironment, pnpmCommand, root } from './disposable.mjs';
+import { setTimeout as pause } from 'node:timers/promises';
+import { disposableEnvironment, pnpmCommand, command, root } from './disposable.mjs';
 
 const flags = new Set(process.argv.slice(2));
 if ([...flags].some(flag => !['--native', '--browser', '--ci-mongodb'].includes(flag))) throw new Error('Use optional --native / --browser / --ci-mongodb');
@@ -10,6 +11,20 @@ async function workerUnavailable(dependency) {
   await test.compose(['exec', '-T', 'worker', 'node', '--input-type=module', '-', dependency], {
     input: await readFile(resolve(root, 'infra/docker/check-worker-health.mjs'), 'utf8'), echo: true,
   });
+}
+async function workerRecovered() {
+  // Compose up --wait can reject an already-unhealthy running container before
+  // its next periodic probe. Observe recovery first; never restart to mask it.
+  await test.verifyOwnership();
+  const id = await test.compose(['ps', '-q', '--no-trunc', 'worker']);
+  if (!/^[a-f0-9]{64}$/.test(id)) throw new Error(`Expected one owned worker (identifier length ${id.length})`);
+  const deadline = Date.now() + 45_000;
+  while (Date.now() < deadline) {
+    const health = await command('docker', ['inspect', '--format', '{{.State.Health.Status}}', id], { timeout: 5000 });
+    if (health === 'healthy') return;
+    await pause(250); // Bounded state polling, not an assumed recovery delay.
+  }
+  throw new Error('Worker did not regain Docker health after dependency recovery');
 }
 try {
   await test.compose(['config', '--quiet']);
@@ -40,6 +55,7 @@ try {
   // Restart API while Redis is still down: durable intent survives process loss.
   await test.disruptive(['restart', 'api']);
   await test.disruptive(['start', 'redis']);
+  await workerRecovered();
   await test.compose(['up', '-d', '--wait', '--wait-timeout', '120'], { echo: true });
   await test.inside('reliability.mjs', 'redis-recovered');
   await test.disruptive(['stop', 'worker']);
