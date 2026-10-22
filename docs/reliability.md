@@ -130,6 +130,15 @@ tests run without requiring Windows file-symlink creation privileges. POSIX runs
 the same junction cases as directory symlinks and additionally checks distinct
 case-sensitive directories; platform-specific spelling tests are conditional.
 
+Only the real DOS-alias regression has a 20-second test deadline to accommodate
+cold PowerShell/COM startup on Windows runners. Its owned alias-lookup process
+still has a separate 10-second limit with forced termination; it must settle
+before fixture cleanup. CI records phase durations (staging, alias lookup,
+identity and cleanup) without filesystem paths. Set `VIP_TEST_TIMINGS=1` to
+record the same diagnostics locally; use Vitest's `--reporter=verbose` to see
+them on successful runs as well. Other test deadlines and production filesystem
+checks are unchanged.
+
 **Published images are never deleted**, whether referenced, orphaned, or associated
 with an inspection whose asset reference needs investigation. There is no orphan
 apply option. This avoids destroying bytes after a lost insert acknowledgement

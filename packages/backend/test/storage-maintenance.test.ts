@@ -89,22 +89,45 @@ describe('conservative offline storage maintenance', () => {
   });
 
   it.runIf(process.platform === 'win32')('accepts a genuine DOS 8.3 alias, not just casing differences', async context => {
-    const stale = await stage();
-    // Read Windows' real short name; never guess one or substitute mocked fs
-    // results. This COM lookup does not require symlink/admin privileges.
-    const { stdout } = await promisify(execFile)('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
-      '$ErrorActionPreference = "Stop"; $fs = New-Object -ComObject Scripting.FileSystemObject; [Console]::Write($fs.GetFolder($env:VIP_SHORT_PATH_TEST_ROOT).ShortPath)'],
-    { env: { ...process.env, VIP_SHORT_PATH_TEST_ROOT: root }, timeout: 10_000 });
-    const alias = stdout.trim();
-    const canonical = await realpath(root);
-    if (alias.toLowerCase() === canonical.toLowerCase()) {
-      context.skip('This volume does not provide an 8.3 alias; case and junction regressions still run.');
+    const started = performance.now();
+    const timings: Record<string, number> = {};
+    let phase = 'staging';
+    let phaseStarted = started;
+    const nextPhase = (next: string) => {
+      timings[phase] = Math.round(performance.now() - phaseStarted);
+      phase = next;
+      phaseStarted = performance.now();
+    };
+    try {
+      const stale = await stage();
+      nextPhase('powershellAliasLookup');
+      // Read Windows' real short name; never guess one or substitute mocked fs
+      // results. This COM lookup does not require symlink/admin privileges.
+      // Bound/terminate this owned process before the test deadline so fixture
+      // cleanup cannot race a still-running lookup. The script only uses COM.
+      const { stdout } = await promisify(execFile)('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+        '$ErrorActionPreference = "Stop"; $fs = New-Object -ComObject Scripting.FileSystemObject; [Console]::Write($fs.GetFolder($env:VIP_SHORT_PATH_TEST_ROOT).ShortPath)'],
+      { env: { ...process.env, VIP_SHORT_PATH_TEST_ROOT: root }, timeout: 10_000, killSignal: 'SIGKILL', windowsHide: true });
+      nextPhase('identityAndCleanup');
+      const alias = stdout.trim();
+      const canonical = await realpath(root);
+      if (alias.toLowerCase() === canonical.toLowerCase()) {
+        context.skip('This volume does not provide an 8.3 alias; case and junction regressions still run.');
+      }
+      expect((await lstat(alias)).isSymbolicLink()).toBe(false);
+      expect(await realpath(alias)).toBe(canonical);
+      expect((await cleanStaleStaging(alias, catalog, async () => {})).removed).toEqual([stale]);
+      expect(await readdir(root)).toEqual([]);
+    } finally {
+      timings[phase] = Math.round(performance.now() - phaseStarted);
+      if (process.env.CI || process.env.VIP_TEST_TIMINGS === '1') {
+        // Timing only: do not emit filesystem paths or alias values in CI logs.
+        console.info('DOS alias regression timings (ms)', { ...timings, total: Math.round(performance.now() - started) });
+      }
     }
-    expect((await lstat(alias)).isSymbolicLink()).toBe(false);
-    expect(await realpath(alias)).toBe(canonical);
-    expect((await cleanStaleStaging(alias, catalog, async () => {})).removed).toEqual([stale]);
-    expect(await readdir(root)).toEqual([]);
-  });
+    // Cold PowerShell/COM startup on hosted Windows can exceed Vitest's 5s
+    // default. Only this test gets headroom beyond its 10s subprocess limit.
+  }, 20_000);
 
   it.runIf(process.platform === 'win32')('accepts an extended-length spelling of a real directory', async () => {
     const stale = await stage();
