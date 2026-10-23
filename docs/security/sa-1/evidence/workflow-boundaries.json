@@ -1,0 +1,11 @@
+{
+  "nativeLoopbackPorts": [
+    3003,
+    4174
+  ],
+  "dependencies": "Only the audit-owned MongoDB/Redis server ports",
+  "storage": ".data/browser-tests/<generated run ID> with existing exact-root cleanup guards",
+  "redis": "Audit-owned Redis database 15",
+  "reuseExistingServer": false,
+  "sourceChanged": false
+}

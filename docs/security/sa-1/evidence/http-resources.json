@@ -1,0 +1,771 @@
+{
+  "before": {
+    "assets": 1,
+    "inspections": 0,
+    "storage": {
+      "files": 1,
+      "staging": 0,
+      "bytes": 189
+    }
+  },
+  "after": {
+    "assets": 6,
+    "inspections": 7,
+    "storage": {
+      "files": 6,
+      "staging": 0,
+      "bytes": 1212
+    }
+  },
+  "cases": [
+    {
+      "name": "actual PNG overrides hostile filename and declared MIME",
+      "expectedStatus": 201,
+      "status": 201,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "canonical content retrieval",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "canonical content security headers",
+      "passed": true,
+      "mime": "image/png",
+      "cache": "public, max-age=31536000, immutable",
+      "etag": "\"9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c\"",
+      "publicAssetFields": [
+        "byteLength",
+        "contentUrl",
+        "createdAt",
+        "height",
+        "id",
+        "mimeType",
+        "sha256",
+        "source",
+        "width"
+      ],
+      "hiddenInternalFields": true
+    },
+    {
+      "name": "unsupported SVG",
+      "expectedStatus": 415,
+      "status": 415,
+      "code": "UNSUPPORTED_IMAGE_TYPE",
+      "passed": true
+    },
+    {
+      "name": "truncated PNG",
+      "expectedStatus": 422,
+      "status": 422,
+      "code": "CORRUPT_IMAGE",
+      "passed": true
+    },
+    {
+      "name": "unknown file field",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_UPLOAD",
+      "passed": true
+    },
+    {
+      "name": "unknown source",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_SOURCE",
+      "passed": true
+    },
+    {
+      "name": "second file",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_UPLOAD",
+      "passed": true
+    },
+    {
+      "name": "10 MiB plus one byte",
+      "expectedStatus": 413,
+      "status": 413,
+      "code": "UPLOAD_TOO_LARGE",
+      "passed": true
+    },
+    {
+      "name": "20,004,000 pixel header rejected before decoding inconsistent tiny fixture",
+      "expectedStatus": 413,
+      "status": 413,
+      "code": "IMAGE_DIMENSIONS_EXCEEDED",
+      "passed": true
+    },
+    {
+      "name": "APNG declaration",
+      "expectedStatus": 415,
+      "status": 415,
+      "code": "MULTIFRAME_IMAGE",
+      "passed": true
+    },
+    {
+      "name": "EXIF-bearing JPEG accepted",
+      "expectedStatus": 201,
+      "status": 201,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "auto orientation and metadata stripping",
+      "passed": true,
+      "width": 5,
+      "height": 8,
+      "exifPresent": false,
+      "iccPresent": false
+    },
+    {
+      "name": "rejected uploads leave no staging",
+      "passed": true,
+      "state": {
+        "assets": 3,
+        "inspections": 0,
+        "storage": {
+          "files": 3,
+          "staging": 0,
+          "bytes": 645
+        }
+      }
+    },
+    {
+      "name": "genuine interrupted upload cleanup",
+      "passed": true,
+      "before": {
+        "assets": 3,
+        "inspections": 0,
+        "storage": {
+          "files": 3,
+          "staging": 0,
+          "bytes": 645
+        }
+      },
+      "after": {
+        "assets": 3,
+        "inspections": 0,
+        "storage": {
+          "files": 3,
+          "staging": 0,
+          "bytes": 645
+        }
+      }
+    },
+    {
+      "name": "third simultaneous upload receives backpressure",
+      "expectedStatus": 503,
+      "status": 503,
+      "code": "INGESTION_BUSY",
+      "passed": true
+    },
+    {
+      "name": "two incomplete uploads occupy two staging slots",
+      "passed": true,
+      "staging": 2
+    },
+    {
+      "name": "admission slots released after abort",
+      "passed": true
+    },
+    {
+      "name": "history rejects limit=51",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_HISTORY_QUERY",
+      "passed": true
+    },
+    {
+      "name": "history rejects limit=00",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_HISTORY_QUERY",
+      "passed": true
+    },
+    {
+      "name": "history rejects limit=1&limit=2",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_HISTORY_QUERY",
+      "passed": true
+    },
+    {
+      "name": "history rejects status[$ne]=failed",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_HISTORY_QUERY",
+      "passed": true
+    },
+    {
+      "name": "history rejects cursor=bad",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_CURSOR",
+      "passed": true
+    },
+    {
+      "name": "history rejects unexpected=SA1_CANARY",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_HISTORY_QUERY",
+      "passed": true
+    },
+    {
+      "name": "invalid object ID",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_ASSET_ID",
+      "passed": true
+    },
+    {
+      "name": "nonexistent object ID",
+      "expectedStatus": 404,
+      "status": 404,
+      "code": "ASSET_NOT_FOUND",
+      "passed": true
+    },
+    {
+      "name": "public metrics absent",
+      "expectedStatus": 404,
+      "status": 200,
+      "code": null,
+      "passed": false
+    },
+    {
+      "name": "public queue absent",
+      "expectedStatus": 404,
+      "status": 200,
+      "code": null,
+      "passed": false
+    },
+    {
+      "name": "public operator-prefixed route absent",
+      "expectedStatus": 404,
+      "status": 404,
+      "code": "NOT_FOUND",
+      "passed": true
+    },
+    {
+      "name": "injected lifecycle/result fields",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_REQUEST",
+      "passed": true
+    },
+    {
+      "name": "operator-shaped asset ID",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_REQUEST",
+      "passed": true
+    },
+    {
+      "name": "rejected creation has no persisted side effect",
+      "passed": true
+    },
+    {
+      "name": "persistent idempotency replay",
+      "passed": true
+    },
+    {
+      "name": "semantic key conflict",
+      "expectedStatus": 409,
+      "status": 409,
+      "code": "IDEMPOTENCY_CONFLICT",
+      "passed": true
+    },
+    {
+      "name": "forged review confidence",
+      "expectedStatus": 400,
+      "status": 400,
+      "code": "INVALID_REVIEW",
+      "passed": true
+    },
+    {
+      "name": "valid review",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "stale review rejected",
+      "expectedStatus": 409,
+      "status": 409,
+      "code": "REVIEW_REVISION_CONFLICT",
+      "passed": true
+    },
+    {
+      "name": "review writes preserve original result and omit internals",
+      "passed": true,
+      "responseFields": [
+        "assetId",
+        "attemptCount",
+        "completedAt",
+        "createdAt",
+        "id",
+        "maxAttempts",
+        "processingDurationMs",
+        "processingStartedAt",
+        "requested",
+        "result",
+        "review",
+        "reviewWriteSequence",
+        "status",
+        "updatedAt"
+      ]
+    },
+    {
+      "name": "bounded distinct inspection 1",
+      "expectedStatus": 202,
+      "status": 202,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "bounded distinct inspection 2",
+      "expectedStatus": 202,
+      "status": 202,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "bounded distinct inspection 3",
+      "expectedStatus": 202,
+      "status": 202,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "bounded distinct inspection 4",
+      "expectedStatus": 202,
+      "status": 202,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "bounded distinct inspection 5",
+      "expectedStatus": 202,
+      "status": 202,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "bounded distinct inspection 6",
+      "expectedStatus": 202,
+      "status": 202,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "bounded repeated valid requests demonstrate retained growth",
+      "passed": true,
+      "before": {
+        "assets": 3,
+        "inspections": 1,
+        "storage": {
+          "files": 3,
+          "staging": 0,
+          "bytes": 645
+        }
+      },
+      "after": {
+        "assets": 6,
+        "inspections": 7,
+        "storage": {
+          "files": 6,
+          "staging": 0,
+          "bytes": 1212
+        }
+      },
+      "limitation": "No exhaustion or global capacity/retention guarantee tested"
+    },
+    {
+      "name": "readiness probe 1",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "readiness probe 2",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "readiness probe 3",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "readiness probe 4",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "readiness probe 5",
+      "expectedStatus": 200,
+      "status": 200,
+      "code": null,
+      "passed": true
+    },
+    {
+      "name": "readiness probes leave no persistent growth",
+      "passed": true,
+      "before": {
+        "assets": 6,
+        "inspections": 7,
+        "storage": {
+          "files": 6,
+          "staging": 0,
+          "bytes": 1212
+        }
+      },
+      "after": {
+        "assets": 6,
+        "inspections": 7,
+        "storage": {
+          "files": 6,
+          "staging": 0,
+          "bytes": 1212
+        }
+      }
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 201,
+      "bytes": 289
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/assets/6adbb7fe274a04a731196ead/content",
+      "status": 200,
+      "bytes": 189
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 415,
+      "bytes": 115
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 422,
+      "bytes": 116
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 400,
+      "bytes": 104
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 400,
+      "bytes": 111
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 400,
+      "bytes": 135
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 413,
+      "bytes": 102
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 413,
+      "bytes": 125
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 415,
+      "bytes": 119
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 201,
+      "bytes": 288
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/assets/6adbb803274a04a731196eae/content",
+      "status": 200,
+      "bytes": 267
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 503,
+      "bytes": 110
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections?limit=51",
+      "status": 400,
+      "bytes": 102
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections?limit=00",
+      "status": 400,
+      "bytes": 102
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections?limit=1&limit=2",
+      "status": 400,
+      "bytes": 102
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections?status[$ne]=failed",
+      "status": 400,
+      "bytes": 102
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections?cursor=bad",
+      "status": 400,
+      "bytes": 155
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections?unexpected=SA1_CANARY",
+      "status": 400,
+      "bytes": 102
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/assets/not-an-id",
+      "status": 400,
+      "bytes": 114
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/assets/000000000000000000000000",
+      "status": 404,
+      "bytes": 86
+    },
+    {
+      "method": "GET",
+      "path": "/metrics",
+      "status": 200,
+      "bytes": 536
+    },
+    {
+      "method": "GET",
+      "path": "/queue",
+      "status": 200,
+      "bytes": 536
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/metrics",
+      "status": 404,
+      "bytes": 80
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 400,
+      "bytes": 96
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 400,
+      "bytes": 96
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 146
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 409,
+      "bytes": 128
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections/6adbb810274a04a731196eaf",
+      "status": 200,
+      "bytes": 772
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/inspections/6adbb810274a04a731196eaf/review",
+      "status": 400,
+      "bytes": 95
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/inspections/6adbb810274a04a731196eaf/review",
+      "status": 200,
+      "bytes": 470
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/inspections/6adbb810274a04a731196eaf/review",
+      "status": 409,
+      "bytes": 145
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/inspections/6adbb810274a04a731196eaf",
+      "status": 200,
+      "bytes": 1130
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 201,
+      "bytes": 289
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 201,
+      "bytes": 289
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "status": 201,
+      "bytes": 289
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "status": 202,
+      "bytes": 143
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ready",
+      "status": 200,
+      "bytes": 96
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ready",
+      "status": 200,
+      "bytes": 96
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ready",
+      "status": 200,
+      "bytes": 96
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ready",
+      "status": 200,
+      "bytes": 96
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/ready",
+      "status": 200,
+      "bytes": 96
+    }
+  ],
+  "passed": 49,
+  "failed": 2,
+  "sharp": {
+    "aom": "3.15.1",
+    "archive": "3.8.9",
+    "cairo": "1.18.6",
+    "cgif": "0.5.4",
+    "exif": "0.6.26",
+    "expat": "2.8.5",
+    "ffi": "3.8.0",
+    "fontconfig": "2.18.3",
+    "freetype": "2.14.3",
+    "fribidi": "1.0.17",
+    "glib": "2.90.0",
+    "harfbuzz": "14.5.0",
+    "heif": "1.23.5",
+    "highway": "1.4.0",
+    "imagequant": "2.4.1",
+    "lcms": "2.19.1",
+    "mozjpeg": "0826579",
+    "pango": "1.58.2",
+    "pixman": "0.46.4",
+    "png": "1.6.58",
+    "proxy-libintl": "0.5",
+    "rsvg": "2.63.2",
+    "tiff": "4.7.2",
+    "uhdr": "2.0.2",
+    "vips": "8.18.7",
+    "webp": "1.6.0",
+    "xml2": "2.15.4",
+    "zlib-ng": "2.3.3",
+    "sharp": "0.35.5"
+  },
+  "requestLimitPerCase": 50,
+  "spacingMs": 550
+}

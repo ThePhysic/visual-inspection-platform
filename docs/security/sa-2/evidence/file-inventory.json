@@ -1,0 +1,431 @@
+{
+  "baseline": "03566fa1d64b457dbc78c7cf37436b2296e73302",
+  "files": [
+    {
+      "path": ".env.example",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 2371,
+      "sha256": "4dce979c1e882c40a5d26a491814722241fd5db47bffcab5afa8f08458e03250"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 4013,
+      "sha256": "340d211492dcd3c00a624fbcfb77d8b9dd221f830a591286d504c89c0cf2e583"
+    },
+    {
+      "path": "apps/api/src/admission.ts",
+      "kind": "created",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 2225,
+      "sha256": "8eecd230e2b45778436a5bb802ea282a7dd9db772d526ab7d38390abb4e6227e"
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 4854,
+      "sha256": "9a77460fd9d08f844337760407d33d1a39384da2ae9f45b2c5b0979959dca082"
+    },
+    {
+      "path": "apps/api/src/assets.ts",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 8063,
+      "sha256": "b42bedbcfb69c6b8bbe7076479895ddf3c910b4ad668115ae5455b2658f1c5bf"
+    },
+    {
+      "path": "apps/api/src/config.ts",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 903,
+      "sha256": "c5b07bb0ed96aae7e329fbdbe1a5fa9ebfb795d8d78f1de74d2ae6839c749e6e"
+    },
+    {
+      "path": "apps/api/src/server.ts",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 2847,
+      "sha256": "4e2816621f22c9b59c03a65f998791524ad99adc88d7241dbd494d7ec32a2a60"
+    },
+    {
+      "path": "apps/api/test/admission.test.ts",
+      "kind": "created",
+      "purpose": "focused regression",
+      "bytes": 3752,
+      "sha256": "73697a0eec0291e1b4f63d338af235b3b579fb65676dc72f5c06bf72cd62e0f5"
+    },
+    {
+      "path": "apps/api/test/assets.integration.test.ts",
+      "kind": "modified",
+      "purpose": "focused regression",
+      "bytes": 23303,
+      "sha256": "41de33d256d68559c071e04a9a048fb6672eada483077271e3bdc1485b1ed8e5"
+    },
+    {
+      "path": "apps/api/test/config.test.ts",
+      "kind": "modified",
+      "purpose": "focused regression",
+      "bytes": 2151,
+      "sha256": "1a86cb283f2fa2924497271247f71ebd6b1be8766e911d09fd00eca3ae9f315a"
+    },
+    {
+      "path": "apps/api/test/metrics.test.ts",
+      "kind": "modified",
+      "purpose": "focused regression",
+      "bytes": 2271,
+      "sha256": "87f88910cce563af1fdaaefa6e9c89608f85c326369a519d0a976bb1970dd76c"
+    },
+    {
+      "path": "compose.yaml",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 2932,
+      "sha256": "616d2f426e6ac178db889b8941b70917019df4c04b93c8c06ae9d9b3c8c243f2"
+    },
+    {
+      "path": "docs/api.md",
+      "kind": "modified",
+      "purpose": "assessment/operational documentation",
+      "bytes": 10779,
+      "sha256": "74b6b948a44ed0b33d9b54d87fd403aae69a80055b68dfb8a156dc780d02c147"
+    },
+    {
+      "path": "docs/containers.md",
+      "kind": "modified",
+      "purpose": "assessment/operational documentation",
+      "bytes": 11271,
+      "sha256": "a6e3c7c10b5d17183c41ed631fad4e52083d273360ca86139d1dbe96cb12c776"
+    },
+    {
+      "path": "docs/security/README.md",
+      "kind": "modified",
+      "purpose": "assessment/operational documentation",
+      "bytes": 3878,
+      "sha256": "5105fc91aa278d2b859b79d0ad371afab6378ea4e1b3e2382fadeb32a7b12806"
+    },
+    {
+      "path": "docs/security/sa-2/README.md",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 6116,
+      "sha256": "e0e654ee467afd3f9df76839f3bc50858f9fe04f12c08e92d3d1869b5ff884b8"
+    },
+    {
+      "path": "docs/security/sa-2/browser-boundary.md",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 6064,
+      "sha256": "7b05dbef9ca181475bb984800d6f7e2f93afbfeb7b11852bd64e2f239b59ad07"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/advisory-triage.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 6118,
+      "sha256": "a26789ecda0b2168fe18d968cb06c7d277377be21c16d30b64aae5545b027b28"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/baseline.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 35319,
+      "sha256": "3b6004dd58527c79d36c903377ab915eaa0dc38811b2e19350b4677f96bfc67a"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/browser-after.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 9349,
+      "sha256": "e3d6b1651fb50578122075875aee891f7f5c793b0f5695ffcaa547a25c510e25"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/browser-before.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 9013,
+      "sha256": "0f7f645f977885613a320c4ea2d79b33d8235e6cf3d3869b2385bcee41379085"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/file-inventory.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "sha256": "(self not hashed)"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/http-after.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 3187,
+      "sha256": "7ae0a10071d1ac317c7b2704be7dfc5c5b7be8a425b43dcaf6ea88d6859eca36"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/http-before.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 3217,
+      "sha256": "d14a79cd7829a167d993f1034ee05ce9fab111b1e29085dcb4aa8f048f4f0ae2"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/image-identities.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 1381,
+      "sha256": "9fa3102b470d3d5aa938cb48feda4e6a4100c6dda60666448e60b0836ffc2232"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/image-scans.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 228971,
+      "sha256": "b09989b7c8e491e7ec652e48b76b5eed07a33581423b143c79e36bed7cc0341c"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/isolation.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 1555,
+      "sha256": "55c8d5f3336573c016886a8c178ba86642c902f5fdb5cc1238054c1de3520ba2"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/legitimate-browser.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 822,
+      "sha256": "49268ce61e442fcb167ebebccac4e8a19f623cccab271a81cab9c17fa1fe218e"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/mongo-catalog.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 41399,
+      "sha256": "51adfc9095dd17d2369449690bc3fd7d4207e49a2ce30f15c463f866414fbf7a"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/pnpm-audit-all.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 310,
+      "sha256": "10f2fe9c5229d79b203106ac14f1f8a6ce8a1d15e774554c48f84d14a04a94f9"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/pnpm-audit-prod.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 310,
+      "sha256": "a8381c568ab5dfe96fda9a242acf568373fdcc0d373b61791639dda0c97c6a37"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/preservation.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 1721,
+      "sha256": "cbe40251d03d2571c788681cad3b3971c011ce85a589add7154c5ca225d1d0a5"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/regressions.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 2550,
+      "sha256": "d1305a9a62055898053de86a66d640bbd344cd9f9adce37e57fe2fb5133ba0e3"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/runtime.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 9964,
+      "sha256": "c4d7739c4878b5e32936c57138743e75a06b05160e75b146b40b4f1f09c3368d"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/verification.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 762,
+      "sha256": "fee4d6c47f2d016695b99c1def8842b0a554128a3861cc5a35b9adea0e26895b"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/workspace-validation-final.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 819,
+      "sha256": "74fe8ead34ab306f1d8e196a8a191061bc439a0600ebace944ad3195a4f21eec"
+    },
+    {
+      "path": "docs/security/sa-2/evidence/workspace-validation.json",
+      "kind": "created",
+      "purpose": "sanitized assessment/regression/preservation evidence",
+      "bytes": 819,
+      "sha256": "885a35849d6c8b070adfcdd7a8ecba9f86894dd2870d1ec671e4f3d85328ff84"
+    },
+    {
+      "path": "docs/security/sa-2/findings.json",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 8509,
+      "sha256": "d005a73268297191a47fb7eac5ca882cea774c1336e22c75403f6c64c418923e"
+    },
+    {
+      "path": "docs/security/sa-2/operations-next.md",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 5563,
+      "sha256": "6c832866751a271dc012d2c346e5da3295ecf5ed8e64782c590e709d961e9fad"
+    },
+    {
+      "path": "docs/security/sa-2/repro/advisory-triage.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 3826,
+      "sha256": "e48226b3bc09fc5f08f66051b15147ef11f166278e3727dc4aec3fc1557ea256"
+    },
+    {
+      "path": "docs/security/sa-2/repro/browser.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 8496,
+      "sha256": "c0167746312781cc58dba7cfde7ea0467740a2a66d73a53bbb929b2d5adadf74"
+    },
+    {
+      "path": "docs/security/sa-2/repro/cleanup.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 4375,
+      "sha256": "701cf7273c4d45751c59d65a5c9034fc971d7693527a1402da4d380e4d1ee61a"
+    },
+    {
+      "path": "docs/security/sa-2/repro/environment.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 2771,
+      "sha256": "f8c1e6ccffbbdae01d76e6dfc336340433e232d7d6f41e0aad94569f7db9a170"
+    },
+    {
+      "path": "docs/security/sa-2/repro/http.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 5629,
+      "sha256": "57def95a51d228cd1768483f48433c650b7856201f34986abc098f8e82d63881"
+    },
+    {
+      "path": "docs/security/sa-2/repro/image-scans.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 4295,
+      "sha256": "b0cf00ff33e2d82f82ad7e3a80d4c044e854989b39e70e2de68222f054b99d41"
+    },
+    {
+      "path": "docs/security/sa-2/repro/mongo-catalog.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 4335,
+      "sha256": "20aef86dda11f1b4a740bae79316a2eae38a123a49326d53914c961db4311592"
+    },
+    {
+      "path": "docs/security/sa-2/repro/prepare.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 2368,
+      "sha256": "03b60d050fd36d33da5814d99800e106839abf381aa93422d7472cf3de0989c0"
+    },
+    {
+      "path": "docs/security/sa-2/repro/rebuild.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 960,
+      "sha256": "77c911482effdb2bb43d903e62c53cfb6d85c98b2db7c8a779d111a062b8e3dd"
+    },
+    {
+      "path": "docs/security/sa-2/repro/report.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 8201,
+      "sha256": "9148961c637a6b0ab1cf2659400f4fe898658000c97c711c954fec5342e9a9a1"
+    },
+    {
+      "path": "docs/security/sa-2/repro/runtime.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 4635,
+      "sha256": "aa622b4c4e75297cf5ab89a1c26a7825fc780c471c7b4259249cc737966918c2"
+    },
+    {
+      "path": "docs/security/sa-2/repro/setup.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 2358,
+      "sha256": "5639f45573af5aa816f3acd51521c060df08023109bca723a71dc0ead1e059e7"
+    },
+    {
+      "path": "docs/security/sa-2/repro/support.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 1766,
+      "sha256": "29049ce2fd28ff68f0e8187fde2a03634c555d19e6e8d0cc588f35422d91290d"
+    },
+    {
+      "path": "docs/security/sa-2/repro/validation.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 1648,
+      "sha256": "301779c8fe476432aafcb412f2e97eaee4f23f7dbb95d774787080b822d91cdc"
+    },
+    {
+      "path": "docs/security/sa-2/repro/verify.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 3213,
+      "sha256": "e9847a22d2092cd4fa43985ad70714a1e67fc35045d1b27c161349395ca34a90"
+    },
+    {
+      "path": "docs/security/sa-2/repro/workflow.mjs",
+      "kind": "created",
+      "purpose": "audit-owned synthetic reproduction/verification tool",
+      "bytes": 3077,
+      "sha256": "e635843d995dafb9da5de102e83eb69cb1bde86b694ffae310e239d401f09774"
+    },
+    {
+      "path": "docs/security/sa-2/resources-operations.md",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 7284,
+      "sha256": "4029e6f57ac2bfc3ab2c89818703c21ec647baaab689cbe3bb5413dcc5884cf5"
+    },
+    {
+      "path": "docs/security/sa-2/supply-chain.md",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 10974,
+      "sha256": "e00c3fb72ae994cbde12376db25f6fbe213e07a3f0b840825c725ada43754215"
+    },
+    {
+      "path": "docs/security/sa-2/validation.md",
+      "kind": "created",
+      "purpose": "assessment/operational documentation",
+      "bytes": 9764,
+      "sha256": "be5d1e0385d6637955adc74b99448caee24628ba6a72ac66707cba3686636e51"
+    },
+    {
+      "path": "infra/docker/Dockerfile",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 3387,
+      "sha256": "7705be6283beb23dcc396140f7f4f539fa5248e8b1f446e298d3187760918131"
+    },
+    {
+      "path": "infra/docker/nginx.conf",
+      "kind": "modified",
+      "purpose": "authorized local hardening/configuration",
+      "bytes": 2402,
+      "sha256": "663a3a149c7e421bb504d895d48b2deb763c8a87140de536dd247358f9469425"
+    }
+  ],
+  "excludes": "Preserved pre-existing SA-1 package, private instructions/configuration, generated dependencies/build outputs and Git metadata.",
+  "privateArtifacts": {
+    "root": ".tools/sa2/35e2d13412154f028711da65617829ed",
+    "retained": "Raw tool/build logs, exact scanner reports/catalog, run pointer and execution markers; no retained demo data.",
+    "removed": "Temporary image input archives and generated main project override after verified named-stack cleanup",
+    "extraDockerVolume": "Unlabeled/unmounted resource left untouched; exact identity in preservation.json"
+  }
+}

@@ -34,10 +34,17 @@ request returns **201**, a `Location` metadata URL, and:
 
 `GET /api/v1/assets/:id` returns that metadata. `GET /api/v1/assets/:id/content`
 streams the canonical image with MIME type, content length, checksum ETag,
-`nosniff`, and immutable cache headers. Public responses contain neither storage
+`nosniff`, and `Cache-Control: private, no-store`. Public responses contain neither storage
 keys nor filesystem paths. Content retrieval verifies the file exists and its
 size matches metadata before sending headers; later I/O failures can interrupt
 the stream rather than return a JSON error after headers have been sent.
+
+The local API validates Host on every request and requires a matching browser
+Origin on mutation methods when Origin is present. Native clients without Origin
+remain supported. Null/malformed/mismatched Origins receive 403 before ingestion;
+unexpected Hosts receive 421. Use the same frontend origin and its `/api` proxy,
+including the port; loopback aliases are distinct origins. These headers are not
+authentication. See the [precise policy and tests](security/sa-2/browser-boundary.md).
 
 ### Validation and canonical bytes
 
@@ -60,6 +67,10 @@ the stream rather than return a JSON error after headers have been sent.
 - Canonical output is capped at 80 MiB after encoding. The server limits ingestion
   to two simultaneous requests, bounds Sharp cache/concurrency, and sets a decode
   timeout and request timeout. Files stream to disk rather than application buffers.
+
+`API_UPLOAD_CONCURRENCY` may reduce the default two slots to one; other values
+fail startup. This bounds simultaneous uploads, not cumulative retained assets or
+inspection records. Aggregate quota accounting is [explicitly deferred](security/sa-2/resources-operations.md).
 
 ### Persistence and failure behavior
 

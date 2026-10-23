@@ -1,0 +1,79 @@
+{
+  "scanners": [
+    {
+      "tag": "semgrep/semgrep:1.179.0",
+      "id": "sha256:93963d9295a366f59e4850127b1550400ee7b388f04fe144e4a1f6325d96e01b",
+      "digests": [
+        "semgrep/semgrep@sha256:93963d9295a366f59e4850127b1550400ee7b388f04fe144e4a1f6325d96e01b"
+      ]
+    },
+    {
+      "tag": "aquasec/trivy:0.76.1",
+      "id": "sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c",
+      "digests": [
+        "aquasec/trivy@sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c"
+      ]
+    }
+  ],
+  "semgrep": {
+    "exitCode": 0,
+    "durationMs": 12305
+  },
+  "trivy": {
+    "exitCode": 0,
+    "durationMs": 4838
+  },
+  "pnpm": [
+    {
+      "args": [
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "durationMs": 987,
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0
+        },
+        "dependencies": 425,
+        "devDependencies": 0,
+        "optionalDependencies": 0,
+        "totalDependencies": 425
+      },
+      "error": null
+    },
+    {
+      "args": [
+        "audit",
+        "--prod",
+        "--json"
+      ],
+      "exitCode": 0,
+      "durationMs": 871,
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0
+        },
+        "dependencies": 152,
+        "devDependencies": 0,
+        "optionalDependencies": 0,
+        "totalDependencies": 152
+      },
+      "error": null
+    }
+  ],
+  "snapshotUnchanged": true,
+  "rulesSha256": "d1f78c89e0c5c499dac11113f6827e0e09fe70df0b162aedfea658d90cbd7390",
+  "network": {
+    "scanners": "none",
+    "advisoryLookup": "package names/versions only to configured npm registry; no source upload"
+  }
+}

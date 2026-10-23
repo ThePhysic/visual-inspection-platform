@@ -1,0 +1,893 @@
+{
+  "command": [
+    "--filter",
+    "@vip/api",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "vitest.integration.config.ts",
+    "--testNamePattern",
+    "^(?!.*(?:promptly completes concurrent idempotent acceptance|uses a unique index to serialize concurrent duplicates)).*$",
+    "--reporter=json",
+    "--outputFile",
+    "<workspace>\\.tools\\sa1\\26405f4e8aa246eea39281e2a92afeb3\\integration-vitest.json"
+  ],
+  "exitCode": 0,
+  "durationMs": 23155,
+  "numTotalTests": 141,
+  "numPassedTests": 139,
+  "numFailedTests": 0,
+  "numPendingTests": 2,
+  "success": true,
+  "suites": [
+    {
+      "file": "apps/api/test/assets.integration.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "image ingestion with real MongoDB persists and retrieves a genuine jpeg image",
+          "status": "passed",
+          "durationMs": 383.8730999999998,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB persists and retrieves a genuine png image",
+          "status": "passed",
+          "durationMs": 173.14570000000003,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB uses decoded type and never a client filename as the storage path",
+          "status": "passed",
+          "durationMs": 113.10390000000007,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB allows identical content twice while enforcing storage key uniqueness",
+          "status": "passed",
+          "durationMs": 156.07810000000018,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects corrupt JPEG data and removes temporary files",
+          "status": "passed",
+          "durationMs": 117.83709999999974,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects corrupt PNG data",
+          "status": "passed",
+          "durationMs": 104.06500000000005,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects an actual unsupported format regardless of declared type",
+          "status": "passed",
+          "durationMs": 98.56010000000015,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects animated PNG instead of quietly reading only its first frame",
+          "status": "passed",
+          "durationMs": 96.07780000000002,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects MPO multipicture JPEG containers",
+          "status": "passed",
+          "durationMs": 83.08609999999999,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects missing multipart images",
+          "status": "passed",
+          "durationMs": 85.65499999999975,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects a second file before publishing anything",
+          "status": "passed",
+          "durationMs": 79.83009999999967,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects an invalid source",
+          "status": "passed",
+          "durationMs": 86.72710000000006,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects uploads over 10 MiB and removes partial bytes",
+          "status": "passed",
+          "durationMs": 88.27070000000049,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB accepts the inclusive 10 MiB boundary when the encoded image is valid",
+          "status": "passed",
+          "durationMs": 125.4994999999999,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB does not publish an image until the complete multipart request is valid",
+          "status": "passed",
+          "durationMs": 85.8791999999994,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB bounds simultaneous ingestion with explicit backpressure",
+          "status": "passed",
+          "durationMs": 102.73720000000048,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB rejects decoded dimensions above 20 megapixels before canonical publication",
+          "status": "passed",
+          "durationMs": 95.64669999999933,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB distinguishes invalid and nonexistent asset IDs",
+          "status": "passed",
+          "durationMs": 82.32859999999982,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB distinguishes invalid and nonexistent asset IDs/content",
+          "status": "passed",
+          "durationMs": 66.30630000000019,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB auto-orients EXIF rotation and records canonical dimensions",
+          "status": "passed",
+          "durationMs": 127.35050000000047,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB applies mirrored EXIF orientation to actual pixels",
+          "status": "passed",
+          "durationMs": 127.58610000000044,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB reports storage publication failures without creating metadata or deleting unrelated images",
+          "status": "passed",
+          "durationMs": 98.98030000000017,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB cleans a genuinely interrupted multipart stream without publishing bytes or metadata",
+          "status": "passed",
+          "durationMs": 82.20830000000024,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB reports true orphan candidates but preserves bytes after uncertain database acknowledgements",
+          "status": "passed",
+          "durationMs": 138.4278000000004,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB reports real staging failures as storage errors",
+          "status": "passed",
+          "durationMs": 66.98210000000017,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB retains published bytes on a database failure and cleans staging",
+          "status": "passed",
+          "durationMs": 103.54969999999958,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB retains bytes when an insert commits but its acknowledgement fails",
+          "status": "passed",
+          "durationMs": 125.6216000000004,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB reports missing stored bytes safely",
+          "status": "passed",
+          "durationMs": 122.29950000000008,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB reports dependency readiness while preserving liveness",
+          "status": "passed",
+          "durationMs": 77.30019999999968,
+          "failures": []
+        },
+        {
+          "name": "image ingestion with real MongoDB fails promptly after a genuine database disconnect, without buffering writes",
+          "status": "passed",
+          "durationMs": 153.66110000000026,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "file": "apps/api/test/history.integration.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "inspection history and recovery with genuine MongoDB returns an empty history without a cursor",
+          "status": "passed",
+          "durationMs": 267.74810000000025,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB uses default 20 and a maximum of 50, with a lookahead cursor only when needed",
+          "status": "passed",
+          "durationMs": 244.77549999999974,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"0\"",
+          "status": "passed",
+          "durationMs": 79.57200000000012,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"-1\"",
+          "status": "passed",
+          "durationMs": 81.24219999999968,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"51\"",
+          "status": "passed",
+          "durationMs": 88.50340000000006,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"500\"",
+          "status": "passed",
+          "durationMs": 83.62940000000026,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"1.5\"",
+          "status": "passed",
+          "durationMs": 72.43090000000029,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"01\"",
+          "status": "passed",
+          "durationMs": 74.375,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"NaN\"",
+          "status": "passed",
+          "durationMs": 72.35509999999977,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"Infinity\"",
+          "status": "passed",
+          "durationMs": 64.8090000000002,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \"\"",
+          "status": "passed",
+          "durationMs": 69.31760000000031,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid limit \" 2\"",
+          "status": "passed",
+          "durationMs": 61.41350000000011,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects arbitrary query fields and repeated parameters",
+          "status": "passed",
+          "durationMs": 70.35469999999987,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB paginates stable descending timestamps and IDs over several pages without duplicates or omissions",
+          "status": "passed",
+          "durationMs": 194.48999999999978,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB keeps newer inserts ahead of an existing boundary; refreshing the first page includes them",
+          "status": "passed",
+          "durationMs": 102.48859999999968,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB filters queued on the server across pages",
+          "status": "passed",
+          "durationMs": 101.35510000000068,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB filters processing on the server across pages",
+          "status": "passed",
+          "durationMs": 90.64510000000064,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB filters completed on the server across pages",
+          "status": "passed",
+          "durationMs": 90.48640000000069,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB filters failed on the server across pages",
+          "status": "passed",
+          "durationMs": 111.77009999999973,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid status \"unknown\"",
+          "status": "passed",
+          "durationMs": 54.82350000000042,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid status \"COMPLETED\"",
+          "status": "passed",
+          "durationMs": 51.38850000000002,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid status \"\"",
+          "status": "passed",
+          "durationMs": 58.39639999999963,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid status \"all\"",
+          "status": "passed",
+          "durationMs": 55.09819999999945,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects invalid status \"$ne\"",
+          "status": "passed",
+          "durationMs": 54.03650000000016,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects malformed cursor \"bad\"",
+          "status": "passed",
+          "durationMs": 58.91980000000058,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects malformed cursor \"e30\"",
+          "status": "passed",
+          "durationMs": 60.18379999999979,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects malformed cursor \"!!!!\"",
+          "status": "passed",
+          "durationMs": 54.17320000000018,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects malformed cursor \"\"",
+          "status": "passed",
+          "durationMs": 51.25540000000001,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects malformed cursor \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"",
+          "status": "passed",
+          "durationMs": 60.01310000000012,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects unsupported cursor versions, invalid dates, unexpected fields, and all-to-filter reuse",
+          "status": "passed",
+          "durationMs": 94.11949999999979,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB returns bounded counts, review revisions, and allowlisted safe failures without full snapshots or internals",
+          "status": "passed",
+          "durationMs": 109.71029999999973,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB installs indexes for the actual history and forward-lineage queries",
+          "status": "passed",
+          "durationMs": 66.53420000000006,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB returns safe database failures",
+          "status": "passed",
+          "durationMs": 75.79129999999986,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB preserves the failed record, deduplicates retries, and exposes latest-child/predecessor links",
+          "status": "passed",
+          "durationMs": 332.65059999999994,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects manual retry of queued without creating another record",
+          "status": "passed",
+          "durationMs": 77.04379999999946,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects manual retry of processing without creating another record",
+          "status": "passed",
+          "durationMs": 69.66789999999946,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB rejects manual retry of completed without creating another record",
+          "status": "passed",
+          "durationMs": 70.97410000000036,
+          "failures": []
+        },
+        {
+          "name": "inspection history and recovery with genuine MongoDB chooses the latest retry deterministically when children share timestamps",
+          "status": "passed",
+          "durationMs": 171.41349999999966,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "file": "apps/api/test/inspections.integration.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis promptly completes concurrent idempotent acceptance without a periodic scan or duplicate commit",
+          "status": "skipped",
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis does not notify dispatch when MongoDB acceptance fails",
+          "status": "passed",
+          "durationMs": 467.4041000000002,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis sends durable 202 before a blocked prompt attempt, then recovers a lost Redis connection through reconciliation",
+          "status": "passed",
+          "durationMs": 362.03679999999986,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis preserves 202 with Redis already unavailable and repairs it after the dependency returns",
+          "status": "passed",
+          "durationMs": 278.84569999999985,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis bounds a real Redis command stalled during prompt dispatch, then reconciles after replies resume",
+          "status": "passed",
+          "durationMs": 2009.1021999999998,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis promptly schedules a manual retry while preserving the failed predecessor",
+          "status": "passed",
+          "durationMs": 258.85109999999986,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis arbitrates prompt dispatch and an independent concurrent recovery scan using generation job IDs and worker claims",
+          "status": "passed",
+          "durationMs": 251.79430000000048,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis durably accepts, executes, and retrieves a simulated result with safe metadata",
+          "status": "passed",
+          "durationMs": 267.35519999999997,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis completes a valid zero-detection curated image",
+          "status": "passed",
+          "durationMs": 194.9960000000001,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis preserves canonical portfolio fixture machined-panel through ingestion and real queue execution",
+          "status": "passed",
+          "durationMs": 235.46219999999994,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis preserves canonical portfolio fixture clean-panel through ingestion and real queue execution",
+          "status": "passed",
+          "durationMs": 231.7502000000004,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis preserves canonical portfolio fixture edge-component through ingestion and real queue execution",
+          "status": "passed",
+          "durationMs": 226.23319999999967,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis validates asset identifiers, provider configuration, and required idempotency keys",
+          "status": "passed",
+          "durationMs": 102.88820000000032,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis distinguishes invalid and nonexistent inspection IDs",
+          "status": "passed",
+          "durationMs": 98.63989999999922,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis replays semantic duplicates and rejects conflicting reuse",
+          "status": "passed",
+          "durationMs": 155.13649999999961,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis uses a unique index to serialize concurrent duplicates; different keys create distinct inspections",
+          "status": "skipped",
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis recovers dispatch failure after acceptance and admits requests while Redis is unavailable",
+          "status": "passed",
+          "durationMs": 192.07120000000032,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis automatically reconnects after a server-induced Redis connection interruption",
+          "status": "passed",
+          "durationMs": 356.03069999999934,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis commits one result during a worker Redis socket outage and acknowledges after reconnection",
+          "status": "passed",
+          "durationMs": 354.3006000000005,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis can close producer and worker connections before Redis becomes available",
+          "status": "passed",
+          "durationMs": 84.3744000000006,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis closes cleanly after a failed initial connection attempt",
+          "status": "passed",
+          "durationMs": 83.52670000000035,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis dispatches after Redis is unavailable during initial producer startup",
+          "status": "passed",
+          "durationMs": 361.91660000000047,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis retries a transient provider failure and completes on the second application attempt",
+          "status": "passed",
+          "durationMs": 243.9284000000007,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis terminates permanent failures without retrying",
+          "status": "passed",
+          "durationMs": 229.33560000000034,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis terminates invalid-output failures without retrying",
+          "status": "passed",
+          "durationMs": 209.07840000000033,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis terminates wrong-model failures without retrying",
+          "status": "passed",
+          "durationMs": 201.53019999999924,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis terminates outside-image failures without retrying",
+          "status": "passed",
+          "durationMs": 219.9984000000004,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis rejects invalid persisted asset storage-key without invoking inference",
+          "status": "passed",
+          "durationMs": 136.22819999999956,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis rejects invalid persisted asset checksum without invoking inference",
+          "status": "passed",
+          "durationMs": 156.13600000000042,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis times out unresponsive providers with a persistent bounded retry budget",
+          "status": "passed",
+          "durationMs": 397.77820000000065,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis ignores duplicate deliveries both during processing and after completion",
+          "status": "passed",
+          "durationMs": 174.76250000000073,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis repairs an interrupted lease and prevents the old attempt from overwriting its successor",
+          "status": "passed",
+          "durationMs": 168.7572999999993,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis preserves a committed result when delivery fails before BullMQ acknowledgement",
+          "status": "passed",
+          "durationMs": 220.97539999999935,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis fails abandoned work at the maximum budget instead of resetting attempts on redispatch",
+          "status": "passed",
+          "durationMs": 123.24789999999848,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis recovers a failure after inference but before result persistence",
+          "status": "passed",
+          "durationMs": 153.97570000000087,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis resumes queued work after a graceful worker shutdown and restart",
+          "status": "passed",
+          "durationMs": 165.5647000000008,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis repairs a completed queue delivery that left the business record queued",
+          "status": "passed",
+          "durationMs": 152.76869999999872,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis preserves failed records and deduplicates manual retry lineage",
+          "status": "passed",
+          "durationMs": 164.97320000000036,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis restarts reconciliation from MongoDB intent and rotates bounded scans fairly",
+          "status": "passed",
+          "durationMs": 146.04399999999987,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis recovers an abruptly terminated child worker at before-inference",
+          "status": "passed",
+          "durationMs": 3718.3605000000007,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis recovers an abruptly terminated child worker at after-inference",
+          "status": "passed",
+          "durationMs": 3805.6754999999994,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis recovers an abruptly terminated child worker at after-persistence",
+          "status": "passed",
+          "durationMs": 1691.500899999999,
+          "failures": []
+        },
+        {
+          "name": "asynchronous inspections with real MongoDB and Redis serializes expired-lease recovery across independent concurrent reconcilers",
+          "status": "passed",
+          "durationMs": 169.7982000000011,
+          "failures": []
+        }
+      ]
+    },
+    {
+      "file": "apps/api/test/reviews.integration.test.ts",
+      "status": "passed",
+      "cases": [
+        {
+          "name": "review snapshots with real MongoDB atomic updates saves revision 1, reopens after API/connection restart, and leaves inference untouched",
+          "status": "passed",
+          "durationMs": 726.2794999999996,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates advances only changed snapshots and records no-op operations without changing savedAt",
+          "status": "passed",
+          "durationMs": 169.80819999999994,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates allows a fully rejected snapshot, manual annotations without confidence, and restoring predictions",
+          "status": "passed",
+          "durationMs": 144.91940000000022,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates distinguishes an absent review from a saved empty review with zero predictions",
+          "status": "passed",
+          "durationMs": 102.67939999999999,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects reviews of queued inspections",
+          "status": "passed",
+          "durationMs": 86.00460000000021,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects reviews of processing inspections",
+          "status": "passed",
+          "durationMs": 85.02840000000015,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects reviews of failed inspections",
+          "status": "passed",
+          "durationMs": 81.1280999999999,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects missing or corrupt committed inference",
+          "status": "passed",
+          "durationMs": 109.66360000000032,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates returns appropriate invalid/missing inspection errors",
+          "status": "passed",
+          "durationMs": 77.14219999999978,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects box exceeds image without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 193.78249999999935,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects negative box without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 181.20240000000013,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects zero width without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 169.4333999999999,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects unknown class without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 181.82819999999992,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects unknown taxonomy without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 179.1173000000008,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects duplicate annotation ID without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 178.2621999999992,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects unknown prediction without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 171.42409999999927,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects missing disposition without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 211.94720000000052,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects forged confidence without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 188.59220000000005,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects manual impersonation without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 176.63699999999972,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects invalid revision without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 176.76230000000032,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects excessive annotations without partially changing review or predictions",
+          "status": "passed",
+          "durationMs": 174.76559999999972,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates allows exactly one of two different concurrent saves and explicitly rejects stale writes",
+          "status": "passed",
+          "durationMs": 174.70100000000002,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates deduplicates concurrent identical saves and repeated saves without revision increments",
+          "status": "passed",
+          "durationMs": 114.39789999999994,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates treats annotation order and JSON property order as semantically identical",
+          "status": "passed",
+          "durationMs": 119.84320000000025,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates accepts exactly 200 annotations including retained rejected predictions",
+          "status": "passed",
+          "durationMs": 134.5623999999998,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates rejects operation-ID reuse with changed content, including changed base tokens",
+          "status": "passed",
+          "durationMs": 187.97500000000036,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates recovers when Mongo commits but the response is lost",
+          "status": "passed",
+          "durationMs": 86.97630000000026,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates returns current review for old retained operations without rolling newer changes backward",
+          "status": "passed",
+          "durationMs": 100.5630000000001,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates bounds receipts and prevents evicted operations replaying after no-op saves at the same revision",
+          "status": "passed",
+          "durationMs": 340.8886000000002,
+          "failures": []
+        },
+        {
+          "name": "review snapshots with real MongoDB atomic updates returns safe database failures without modifying stored review",
+          "status": "passed",
+          "durationMs": 178.2487999999994,
+          "failures": []
+        }
+      ]
+    }
+  ]
+}

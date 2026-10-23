@@ -1,0 +1,212 @@
+{
+  "baseline": "03566fa1d64b457dbc78c7cf37436b2296e73302",
+  "model": "trusted single-user local demonstration",
+  "confirmedApplicationVulnerabilities": 0,
+  "checkpoints": {
+    "SA-2A": "partially BLOCKED",
+    "SA-2B": "PASS",
+    "SA-2C": "PASS within selected bounds; aggregate quota deferred",
+    "SA-2": "PASS for authorized hardening/regressions; supply-chain assessment and anonymous-volume ownership remain explicit open limitations"
+  },
+  "items": [
+    {
+      "id": "SA1-01",
+      "priority": 1,
+      "title": "Runtime image advisory candidates need component-specific verification",
+      "priorClassification": "suspected weakness requiring further evidence",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "unassigned; no application exploit demonstrated",
+      "applicationCvssAssigned": false,
+      "disposition": "partially blocked; unnecessary runtime npm removed, other candidates retained",
+      "evidence": [
+        "supply-chain.md",
+        "evidence/image-scans.json",
+        "evidence/advisory-triage.json"
+      ]
+    },
+    {
+      "id": "SA1-02",
+      "priority": 2,
+      "title": "Blind asset creation from another loopback browser origin",
+      "priorClassification": "suspected weakness requiring further evidence",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "low potential blind insertion impact; overlaps trusted-local-host assumption",
+      "applicationCvssAssigned": false,
+      "disposition": "implemented owner-selected browser admission; demonstrated unwanted loopback upload now rejected, no public exploit reclassification",
+      "evidence": [
+        "browser-boundary.md",
+        "evidence/browser-before.json",
+        "evidence/browser-after.json"
+      ]
+    },
+    {
+      "id": "SA1-03",
+      "priority": 3,
+      "title": "Aggregate retained resources have no application quota",
+      "priorClassification": "accepted local-demo limitation",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "design limitation; no exhaustion demonstrated",
+      "applicationCvssAssigned": false,
+      "disposition": "per-request controls retained, configurable one/two slots; aggregate quota design deferred",
+      "evidence": [
+        "resources-operations.md",
+        "evidence/regressions.json"
+      ]
+    },
+    {
+      "id": "SA1-04",
+      "priority": 4,
+      "title": "Host and framing policies are not explicitly restricted",
+      "priorClassification": "production-hardening opportunity",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "no sensitive action exploit established",
+      "applicationCvssAssigned": false,
+      "disposition": "implemented Host and framing policy; broad DNS-rebinding assessment remains untested",
+      "evidence": [
+        "browser-boundary.md",
+        "evidence/http-after.json"
+      ]
+    },
+    {
+      "id": "SA1-05",
+      "priority": 5,
+      "title": "Public image caching and URL logs assume synthetic local data",
+      "priorClassification": "accepted local-demo limitation",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "no demonstrated confidential-data disclosure",
+      "applicationCvssAssigned": false,
+      "disposition": "implemented private no-store image cache and normal access log minimization",
+      "evidence": [
+        "resources-operations.md",
+        "evidence/http-before.json",
+        "evidence/http-after.json"
+      ]
+    },
+    {
+      "id": "SA1-06",
+      "priority": 6,
+      "title": "Supply chain and service authority retain local-demo assumptions",
+      "priorClassification": "production-hardening opportunity",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "no boundary bypass demonstrated",
+      "applicationCvssAssigned": false,
+      "disposition": "implemented verified Action commits/checkout credential minimization and runtime tooling removal; broader privileges/identity deferred",
+      "evidence": [
+        "resources-operations.md",
+        "evidence/runtime.json"
+      ]
+    },
+    {
+      "id": "SA1-07",
+      "priority": 7,
+      "title": "Input, query and projection controls held in exercised cases",
+      "priorClassification": "verification target that passed",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "existing validation/projections retained; full regression passed",
+      "evidence": [
+        "evidence/regressions.json"
+      ]
+    },
+    {
+      "id": "SA1-08",
+      "priority": 8,
+      "title": "Canonicalization, paths and staging cleanup held",
+      "priorClassification": "verification target that passed",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "existing storage/canonicalization retained; ingestion hardening regressions passed",
+      "evidence": [
+        "evidence/regressions.json",
+        "evidence/http-after.json"
+      ]
+    },
+    {
+      "id": "SA1-09",
+      "priority": 9,
+      "title": "Worker and review data-integrity guards held",
+      "priorClassification": "verification target that passed",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "existing acceptance/worker/review algorithms unchanged; full real integration and recovery passed",
+      "evidence": [
+        "evidence/regressions.json",
+        "evidence/legitimate-browser.json"
+      ]
+    },
+    {
+      "id": "SA1-10",
+      "priority": 10,
+      "title": "Private operators and runtime storage permissions observed",
+      "priorClassification": "verification target that passed",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "non-root/readonly worker mount/private operators preserved in runtime/smoke checks",
+      "evidence": [
+        "evidence/runtime.json",
+        "evidence/regressions.json"
+      ]
+    },
+    {
+      "id": "SA1-11",
+      "priority": 11,
+      "title": "Dockerfile-only missing HEALTHCHECK alert",
+      "priorClassification": "false positive",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "prior contextual health-check false positive retained; all services healthy during checks",
+      "evidence": [
+        "../sa-1/findings.md",
+        "evidence/regressions.json"
+      ]
+    },
+    {
+      "id": "SA1-12",
+      "priority": 12,
+      "title": "nginx 200 SPA responses mistaken for exposed operators",
+      "priorClassification": "false positive",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "prior SPA/operator false positive retained; routing/operator code unchanged and smoke passed",
+      "evidence": [
+        "../sa-1/findings.md",
+        "evidence/regressions.json"
+      ]
+    },
+    {
+      "id": "SA1-13",
+      "priority": 13,
+      "title": "Debian zlib1g MiniZip advisory match",
+      "priorClassification": "false positive",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "prior Debian zlib/MiniZip package-specific false positive retained, no global suppression",
+      "evidence": [
+        "../sa-1/findings.md",
+        "supply-chain.md"
+      ]
+    },
+    {
+      "id": "SA1-14",
+      "priority": 14,
+      "title": "Advisory and deployment coverage gaps",
+      "priorClassification": "blocked or untested case",
+      "originalRegister": "../sa-1/findings.json",
+      "localSeverity": "No new vulnerability severity assigned",
+      "applicationCvssAssigned": false,
+      "disposition": "Mongo OS detection resolved but embedded/native coverage, other browsers/history/settings remain gaps; new anonymous-volume cleanup limitation recorded",
+      "evidence": [
+        "supply-chain.md",
+        "validation.md",
+        "evidence/preservation.json"
+      ]
+    }
+  ]
+}

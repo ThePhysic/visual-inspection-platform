@@ -1,0 +1,247 @@
+{
+  "observations": [
+    {
+      "service": "worker",
+      "id": "f6ae09e957e37f2b1989012468bd1dbc54899479d5c143b5a3b290d1e1ecf8b2",
+      "image": "sha256:585853d6a755d6042add170d4b781aa3e8bbbec30cfe62820612ff6d17de7c65",
+      "configuredUser": "node",
+      "actual": "uid=1000(node) gid=1000(node) groups=1000(node)\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nCapEff:\t0000000000000000\nNoNewPrivs:\t0\n",
+      "status": "running",
+      "health": "healthy",
+      "portBindings": {},
+      "privileged": false,
+      "readonlyRootfs": false,
+      "capAdd": null,
+      "capDrop": null,
+      "securityOpt": null,
+      "memoryLimit": 0,
+      "nanoCpus": 0,
+      "networks": [
+        "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default"
+      ],
+      "mounts": [
+        {
+          "type": "volume",
+          "name": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_images",
+          "destination": "/data/images",
+          "writable": false
+        }
+      ],
+      "healthcheckDefined": true
+    },
+    {
+      "service": "web",
+      "id": "e0cf8e6589bb0fa08f4c9cfee726b55f4338510459968fdd2dab9ab0bd02def7",
+      "image": "sha256:4238cab059e1d398daa9eca1655c23b5a97d217b5d60b9c4d81e62902bdd3aed",
+      "configuredUser": "101",
+      "actual": "uid=101(nginx) gid=101(nginx) groups=101(nginx)\nUid:\t101\t101\t101\t101\nGid:\t101\t101\t101\t101\nCapEff:\t0000000000000000\nNoNewPrivs:\t0\n",
+      "status": "running",
+      "health": "healthy",
+      "portBindings": {
+        "8080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "57952"
+          }
+        ]
+      },
+      "privileged": false,
+      "readonlyRootfs": false,
+      "capAdd": null,
+      "capDrop": null,
+      "securityOpt": null,
+      "memoryLimit": 0,
+      "nanoCpus": 0,
+      "networks": [
+        "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default"
+      ],
+      "mounts": [],
+      "healthcheckDefined": true
+    },
+    {
+      "service": "api",
+      "id": "f4367d608f1846947232286c79ff187baf8d2759c6a5446bceebef5d83a53dd0",
+      "image": "sha256:291e4f34d9cbc3cae81776b7b39bca192c9ac520d4b4433305deca73c1a302aa",
+      "configuredUser": "node",
+      "actual": "uid=1000(node) gid=1000(node) groups=1000(node)\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nCapEff:\t0000000000000000\nNoNewPrivs:\t0\n",
+      "status": "running",
+      "health": "healthy",
+      "portBindings": {},
+      "privileged": false,
+      "readonlyRootfs": false,
+      "capAdd": null,
+      "capDrop": null,
+      "securityOpt": null,
+      "memoryLimit": 0,
+      "nanoCpus": 0,
+      "networks": [
+        "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default"
+      ],
+      "mounts": [
+        {
+          "type": "volume",
+          "name": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_images",
+          "destination": "/data/images",
+          "writable": true
+        }
+      ],
+      "healthcheckDefined": true
+    },
+    {
+      "service": "redis",
+      "id": "a23aa8be333a60a6c50881b2b3c12e0083161a42892d5a7b34b4ea15239fc30d",
+      "image": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "configuredUser": "",
+      "actual": "uid=0(root) gid=0(root) groups=0(root)\nUid:\t999\t999\t999\t999\nGid:\t999\t999\t999\t999\nCapEff:\t0000000000000000\nNoNewPrivs:\t1\n",
+      "status": "running",
+      "health": "healthy",
+      "portBindings": {
+        "6379/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "57954"
+          }
+        ]
+      },
+      "privileged": false,
+      "readonlyRootfs": false,
+      "capAdd": null,
+      "capDrop": null,
+      "securityOpt": null,
+      "memoryLimit": 0,
+      "nanoCpus": 0,
+      "networks": [
+        "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default"
+      ],
+      "mounts": [
+        {
+          "type": "volume",
+          "name": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_redis-data",
+          "destination": "/data",
+          "writable": true
+        }
+      ],
+      "healthcheckDefined": true
+    },
+    {
+      "service": "mongodb",
+      "id": "d1dc9be413ba43f0bd1bbabc686f2ca78941ddba96c7a4e525d1582b88d7e8a0",
+      "image": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907",
+      "configuredUser": "",
+      "actual": "uid=0(root) gid=0(root) groups=0(root)\nUid:\t999\t999\t999\t999\nGid:\t999\t999\t999\t999\nCapEff:\t0000000000000000\nNoNewPrivs:\t0\n",
+      "status": "running",
+      "health": "healthy",
+      "portBindings": {
+        "27017/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "57953"
+          }
+        ]
+      },
+      "privileged": false,
+      "readonlyRootfs": false,
+      "capAdd": null,
+      "capDrop": null,
+      "securityOpt": null,
+      "memoryLimit": 0,
+      "nanoCpus": 0,
+      "networks": [
+        "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default"
+      ],
+      "mounts": [
+        {
+          "type": "volume",
+          "name": "94a79d0033ba74dbdad998e65d3ef033b343a60b8778f0722771d59c1c52e0e1",
+          "destination": "/data/configdb",
+          "writable": true
+        },
+        {
+          "type": "volume",
+          "name": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_mongodb-data",
+          "destination": "/data/db",
+          "writable": true
+        }
+      ],
+      "healthcheckDefined": true
+    }
+  ],
+  "network": {
+    "name": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default",
+    "internal": false,
+    "driver": "bridge",
+    "attached": [
+      "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6-redis-1",
+      "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6-mongodb-1",
+      "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6-web-1",
+      "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6-api-1",
+      "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6-worker-1"
+    ]
+  },
+  "direct": {
+    "routes": [
+      {
+        "path": "/metrics",
+        "status": 404,
+        "contentType": "application/json; charset=utf-8"
+      },
+      {
+        "path": "/queue",
+        "status": 404,
+        "contentType": "application/json; charset=utf-8"
+      },
+      {
+        "path": "/api/v1/metrics",
+        "status": 404,
+        "contentType": "application/json; charset=utf-8"
+      },
+      {
+        "operator": "/metrics",
+        "status": 200
+      },
+      {
+        "operator": "/queue",
+        "status": 200
+      }
+    ],
+    "imageRoot": {
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "700"
+    }
+  },
+  "nginxRoutes": [
+    {
+      "path": "/metrics",
+      "status": 200,
+      "contentType": "text/html",
+      "isSpaHtml": true,
+      "includesMetricSeries": false
+    },
+    {
+      "path": "/queue",
+      "status": 200,
+      "contentType": "text/html",
+      "isSpaHtml": true,
+      "includesMetricSeries": false
+    }
+  ],
+  "resourceSample": {
+    "BlockIO": "147MB / 28.7kB",
+    "CPUPerc": "0.25%",
+    "Container": "f4367d608f1846947232286c79ff187baf8d2759c6a5446bceebef5d83a53dd0",
+    "ID": "f4367d608f18",
+    "MemPerc": "0.96%",
+    "MemUsage": "149.2MiB / 15.23GiB",
+    "Name": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6-api-1",
+    "NetIO": "10.7MB / 221kB",
+    "PIDs": "12"
+  },
+  "logReview": {
+    "canaryFoundInRequestUrl": true,
+    "rawBodyMarkerFound": false,
+    "observation": "Default HTTP request logs include caller-controlled URLs/query strings; values should not contain secrets. Synthetic canary only."
+  },
+  "source": "03566fa1d64b457dbc78c7cf37436b2296e73302",
+  "note": "Docker stats is one post-probe observation, not peak-memory or capacity evidence. Audit overrides intentionally publish DB/Redis only on assigned loopback ports."
+}

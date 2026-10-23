@@ -24,7 +24,7 @@ async function main() {
     throw error;
   }
   const redisStatus: Pick<InspectionQueue, 'healthy'> = { healthy: () => queue.healthy() };
-  const app = buildApp({ logger: true, metrics, assets: { model, storage }, inspections: { inspections, assets: model }, dispatchQueue: redisStatus,
+  const app = buildApp({ logger: true, metrics, allowedHosts: config.allowedHosts, assets: { model, storage, uploadConcurrency: config.uploadConcurrency }, inspections: { inspections, assets: model }, dispatchQueue: redisStatus,
     notifyAccepted: id => { reconciler.notify(id); } });
   const queue = new InspectionQueue(config.redisUrl, app.log);
   const reconciler = new InspectionReconciler(inspections, queue, app.log, undefined, metrics);

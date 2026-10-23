@@ -1,0 +1,36 @@
+{
+  "node": "v24.22.0",
+  "pnpm": "10.34.7",
+  "results": [
+    {
+      "command": "pnpm lint",
+      "code": 0,
+      "durationMs": 5428,
+      "testCounts": []
+    },
+    {
+      "command": "pnpm typecheck",
+      "code": 0,
+      "durationMs": 21139,
+      "testCounts": []
+    },
+    {
+      "command": "pnpm test",
+      "code": 0,
+      "durationMs": 17966,
+      "testCounts": [
+        "packages/contracts test:       Tests  42 passed (42)",
+        "packages/backend test:       Tests  35 passed | 1 skipped (36)",
+        "apps/worker test:       Tests  2 passed (2)",
+        "apps/api test:       Tests  65 passed (65)",
+        "apps/web test:       Tests  134 passed (134)"
+      ]
+    },
+    {
+      "command": "pnpm build",
+      "code": 0,
+      "durationMs": 14073,
+      "testCounts": []
+    }
+  ]
+}

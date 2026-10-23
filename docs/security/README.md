@@ -1,4 +1,14 @@
-# Matroid security audit planning
+# Matroid security audit
+
+## Current increment
+
+The separately authorized [SA-1 assessment](sa-1/README.md) and [SA-2 targeted
+hardening](sa-2/README.md) retain the local single-user model. SA-2 implements
+browser/Host/framing admission, safer cache/log defaults, verified Action pins and
+unused runtime-tool removal, with functional regression evidence. Supply-chain
+coverage remains partially blocked and aggregate quotas are deferred. SA-3 has
+not begun. The SA-0 material below is the original planning record, not a statement
+of the later increments' authorization or results.
 
 SA-0 establishes the security baseline for the completed Visual Inspection Platform and plans a separate assessment and hardening project. The supported deployment is a trusted, single-user local demo. Source review identified existing input, storage, concurrency, and recovery controls; **no security vulnerability is confirmed by this planning pass**.
 

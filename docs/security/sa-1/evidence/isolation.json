@@ -1,0 +1,44 @@
+{
+  "sourceCommit": "03566fa1d64b457dbc78c7cf37436b2296e73302",
+  "sourceManifest": "9c5fc7b42ba03b58111508e2e596779ac41d666f1bb3df183afa77caab9d4820",
+  "project": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6",
+  "owner": "0c17e342f20a4fcba92b975aba08ffb6",
+  "volumes": [
+    "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_images",
+    "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_mongodb-data",
+    "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_redis-data"
+  ],
+  "network": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6_default",
+  "database": "vip_reliability_0c17e342f20a4fcba92b975aba08ffb6",
+  "environment": {
+    "project": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6",
+    "owner": "0c17e342f20a4fcba92b975aba08ffb6",
+    "MONGODB_TEST_URI": "mongodb://127.0.0.1:57953",
+    "REDIS_TEST_URL": "redis://127.0.0.1:57954",
+    "CONTAINER_BASE_URL": "http://127.0.0.1:57952"
+  },
+  "configuration": [
+    "compose.yaml",
+    "compose.ci.yaml",
+    "generated audit-only ownership/namespace/loopback-port override"
+  ],
+  "retainedDemo": {
+    "containers": [],
+    "volumes": [
+      "vip-demo_images",
+      "vip-demo_mongodb-data",
+      "vip-demo_redis-data"
+    ],
+    "mountedByAudit": false
+  },
+  "bounds": {
+    "requestsPerSecond": 2,
+    "requestsPerCase": 50,
+    "simultaneousUploadsOnly": 3,
+    "callbacks": "none",
+    "networkTargets": "assigned loopback web/Mongo/Redis; owned Compose bridge services; local controlled browser origin. No external dynamic target.",
+    "staticScannerNetwork": "none",
+    "packageLookup": "npm registry package metadata only"
+  },
+  "cleanup": "Verify owner labels, expected service/mount/volume/network identities; down --volumes only this generated project. Never mount or remove vip-demo resources."
+}

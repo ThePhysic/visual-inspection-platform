@@ -1,0 +1,13 @@
+{
+  "exitCode": 0,
+  "metadata": {
+    "Version": 2,
+    "NextUpdate": "2026-10-24T13:13:41.529244154Z",
+    "UpdatedAt": "2026-10-23T13:13:41.529244645Z",
+    "DownloadedAt": "2026-10-23T19:48:38.720452344Z"
+  },
+  "sourceMounted": false,
+  "note": "Separate preparation container only downloads the public advisory database. No repository files, service credentials, or Docker socket mounted.",
+  "databaseSha256": "a3e2a693b5f130132acc609d723f60fb546a85b3b35179d63063afa6f355d0d2",
+  "origin": "mirror.gcr.io/aquasec/trivy-db:2"
+}

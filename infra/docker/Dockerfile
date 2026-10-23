@@ -36,6 +36,9 @@ RUN --mount=type=cache,id=vip-pnpm,target=/pnpm/store \
 FROM node AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
+# Package installation belongs to build stages. These unused runtime tools have
+# a separate bundled dependency tree; application processes invoke Node directly.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 # Docker copies this ownership into a new named volume. Both services use UID
 # 1000, but the worker's volume mount is read-only, including staging files.
 RUN mkdir -p /data/images && chown node:node /data/images && chmod 700 /data/images

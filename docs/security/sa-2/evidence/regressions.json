@@ -1,0 +1,64 @@
+{
+  "command": "pnpm test:reliability --native --browser --ci-mongodb",
+  "exitCode": 0,
+  "project": "vip-reliability-1660afa220e0463c9afec3da337bee7e",
+  "integration": {
+    "discovered": 143,
+    "passed": 143,
+    "failed": 0,
+    "skipped": 0,
+    "deselected": 0,
+    "files": 4
+  },
+  "nativeBrowser": {
+    "passed": 18,
+    "failed": 0
+  },
+  "containerBrowser": {
+    "passed": 2,
+    "failed": 0
+  },
+  "passedPhaseLines": [
+    "{\"version\":\"8.0.34\",\"usingPerCPUCaches\":false}",
+    "Container smoke create passed: proxy, upload, inference, review, history, retry, and runtime packaging.",
+    "Worker runtime check passed: non-root, production-only dependencies, shared images mounted read-only.",
+    "Reliability phase passed: redis-down",
+    "Reliability phase passed: redis-recovered",
+    "Reliability phase passed: mongo-down",
+    "Reliability phase passed: result-recovered",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "Reliability phase passed: storage",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "{\"version\":\"8.0.34\",\"usingPerCPUCaches\":false}",
+    "Container reliability passed: acceptance during Redis outage, MongoDB rejection/recovery, restarts, recreation, storage report."
+  ],
+  "fullWrapperOwnResourcesRemoved": true,
+  "anonymousVolumeLimit": "See preservation.json; an unlabeled unmounted anonymous volume remains untouched after ordinary down/up.",
+  "initialCorrections": [
+    {
+      "check": "focused unit logging",
+      "passed": 52,
+      "failed": 1,
+      "correction": "Set disableRequestLogging on Fastify LogController, not deprecated top-level option",
+      "rerunPassed": 53
+    },
+    {
+      "check": "workspace typecheck",
+      "exitCode": 2,
+      "correction": "Omit undefined optional allowedHosts in test fixture",
+      "correctedExitCode": 0
+    },
+    {
+      "check": "Action provenance",
+      "correction": "Peel annotated pnpm/action-setup tag to commit; final runtime.json has authoritative identities"
+    },
+    {
+      "check": "post-cleanup inventory",
+      "correction": "Preserve existing volumes; record one extra anonymous volume and do not delete without ownership proof"
+    }
+  ],
+  "hostedCIExecuted": false,
+  "noDynamicTestsAfterCleanupUncertainty": true
+}

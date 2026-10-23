@@ -25,6 +25,7 @@ services:
     environment: &backend-environment
       NODE_ENV: production
       API_HOST: 0.0.0.0
+      API_ALLOWED_HOSTS: 127.0.0.1,localhost,[::1],api,web
       API_PORT: "3001"
       MONGODB_URI: mongodb://mongodb:27017/visual_inspection
       REDIS_URL: redis://redis:6379

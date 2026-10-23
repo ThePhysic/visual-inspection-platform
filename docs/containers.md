@@ -20,6 +20,9 @@ preserve pnpm's relative workspace links and include compiled `dist` directories
 package manifests, and production node_modules. There is no runtime pnpm/tsx/Vite
 requirement. nginx receives only web build output and its configuration.
 
+SA-2 removes unused npm/npx from the final API/worker filesystem; build stages
+retain installation tooling. Runtime commands continue to invoke Node directly.
+
 `.dockerignore` excludes host modules/build outputs, Git history, private env
 files, tool caches, reports, logs, and application data. Images need registry
 access on initial build; caches are conveniences, not host prerequisites. Native
@@ -98,6 +101,13 @@ proxied with the original path/query/method/body and useful response headers.
 Errors pass through rather than becoming HTML fallbacks. Requests/responses are
 not unnecessarily buffered. An 11 MiB proxy limit allows protocol overhead while
 the API still enforces 10 MiB per uploaded image. Proxy read/send timeouts are 60s.
+
+nginx now filters local/service Host names and preserves the original Host port
+for API browser-origin admission. Compose explicitly admits loopback aliases and
+private `api`/`web` names. SPA/API framing is denied; normal access logs omit query
+strings and retain upstream request IDs. Canonical images use `private, no-store`;
+hashed frontend bundles retain their existing immutable cache policy. See the
+[admission policy](security/sa-2/browser-boundary.md) and [limitations](security/sa-2/resources-operations.md).
 
 Docker DNS resolution is refreshed for the variable upstream, allowing API IP
 changes after recreation without rebuilding/restarting nginx. See the primary

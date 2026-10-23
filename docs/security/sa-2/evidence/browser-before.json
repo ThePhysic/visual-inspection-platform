@@ -1,0 +1,283 @@
+{
+  "browser": "156.0.8078.4",
+  "defaults": "No disabled browser protections, permission grants, or security flags",
+  "fixtureSha256": "9b28b8449555da30966b470b427c4286a7fcca8980754d2953861f9c31c5119c",
+  "origins": [
+    "http://127.0.0.1:54492",
+    "https://sa1-public.invalid"
+  ],
+  "target": "http://127.0.0.1:59750",
+  "cases": [
+    {
+      "name": "cross-origin multipart",
+      "origin": "http://127.0.0.1:54492",
+      "secureContext": true,
+      "beforeAssets": 0,
+      "afterAssets": 1,
+      "effect": 1,
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      }
+    },
+    {
+      "name": "JSON and custom header preflight",
+      "origin": "http://127.0.0.1:54492",
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      },
+      "inspectionEffect": 0
+    },
+    {
+      "name": "review PUT preflight",
+      "origin": "http://127.0.0.1:54492",
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      }
+    },
+    {
+      "name": "history response confidentiality",
+      "origin": "http://127.0.0.1:54492",
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      }
+    },
+    {
+      "name": "cross-origin framing",
+      "origin": "http://127.0.0.1:54492",
+      "frameNavigated": true,
+      "parentCanReadDocument": false,
+      "childFrameUrls": [
+        "http://127.0.0.1:59750/"
+      ]
+    },
+    {
+      "name": "cross-origin multipart",
+      "origin": "https://sa1-public.invalid",
+      "secureContext": true,
+      "beforeAssets": 1,
+      "afterAssets": 1,
+      "effect": 0,
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      }
+    },
+    {
+      "name": "JSON and custom header preflight",
+      "origin": "https://sa1-public.invalid",
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      },
+      "inspectionEffect": 0
+    },
+    {
+      "name": "review PUT preflight",
+      "origin": "https://sa1-public.invalid",
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      }
+    },
+    {
+      "name": "history response confidentiality",
+      "origin": "https://sa1-public.invalid",
+      "browserResult": {
+        "readable": false,
+        "error": "TypeError"
+      }
+    },
+    {
+      "name": "cross-origin framing",
+      "origin": "https://sa1-public.invalid",
+      "frameNavigated": false,
+      "parentCanReadDocument": false,
+      "childFrameUrls": []
+    },
+    {
+      "name": "arbitrary Host over direct HTTP",
+      "result": {
+        "status": 200,
+        "headers": {
+          "server": "nginx/1.30.2",
+          "date": "Fri, 23 Oct 2026 20:21:09 GMT",
+          "content-type": "application/json; charset=utf-8",
+          "content-length": "67",
+          "connection": "keep-alive",
+          "x-request-id": "req-b"
+        },
+        "body": "{\"apiVersion\":\"v1\",\"service\":\"visual-inspection-api\",\"status\":\"ok\"}"
+      },
+      "limit": "No DNS changes or actual DNS rebinding attack; direct HTTP alone proves only Host acceptance"
+    }
+  ],
+  "network": [
+    {
+      "kind": "request",
+      "from": "http://127.0.0.1:54492",
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "http://127.0.0.1:54492",
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "http://127.0.0.1:54492",
+      "method": "OPTIONS",
+      "path": "/api/v1/inspections",
+      "type": "Other",
+      "origin": "http://127.0.0.1:54492"
+    },
+    {
+      "kind": "request",
+      "from": "http://127.0.0.1:54492",
+      "method": "PUT",
+      "path": "/api/v1/inspections/0123456789abcdef01234567/review",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "http://127.0.0.1:54492",
+      "method": "OPTIONS",
+      "path": "/api/v1/inspections/0123456789abcdef01234567/review",
+      "type": "Other",
+      "origin": "http://127.0.0.1:54492"
+    },
+    {
+      "kind": "request",
+      "from": "http://127.0.0.1:54492",
+      "method": "GET",
+      "path": "/api/v1/inspections",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "https://sa1-public.invalid",
+      "method": "POST",
+      "path": "/api/v1/assets",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "https://sa1-public.invalid",
+      "method": "POST",
+      "path": "/api/v1/inspections",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "https://sa1-public.invalid",
+      "method": "OPTIONS",
+      "path": "/api/v1/inspections",
+      "type": "Other",
+      "origin": "https://sa1-public.invalid"
+    },
+    {
+      "kind": "request",
+      "from": "https://sa1-public.invalid",
+      "method": "PUT",
+      "path": "/api/v1/inspections/0123456789abcdef01234567/review",
+      "type": "Fetch",
+      "origin": null
+    },
+    {
+      "kind": "request",
+      "from": "https://sa1-public.invalid",
+      "method": "OPTIONS",
+      "path": "/api/v1/inspections/0123456789abcdef01234567/review",
+      "type": "Other",
+      "origin": "https://sa1-public.invalid"
+    },
+    {
+      "kind": "request",
+      "from": "https://sa1-public.invalid",
+      "method": "GET",
+      "path": "/api/v1/inspections",
+      "type": "Fetch",
+      "origin": null
+    }
+  ],
+  "console": [
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/assets' from origin 'http://127.0.0.1:54492' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/inspections' from origin 'http://127.0.0.1:54492' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/inspections/0123456789abcdef01234567/review' from origin 'http://127.0.0.1:54492' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/inspections?limit=1' from origin 'http://127.0.0.1:54492' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "from": "http://127.0.0.1:54492",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/assets' from origin 'https://sa1-public.invalid' has been blocked by CORS policy: Permission was denied for this request to access the `loopback` address space."
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/inspections' from origin 'https://sa1-public.invalid' has been blocked by CORS policy: Permission was denied for this request to access the `loopback` address space."
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/inspections/0123456789abcdef01234567/review' from origin 'https://sa1-public.invalid' has been blocked by CORS policy: Permission was denied for this request to access the `loopback` address space."
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Access to fetch at 'http://127.0.0.1:59750/api/v1/inspections?limit=1' from origin 'https://sa1-public.invalid' has been blocked by CORS policy: Permission was denied for this request to access the `loopback` address space."
+    },
+    {
+      "from": "https://sa1-public.invalid",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "phase": "before"
+}

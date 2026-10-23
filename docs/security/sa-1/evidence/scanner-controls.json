@@ -1,0 +1,15 @@
+{
+  "syntheticOnly": true,
+  "semgrep": {
+    "detectedRules": [
+      "matroid.dynamic-evaluation"
+    ],
+    "errors": []
+  },
+  "trivy": {
+    "detectedRules": [
+      "github-pat"
+    ]
+  },
+  "note": "Control input was never executed; no credential values or code snippets are copied into reports."
+}

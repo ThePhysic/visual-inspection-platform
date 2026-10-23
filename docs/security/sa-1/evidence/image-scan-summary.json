@@ -1,0 +1,118 @@
+{
+  "database": {
+    "Version": 2,
+    "NextUpdate": "2026-10-24T13:13:41.529244154Z",
+    "UpdatedAt": "2026-10-23T13:13:41.529244645Z",
+    "DownloadedAt": "2026-10-23T19:48:38.720452344Z"
+  },
+  "services": [
+    {
+      "service": "worker",
+      "imageId": "sha256:585853d6a755d6042add170d4b781aa3e8bbbec30cfe62820612ff6d17de7c65",
+      "exitCode": 0,
+      "coverageBlocked": false,
+      "os": {
+        "Family": "debian",
+        "Name": "12.15"
+      },
+      "packageAdvisoryMatches": 241,
+      "distinctAdvisories": 112,
+      "vendorSeverityCounts": {
+        "LOW": 84,
+        "HIGH": 60,
+        "MEDIUM": 95,
+        "UNKNOWN": 1,
+        "CRITICAL": 1
+      },
+      "dispositions": {
+        "suspected weakness requiring further evidence": 227,
+        "false positive": 1,
+        "production-hardening opportunity": 13
+      }
+    },
+    {
+      "service": "web",
+      "imageId": "sha256:4238cab059e1d398daa9eca1655c23b5a97d217b5d60b9c4d81e62902bdd3aed",
+      "exitCode": 0,
+      "coverageBlocked": false,
+      "os": {
+        "Family": "alpine",
+        "Name": "3.23.4"
+      },
+      "packageAdvisoryMatches": 134,
+      "distinctAdvisories": 87,
+      "vendorSeverityCounts": {
+        "HIGH": 41,
+        "MEDIUM": 61,
+        "LOW": 28,
+        "UNKNOWN": 4
+      },
+      "dispositions": {
+        "suspected weakness requiring further evidence": 134
+      }
+    },
+    {
+      "service": "api",
+      "imageId": "sha256:291e4f34d9cbc3cae81776b7b39bca192c9ac520d4b4433305deca73c1a302aa",
+      "exitCode": 0,
+      "coverageBlocked": false,
+      "os": {
+        "Family": "debian",
+        "Name": "12.15"
+      },
+      "packageAdvisoryMatches": 241,
+      "distinctAdvisories": 112,
+      "vendorSeverityCounts": {
+        "LOW": 84,
+        "HIGH": 60,
+        "MEDIUM": 95,
+        "UNKNOWN": 1,
+        "CRITICAL": 1
+      },
+      "dispositions": {
+        "suspected weakness requiring further evidence": 227,
+        "false positive": 1,
+        "production-hardening opportunity": 13
+      }
+    },
+    {
+      "service": "redis",
+      "imageId": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "exitCode": 0,
+      "coverageBlocked": false,
+      "os": {
+        "Family": "debian",
+        "Name": "12.15"
+      },
+      "packageAdvisoryMatches": 264,
+      "distinctAdvisories": 135,
+      "vendorSeverityCounts": {
+        "LOW": 89,
+        "HIGH": 65,
+        "MEDIUM": 102,
+        "UNKNOWN": 4,
+        "CRITICAL": 4
+      },
+      "dispositions": {
+        "suspected weakness requiring further evidence": 263,
+        "false positive": 1
+      }
+    },
+    {
+      "service": "mongodb",
+      "imageId": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907",
+      "exitCode": 0,
+      "coverageBlocked": true,
+      "os": {
+        "Family": "none",
+        "Name": ""
+      },
+      "packageAdvisoryMatches": null,
+      "distinctAdvisories": 0,
+      "vendorSeverityCounts": {},
+      "dispositions": {}
+    }
+  ],
+  "distinctAdvisoriesAcrossImages": 218,
+  "confirmedApplicationVulnerabilities": 0
+}

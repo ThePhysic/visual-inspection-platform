@@ -1,0 +1,9 @@
+{
+  "command": "pnpm --filter @vip/web exec playwright test",
+  "exitCode": 0,
+  "durationMs": 57158,
+  "summary": [
+    "  18 passed (54.6s)"
+  ],
+  "reportsPrivate": "<workspace>\\.tools\\sa1\\26405f4e8aa246eea39281e2a92afeb3"
+}

@@ -17,6 +17,7 @@ import { type InspectionQueue } from '@vip/backend';
 export interface AssetDependencies {
   model: AssetModel;
   storage: LocalImageStorage;
+  uploadConcurrency?: 1 | 2;
 }
 
 const errorResponses = {
@@ -97,7 +98,7 @@ export function registerAssetRoutes(instance: FastifyInstance, dependencies?: As
     const { model, storage } = requireDependencies();
     if (!request.isMultipart()) throw new ApiError(400, 'MISSING_IMAGE', 'Supply one multipart image field.');
     if (model.db.readyState !== 1) throw databaseFailure();
-    if (activeUploads >= 2) throw new ApiError(503, 'INGESTION_BUSY', 'Image ingestion is busy. Try again later.');
+    if (activeUploads >= (dependencies?.uploadConcurrency ?? 2)) throw new ApiError(503, 'INGESTION_BUSY', 'Image ingestion is busy. Try again later.');
 
     activeUploads++;
     let stage: Awaited<ReturnType<LocalImageStorage['stage']>> | undefined;
@@ -182,7 +183,7 @@ export function registerAssetRoutes(instance: FastifyInstance, dependencies?: As
       .type(response.mimeType)
       .header('Content-Length', response.byteLength)
       .header('X-Content-Type-Options', 'nosniff')
-      .header('Cache-Control', 'public, max-age=31536000, immutable')
+      .header('Cache-Control', 'private, no-store')
       .header('ETag', `"${response.sha256}"`)
       .send(stream);
   });

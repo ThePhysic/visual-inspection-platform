@@ -1,0 +1,44 @@
+rules:
+  - id: matroid.raw-html
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Review untrusted HTML entering a browser sink.
+    pattern-either:
+      - pattern: $X.innerHTML = $Y
+      - pattern: $X.outerHTML = $Y
+      - pattern: dangerouslySetInnerHTML={$X}
+  - id: matroid.dynamic-evaluation
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: Review dynamically executed source.
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+  - id: matroid.query-from-request
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Review request objects passed directly into persistence filters or updates.
+    pattern-either:
+      - pattern: $MODEL.find($REQ.query, ...)
+      - pattern: $MODEL.findOne($REQ.body, ...)
+      - pattern: $MODEL.updateOne($FILTER, $REQ.body, ...)
+  - id: matroid.request-filesystem-path
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Review caller-selected filesystem paths.
+    pattern-either:
+      - pattern: readFile($REQ.query.$FIELD, ...)
+      - pattern: createReadStream($REQ.query.$FIELD, ...)
+      - pattern: join($ROOT, $REQ.body.$FIELD, ...)
+  - id: matroid.shell-enabled
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Review subprocess shell interpretation.
+    pattern: "{..., shell: true, ...}"
+  - id: matroid.cors-wildcard
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Review wildcard cross-origin response access.
+    pattern-either:
+      - pattern: $X.header('Access-Control-Allow-Origin', '*')
+      - pattern: $X.setHeader('Access-Control-Allow-Origin', '*')

@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "path": "/metrics",
+      "status": 200,
+      "contentType": "text/html",
+      "passed": true,
+      "interpretation": "nginx SPA fallback; direct Fastify route and operator evidence are recorded in runtime.json"
+    },
+    {
+      "path": "/queue",
+      "status": 200,
+      "contentType": "text/html",
+      "passed": true,
+      "interpretation": "nginx SPA fallback; direct Fastify route and operator evidence are recorded in runtime.json"
+    }
+  ],
+  "passed": 2,
+  "original": {
+    "passed": 49,
+    "failed": 2,
+    "falsePositiveCaseNames": [
+      "public metrics absent",
+      "public queue absent"
+    ]
+  },
+  "serverObservedPreflights": [
+    {
+      "id": "req-31",
+      "method": "OPTIONS",
+      "path": "/api/v1/inspections",
+      "status": 404
+    },
+    {
+      "id": "req-32",
+      "method": "OPTIONS",
+      "path": "/api/v1/inspections/0123456789abcdef01234567/review",
+      "status": 404
+    }
+  ],
+  "note": "Original expectation failures retained. Follow-up corrects their interpretation without changing application behavior."
+}

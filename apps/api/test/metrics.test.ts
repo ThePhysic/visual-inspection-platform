@@ -27,9 +27,13 @@ it('uses the same Fastify request identifier in HTTP logs and response headers',
   const lines: string[] = [];
   const app = buildApp({ logger: { stream: { write: (line: string) => { lines.push(line); } } } });
   try {
-    const response = await app.inject('/api/v1/health');
+    const response = await app.inject('/api/v1/health?secret=SA2_QUERY_CANARY');
+    await app.inject('/SA2_PATH_CANARY?secret=SA2_QUERY_CANARY');
+    expect(lines.join('')).not.toMatch(/SA2_QUERY_CANARY|SA2_PATH_CANARY/);
     const events = lines.flatMap(line => line.trim().split('\n').map(line => JSON.parse(line)));
     expect(events.filter(event => event.requestId === response.headers['x-request-id'])).toHaveLength(2);
     expect(events.some(event => 'reqId' in event)).toBe(false);
+    expect(events.some(event => event.route === '/api/v1/health')).toBe(true);
+    expect(events.some(event => event.statusCode === 400)).toBe(true);
   } finally { await app.close(); }
 });

@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "03566fa1d64b457dbc78c7cf37436b2296e73302",
+  "sa1FilesVerifiedUnchanged": 50,
+  "indexUnchanged": true,
+  "trackedPrivateInstructionDiffEmpty": true,
+  "diffWhitespaceCheck": "passed",
+  "inventoryHashesChecked": true,
+  "markdown": 6,
+  "localLinksChecked": 41,
+  "jsonFilesParsed": 20,
+  "workspaceGates": [
+    {
+      "command": "pnpm lint",
+      "code": 0
+    },
+    {
+      "command": "pnpm typecheck",
+      "code": 0
+    },
+    {
+      "command": "pnpm test",
+      "code": 0
+    },
+    {
+      "command": "pnpm build",
+      "code": 0
+    }
+  ],
+  "namedStackCleanup": "passed",
+  "extraAnonymousVolumeUnownedUntouched": 1,
+  "checkpoint": "SA-2 hardening/regressions pass; SA-2A partially blocked; quota deferred; no SA-3 work"
+}

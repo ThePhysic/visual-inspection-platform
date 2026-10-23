@@ -11,6 +11,7 @@ import {
   type HealthResponse,
 } from '@vip/contracts';
 import { ApiError } from './errors.js';
+import { admitRequest, LOCAL_HOSTS } from './admission.js';
 import { registerAssetRoutes, multipartLimits, type AssetDependencies } from './assets.js';
 import { registerInspectionRoutes } from './inspections.js';
 import { OperationalMetrics, errorCategory, type InspectionDependencies, type InspectionQueue } from '@vip/backend';
@@ -21,10 +22,11 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   dispatchQueue?: Pick<InspectionQueue, 'healthy'>;
   notifyAccepted?: (inspectionId: string) => void;
   metrics?: OperationalMetrics;
+  allowedHosts?: readonly string[];
 } = {}) {
   const app = Fastify({
     logger: false,
-    logController: new LogController({ requestIdLogLabel: 'requestId' }),
+    logController: new LogController({ requestIdLogLabel: 'requestId', disableRequestLogging: true }),
     ...(options.logger === undefined ? {} : { logger: options.logger }),
     requestTimeout: 30_000,
     ajv: { customOptions: { removeAdditional: false, coerceTypes: false } },
@@ -35,10 +37,17 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   app.addHook('onRequest', async (request, reply) => {
     starts.set(request, metrics.now());
     reply.header('X-Request-Id', request.id);
+    reply.header('X-Frame-Options', 'DENY');
+    reply.header('Content-Security-Policy', "frame-ancestors 'none'");
+    // Route templates retain useful diagnostics without recording query values
+    // or arbitrary path/header data in the normal access log.
+    request.log.info({ method: request.method, route: request.routeOptions.url ?? 'unmatched' }, 'Request received');
+    admitRequest(request, options.allowedHosts ?? LOCAL_HOSTS);
   });
   app.addHook('onResponse', async (request, reply) => {
     const start = starts.get(request);
     if (start !== undefined) metrics.http(request.routeOptions.url, request.method, reply.statusCode, metrics.elapsed(start));
+    request.log.info({ statusCode: reply.statusCode, responseTime: start === undefined ? undefined : metrics.elapsed(start) }, 'Request completed');
     starts.delete(request);
   });
 

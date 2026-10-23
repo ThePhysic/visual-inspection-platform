@@ -1,0 +1,49 @@
+[
+  {
+    "command": "pnpm lint",
+    "exitCode": 1,
+    "durationMs": 20767,
+    "summary": [
+      "  7:73   error  Spaces are hard to count. Use {2}                            no-regex-spaces",
+      "  7:195  error  Unexpected control character(s) in regular expression: \\x1b  no-control-regex",
+      " ELIFECYCLE  Command failed with exit code 1."
+    ]
+  },
+  {
+    "command": "pnpm typecheck",
+    "exitCode": 0,
+    "durationMs": 45012,
+    "summary": []
+  },
+  {
+    "command": "pnpm test",
+    "exitCode": 0,
+    "durationMs": 86411,
+    "summary": [
+      "packages/contracts test:  Test Files  4 passed (4)",
+      "packages/contracts test:       Tests  42 passed (42)",
+      "packages/backend test:  Test Files  4 passed (4)",
+      "packages/backend test:       Tests  35 passed | 1 skipped (36)",
+      "packages/backend test:    Duration  13.89s (import 90%, tests 8%, transform 2%)",
+      "apps/worker test:  Test Files  1 passed (1)",
+      "apps/worker test:       Tests  2 passed (2)",
+      "apps/worker test:    Duration  499ms (tests 41%, transform 36%, import 17%, worker 5%)",
+      "apps/api test:  Test Files  4 passed (4)",
+      "apps/api test:       Tests  24 passed (24)",
+      "apps/api test:    Duration  9.44s (import 78%, tests 15%, transform 7%)",
+      "apps/web test:  Test Files  12 passed (12)",
+      "apps/web test:       Tests  134 passed (134)",
+      "apps/web test:    Duration  48.37s (environment 68%, setup 23%, import 5%, tests 3%)",
+      "ℹ tests 8",
+      "ℹ pass 8",
+      "ℹ fail 0",
+      "ℹ skipped 0"
+    ]
+  },
+  {
+    "command": "pnpm build",
+    "exitCode": 0,
+    "durationMs": 19333,
+    "summary": []
+  }
+]

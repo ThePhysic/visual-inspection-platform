@@ -146,6 +146,7 @@ describe('image ingestion with real MongoDB', () => {
     expect(Number(content.headers['content-length'])).toBe(asset.byteLength);
     expect(content.headers['x-content-type-options']).toBe('nosniff');
     expect(content.headers.etag).toBe(`"${asset.sha256}"`);
+    expect(content.headers['cache-control']).toBe('private, no-store');
     expect(content.rawPayload.length).toBe(asset.byteLength);
     expect(createHash('sha256').update(content.rawPayload).digest('hex')).toBe(asset.sha256);
     expect(await readFile(join(directory, record.storageKey))).toEqual(content.rawPayload);
@@ -159,6 +160,28 @@ describe('image ingestion with real MongoDB', () => {
     expect(asset.mimeType).toBe('image/jpeg');
     expect(asset.source).toBe('api');
     expect(await readdir(directory)).toEqual([expect.stringMatching(/^[a-f0-9-]{36}\.jpg$/)]);
+  });
+
+  it('rejects cross-origin and unexpected Host multipart before storage or database side effects', async () => {
+    const staging = vi.spyOn(storage, 'stage');
+    const insert = vi.spyOn(model, 'create');
+    for (const origin of ['null', 'http://127.0.0.1:9999', 'not an origin']) {
+      const body = multipart(png);
+      const response = await app.inject({ method: 'POST', url: ASSETS_PATH, ...body,
+        headers: { ...body.headers, host: '127.0.0.1:3001', origin } });
+      rejected(response, 403, 'ORIGIN_NOT_ALLOWED');
+    }
+    const body = multipart(png);
+    rejected(await app.inject({ method: 'POST', url: ASSETS_PATH, ...body,
+      headers: { ...body.headers, host: 'unrelated.invalid' } }), 421, 'HOST_NOT_ALLOWED');
+    expect(staging).not.toHaveBeenCalled();
+    expect(insert).not.toHaveBeenCalled();
+    expect(await model.countDocuments()).toBe(0);
+    expect(await readdir(directory)).toEqual([]);
+    const legitimate = await app.inject({ method: 'POST', url: ASSETS_PATH, ...body,
+      headers: { ...body.headers, host: 'localhost:5173', origin: 'http://localhost:5173' } });
+    expect(legitimate.statusCode).toBe(201);
+    expect(await model.countDocuments()).toBe(1);
   });
 
   it('allows identical content twice while enforcing storage key uniqueness', async () => {
@@ -266,6 +289,28 @@ describe('image ingestion with real MongoDB', () => {
       expect(responses.map(response => response.statusCode)).toEqual([201, 201]);
     }
     expect(await model.countDocuments()).toBe(2);
+  });
+
+  it('can reduce admission to one slot and releases it after an interrupted write', async () => {
+    await app.close();
+    app = buildApp({ assets: { model, storage, uploadConcurrency: 1 } });
+    let entered!: () => void;
+    let release!: () => void;
+    const started = new Promise<void>(done => { entered = done; });
+    const gate = new Promise<void>(done => { release = done; });
+    const write = storage.writeUpload.bind(storage);
+    vi.spyOn(storage, 'writeUpload').mockImplementationOnce(async (stream, stage) => {
+      await write(stream, stage); entered(); await gate;
+      throw new Error('synthetic interrupted upload');
+    });
+    const pending = upload(png).then(response => response);
+    await started;
+    try { rejected(await upload(png), 503, 'INGESTION_BUSY'); }
+    finally { release(); await pending; }
+    expect((await pending).statusCode).toBe(400);
+    expect(await model.countDocuments()).toBe(0);
+    expect(await readdir(directory)).toEqual([]);
+    expect((await upload(png)).statusCode).toBe(201);
   });
 
   it('rejects decoded dimensions above 20 megapixels before canonical publication', async () => {

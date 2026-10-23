@@ -1,0 +1,32 @@
+{
+  "project": "vip-reliability-a8416c15a67b4e17916ee7396ec237bb",
+  "owner": "a8416c15a67b4e17916ee7396ec237bb",
+  "environment": {
+    "project": "vip-reliability-a8416c15a67b4e17916ee7396ec237bb",
+    "owner": "a8416c15a67b4e17916ee7396ec237bb",
+    "MONGODB_TEST_URI": "mongodb://127.0.0.1:59751",
+    "REDIS_TEST_URL": "redis://127.0.0.1:59752",
+    "CONTAINER_BASE_URL": "http://127.0.0.1:59750"
+  },
+  "database": "vip_reliability_a8416c15a67b4e17916ee7396ec237bb",
+  "network": "vip-reliability-a8416c15a67b4e17916ee7396ec237bb_default",
+  "volumes": [
+    "vip-reliability-a8416c15a67b4e17916ee7396ec237bb_images",
+    "vip-reliability-a8416c15a67b4e17916ee7396ec237bb_mongodb-data",
+    "vip-reliability-a8416c15a67b4e17916ee7396ec237bb_redis-data"
+  ],
+  "retainedDemoVolumes": [
+    "vip-demo_images",
+    "vip-demo_mongodb-data",
+    "vip-demo_redis-data"
+  ],
+  "source": "baseline.json; tracked application clean before setup",
+  "allowed": "Owned Compose services and assigned loopback ports, native browser ports 3003/4174 if free, one ephemeral loopback test origin. No external dynamic destinations.",
+  "budget": {
+    "customRequestsPerSecond": 2,
+    "perCase": 50,
+    "uploadConcurrency": 3,
+    "deterministicExistingTests": "Permit the two existing eight-submission injection cases on unique test DB/queues; small fixtures, not network load. Other existing suites unchanged."
+  },
+  "cleanup": "Verify exact owner labels/services/mounts before down --volumes for this generated project only; no prune or retained-data access."
+}

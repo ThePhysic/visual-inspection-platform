@@ -1,0 +1,19 @@
+{
+  "node": {
+    "node": "v24.22.0",
+    "embeddedUndici": "7.29.1",
+    "npmBundledUndici": "6.28.0",
+    "fstabUserEntries": []
+  },
+  "nginxDirectives": [
+    "    listen 8080;",
+    "    location = /healthz {",
+    "    location /api/ {",
+    "        proxy_pass $api;",
+    "    location /assets/ {",
+    "    location = /index.html {",
+    "    location / {"
+  ],
+  "redisConfiguration": "tls-port\n0\nprotected-mode\nno\nenable-debug-command\nno\nenable-module-command\nno\n",
+  "note": "Read-only prerequisites check; no mount, ACL, TLS, regex, command-execution or memory-corruption exploit attempted."
+}

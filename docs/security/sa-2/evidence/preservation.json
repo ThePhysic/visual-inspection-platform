@@ -1,0 +1,36 @@
+{
+  "sa1FilesVerifiedUnchanged": 50,
+  "indexUnchanged": true,
+  "privateInstructionsNotEditedByAudit": true,
+  "retainedDemo": {
+    "volumesBefore": [
+      "vip-demo_images",
+      "vip-demo_mongodb-data",
+      "vip-demo_redis-data"
+    ],
+    "volumesAfter": [
+      "vip-demo_images",
+      "vip-demo_mongodb-data",
+      "vip-demo_redis-data"
+    ],
+    "mountedQueriedOrReset": false,
+    "containersBefore": [],
+    "verification": "Resource inventory only; deliberately no retained-volume byte hash or database query. No claim about unrelated external writers."
+  },
+  "unrelatedContainersEqual": true,
+  "preExistingVolumeNamesPreserved": true,
+  "additionalVolumes": [
+    {
+      "name": "8f1d43eca2fa087394e62eeda1f2787db8cace965afb0ec44018bd75613d7b58",
+      "createdAt": "2026-10-23T20:29:03Z",
+      "labels": {
+        "com.docker.volume.anonymous": ""
+      },
+      "mountedContainerCount": 0,
+      "disposition": "Left untouched: anonymous volume has no audit owner label. Creation coincides with reliability MongoDB startup; image declares /data/configdb, but exact ownership was not retained."
+    }
+  ],
+  "project": "vip-reliability-a8416c15a67b4e17916ee7396ec237bb",
+  "cleanup": "All five main audit containers, three named labeled volumes and network removed after ownership verification; no prune. Reliability wrapper also removed its labeled stack. One anonymous volume remains unmounted and unremoved because ownership cannot now be proved. Unique build image tags/cache retained.",
+  "unchangedBoundary": "Application dependencies, lockfile, schemas, worker/review/acceptance/storage algorithms unchanged; authorized API/config/log/cache/packaging changes are in file-inventory.json."
+}

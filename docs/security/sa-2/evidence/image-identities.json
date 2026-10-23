@@ -1,0 +1,47 @@
+{
+  "project": "vip-reliability-a8416c15a67b4e17916ee7396ec237bb",
+  "before": [
+    {
+      "service": "worker",
+      "image": "sha256:602af1a74a887098d45a0e5a76d066b08b483c4925b41acaf22b1a0f53c14dfd"
+    },
+    {
+      "service": "web",
+      "image": "sha256:30be6d3b45688c1d22f36334a84d7adf693907135ddcac47c781cab0a01ee9bc"
+    },
+    {
+      "service": "api",
+      "image": "sha256:b03c487c34c10193501f22fed55db774dae4ef38c625bc670ea4c2621791eebc"
+    },
+    {
+      "service": "redis",
+      "image": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1"
+    },
+    {
+      "service": "mongodb",
+      "image": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907"
+    }
+  ],
+  "after": [
+    {
+      "service": "worker",
+      "image": "sha256:325e61c18df9dd01b23a5c9ad414cc44fdf9b80888bff4912f8e48452495dd2a"
+    },
+    {
+      "service": "web",
+      "image": "sha256:94094a0212660f3256fce91c938fc398979fb154275c53e490f48f6106f29e0e"
+    },
+    {
+      "service": "api",
+      "image": "sha256:3d450fe771030c2c00cddacc4a58cc02a8eb4087aa2aeac3089246bf60b6fc5e"
+    },
+    {
+      "service": "redis",
+      "image": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1"
+    },
+    {
+      "service": "mongodb",
+      "image": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 2,
+  "Results": [
+    {
+      "Target": "pnpm-lock.yaml",
+      "Class": "lang-pkgs",
+      "Type": "pnpm"
+    },
+    {
+      "Target": "infra/docker/Dockerfile",
+      "Class": "config",
+      "Type": "dockerfile",
+      "MisconfSummary": {
+        "Successes": 26,
+        "Failures": 1
+      },
+      "Misconfigurations": [
+        {
+          "ID": "DS-0026",
+          "Title": "No HEALTHCHECK defined",
+          "Message": "Add HEALTHCHECK instruction in your Dockerfile",
+          "Severity": "LOW",
+          "Status": "FAIL",
+          "PrimaryURL": "https://avd.aquasec.com/misconfig/ds-0026",
+          "CauseMetadata": {}
+        }
+      ]
+    }
+  ]
+}

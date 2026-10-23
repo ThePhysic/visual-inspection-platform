@@ -1,0 +1,22 @@
+{
+  "project": "vip-reliability-0c17e342f20a4fcba92b975aba08ffb6",
+  "verifiedOwner": "0c17e342f20a4fcba92b975aba08ffb6",
+  "applicationFilesCompared": 143,
+  "originalAndScannerSnapshotHashesUnchanged": true,
+  "trackedFilesUnchanged": true,
+  "indexUnchanged": true,
+  "auditContainersVolumesNetworkRemoved": true,
+  "unrelatedContainerIdentityAndStateInventoryUnchanged": true,
+  "unrelatedVolumeInventoryUnchanged": true,
+  "retainedDemo": {
+    "volumes": [
+      "vip-demo_images",
+      "vip-demo_mongodb-data",
+      "vip-demo_redis-data"
+    ],
+    "containers": [],
+    "mountedReadOrWrittenByAudit": false,
+    "byteLevelDataHash": "Not acquired; retained data was never mounted or queried"
+  },
+  "retainedAuditArtifacts": "Local private scanner caches/logs/snapshot and generated build image tags remain; no broad prune or image deletion."
+}

@@ -1,0 +1,101 @@
+{
+  "redisArchiveTar": {
+    "available": false,
+    "exitCode": 2,
+    "diagnostic": "Cannot locate Archive/Tar.pm in @INC",
+    "perlBaseFileCount": 738,
+    "archiveTarListed": false
+  },
+  "candidates": [
+    {
+      "target": "/image.tar (debian 12.15)",
+      "type": "debian",
+      "id": "CVE-2026-13221",
+      "package": "perl-base",
+      "installed": "5.36.0-7+deb12u3",
+      "fixed": "5.36.0-7+deb12u4",
+      "severity": "CRITICAL",
+      "status": "fixed",
+      "primaryURL": "https://avd.aquasec.com/nvd/cve-2026-13221",
+      "title": "perl: Perl: Incorrect regular expression processing via large regular expressions",
+      "disposition": "suspected weakness requiring further evidence",
+      "rationale": "Exact image package/advisory match retained for component-specific reachability review. OS package/vendor severity is not application severity; no exploit or intended-boundary violation demonstrated. See scanner report triage groups.",
+      "localApplicationSeverity": "unassigned; exploitability not established",
+      "installedImage": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "vendor": "https://security-tracker.debian.org/tracker/CVE-2026-13221",
+      "newDisposition": "unresolved vendor applicability discrepancy: source notes introduced 5.37.10, package table marks installed 5.36 affected; no Matroid Perl regex path",
+      "availableMaintenanceFix": "Debian bookworm perl 5.36.0-7+deb12u4; do not change Redis runtime image without separate isolated compatibility assessment"
+    },
+    {
+      "target": "/image.tar (debian 12.15)",
+      "type": "debian",
+      "id": "CVE-2026-42496",
+      "package": "perl-base",
+      "installed": "5.36.0-7+deb12u3",
+      "fixed": "5.36.0-7+deb12u4",
+      "severity": "CRITICAL",
+      "status": "fixed",
+      "primaryURL": "https://avd.aquasec.com/nvd/cve-2026-42496",
+      "title": "perl-archive-tar: perl-archive-tar: Path traversal via crafted symlinks allows arbitrary file access",
+      "disposition": "suspected weakness requiring further evidence",
+      "rationale": "Exact image package/advisory match retained for component-specific reachability review. OS package/vendor severity is not application severity; no exploit or intended-boundary violation demonstrated. See scanner report triage groups.",
+      "localApplicationSeverity": "unassigned; exploitability not established",
+      "installedImage": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "vendor": "https://security-tracker.debian.org/tracker/CVE-2026-42496",
+      "newDisposition": "not reachable in examined artifact: required Archive::Tar module unavailable; source-package candidate retained in history",
+      "availableMaintenanceFix": "Debian bookworm perl 5.36.0-7+deb12u4; do not change Redis runtime image without separate isolated compatibility assessment"
+    },
+    {
+      "target": "/image.tar (debian 12.15)",
+      "type": "debian",
+      "id": "CVE-2026-8376",
+      "package": "perl-base",
+      "installed": "5.36.0-7+deb12u3",
+      "fixed": "5.36.0-7+deb12u4",
+      "severity": "CRITICAL",
+      "status": "fixed",
+      "primaryURL": "https://avd.aquasec.com/nvd/cve-2026-8376",
+      "title": "perl: Perl: Heap buffer overflow when compiling regular expressions on 32-bit builds",
+      "disposition": "suspected weakness requiring further evidence",
+      "rationale": "Exact image package/advisory match retained for component-specific reachability review. OS package/vendor severity is not application severity; no exploit or intended-boundary violation demonstrated. See scanner report triage groups.",
+      "localApplicationSeverity": "unassigned; exploitability not established",
+      "installedImage": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1",
+      "vendor": "https://security-tracker.debian.org/tracker/CVE-2026-8376",
+      "newDisposition": "not reachable under examined 64-bit Perl build; vendor package match retained, no global suppression",
+      "availableMaintenanceFix": "Debian bookworm perl 5.36.0-7+deb12u4; do not change Redis runtime image without separate isolated compatibility assessment"
+    }
+  ],
+  "mongo": {
+    "reviewedVendorBulletins": "https://www.mongodb.com/resources/products/alerts",
+    "examples": [
+      {
+        "id": "CVE-2026-104004",
+        "affected8": "<8.0.34",
+        "installed": "8.0.34",
+        "disposition": "outside stated affected range; validators/collation feature also not supplied by public API"
+      },
+      {
+        "id": "CVE-2026-103965",
+        "affected8": "<8.0.34",
+        "installed": "8.0.34",
+        "disposition": "outside stated affected range; public API does not accept arbitrary aggregation stages"
+      },
+      {
+        "id": "CVE-2026-85091",
+        "package": "zlib1g",
+        "installed": "1:1.3.dfsg-3.1ubuntu2.2",
+        "fix": "1:1.3.dfsg-3.1ubuntu2.3",
+        "vendor": "https://ubuntu.com/security/CVE-2026-85091",
+        "prerequisite": "Nonblocking gzwrite stall followed by gzprintf/gzvprintf using stale external buffers",
+        "disposition": "OS package candidate retained; libz linked to mongod, affected write sequence not established from HTTP/normal driver paths"
+      }
+    ],
+    "limitation": "Sampled current vendor bulletins and bounded OS catalog do not establish exhaustive MongoDB/mongosh bundled component coverage."
+  },
+  "native": {
+    "requestFacing": "Sharp JPEG/PNG canonicalization, Fastify HTTP parsing, nginx HTTP proxy/static paths and internal MongoDB/Redis protocols",
+    "observedVersions": "runtime.json includes Node embedded libraries and Sharp complete runtime version map",
+    "disabledOrGated": "No TLS/QUIC/CMP/CMS/DTLS listeners or arbitrary shell/mount/Perl/archive calls; API rejects non-JPEG/PNG before decoding. These feature traces do not close unrelated memory-corruption candidates.",
+    "gap": "No full native-symbol call tracing, embedded-library SBOM/advisory reconciliation, or exploit payloads. Retain unresolved reachability as blocked assessment."
+  }
+}
