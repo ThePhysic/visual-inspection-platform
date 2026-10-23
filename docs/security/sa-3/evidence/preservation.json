@@ -1,0 +1,37 @@
+{
+  "project": "vip-reliability-9843eb8a1e864c43880bb2668613484b",
+  "namedVolumesRemoved": 4,
+  "containersRemoved": 5,
+  "networkRemoved": 1,
+  "preExistingContainerStatesAndVolumeNamesEqual": true,
+  "otherNetworkIdentitiesEqual": true,
+  "builtInBridge": {
+    "before": "112aaadf3357 bridge",
+    "after": "0d98a764589e bridge",
+    "identityEqual": false,
+    "disposition": "Unexplained operational metadata drift, not silently closed. Bounded read-only bridge events returned no explanation. No bridge modification/restoration command was issued; no attribution or data-equivalence claim."
+  },
+  "retainedDemo": {
+    "before": [
+      "vip-demo_images",
+      "vip-demo_mongodb-data",
+      "vip-demo_redis-data"
+    ],
+    "after": [
+      "vip-demo_images",
+      "vip-demo_mongodb-data",
+      "vip-demo_redis-data"
+    ],
+    "mountedQueriedResetOrRemoved": false,
+    "verification": "Resource identities only; no retained-data byte hash or DB query"
+  },
+  "previousUnownedVolume": {
+    "name": "8f1d43eca2fa087394e62eeda1f2787db8cace965afb0ec44018bd75613d7b58",
+    "presentBefore": true,
+    "presentAfter": true,
+    "directlyInspectedMountedOrRemoved": false
+  },
+  "previousSecurityFilesVerifiedUnchanged": 96,
+  "mutableIndexException": "Only docs/security/README.md is updated as the current index; original SA-0/SA-1/SA-2 assessment package hashes remain unchanged.",
+  "cleanup": "Four named ownership-labeled data volumes including configdb removed after fresh verification. No additional anonymous volume left. Build tags/cache and private evidence retained; no prune."
+}

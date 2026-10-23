@@ -1,0 +1,313 @@
+{
+  "candidateCommit": "b5de38321f2a12b5334b176576ffbcc5ff29eef2",
+  "model": "trusted single-user local demonstration with synthetic data",
+  "confirmedApplicationVulnerabilities": 0,
+  "overall": "Authorized SA-3 validation/reporting complete; final security/dependency assurance PARTIALLY BLOCKED, not clean or certified",
+  "checkpoints": {
+    "SA-3A": "PARTIALLY BLOCKED: bounded reconciliation complete, native/vendor/reachability coverage remains unresolved",
+    "SA-3B": "PARTIALLY BLOCKED for full operational preservation assurance; bounded regressions and owned cleanup PASS; unexplained built-in bridge drift remains open",
+    "SA-3C": "PASS: scoped report, risk ownership, evidence and portfolio package complete"
+  },
+  "items": [
+    {
+      "id": "SA1-01",
+      "priority": 1,
+      "title": "Runtime image advisory candidates need component-specific verification",
+      "originalClassification": "suspected weakness requiring further evidence",
+      "sa2Disposition": "partially blocked; unnecessary runtime npm removed, other candidates retained",
+      "classification": "unresolved candidate",
+      "finalDisposition": "Image OS and bundled/native advisories remain incompletely reconciled; four exact image inventories stable on same feed; Mongo OS catalog recognized",
+      "localSeverity": "unassigned; no application exploit demonstrated",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Authorize artifact/vendor/feature-specific follow-up; preserve gap",
+      "evidence": [
+        "supply-chain.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-02",
+      "priority": 2,
+      "title": "Blind asset creation from another loopback browser origin",
+      "originalClassification": "suspected weakness requiring further evidence",
+      "sa2Disposition": "implemented owner-selected browser admission; demonstrated unwanted loopback upload now rejected, no public exploit reclassification",
+      "classification": "verified hardening",
+      "finalDisposition": "Cross-loopback upload property is now rejected without asset effects; no public exploitation reclassification",
+      "localSeverity": "low potential blind insertion impact; overlaps trusted-local-host assumption",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "browser-resources.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-03",
+      "priority": 3,
+      "title": "Aggregate retained resources have no application quota",
+      "originalClassification": "accepted local-demo limitation",
+      "sa2Disposition": "per-request controls retained, configurable one/two slots; aggregate quota design deferred",
+      "classification": "accepted limitation",
+      "finalDisposition": "One/two slots and input bounds verified; cumulative retention quota explicitly deferred",
+      "localSeverity": "design limitation; no exhaustion demonstrated",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "browser-resources.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-04",
+      "priority": 4,
+      "title": "Host and framing policies are not explicitly restricted",
+      "originalClassification": "production-hardening opportunity",
+      "sa2Disposition": "implemented Host and framing policy; broad DNS-rebinding assessment remains untested",
+      "classification": "verified hardening",
+      "finalDisposition": "Host/port forwarding and frame denial verified; complete DNS rebinding and other browsers untested",
+      "localSeverity": "no sensitive action exploit established",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "browser-resources.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-05",
+      "priority": 5,
+      "title": "Public image caching and URL logs assume synthetic local data",
+      "originalClassification": "accepted local-demo limitation",
+      "sa2Disposition": "implemented private no-store image cache and normal access log minimization",
+      "classification": "verified hardening",
+      "finalDisposition": "Private no-store image content and query-free normal access logs verified; no authentication or retrospective purge",
+      "localSeverity": "no demonstrated confidential-data disclosure",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "browser-resources.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-06",
+      "priority": 6,
+      "title": "Supply chain and service authority retain local-demo assumptions",
+      "originalClassification": "production-hardening opportunity",
+      "sa2Disposition": "implemented verified Action commits/checkout credential minimization and runtime tooling removal; broader privileges/identity deferred",
+      "classification": "verified hardening",
+      "finalDisposition": "Action commit pins/checkout handling and absent runtime npm verified against accepted source; broader production controls deferred",
+      "localSeverity": "no boundary bypass demonstrated",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "operations.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-07",
+      "priority": 7,
+      "title": "Input, query and projection controls held in exercised cases",
+      "originalClassification": "verification target that passed",
+      "sa2Disposition": "existing validation/projections retained; full regression passed",
+      "classification": "verified existing control",
+      "finalDisposition": "Full API contract/query/projection regressions passed",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "validation.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-08",
+      "priority": 8,
+      "title": "Canonicalization, paths and staging cleanup held",
+      "originalClassification": "verification target that passed",
+      "sa2Disposition": "existing storage/canonicalization retained; ingestion hardening regressions passed",
+      "classification": "verified existing control",
+      "finalDisposition": "Canonicalization, storage paths, inclusive limits, failures and interrupted cleanup regressions passed",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "validation.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-09",
+      "priority": 9,
+      "title": "Worker and review data-integrity guards held",
+      "originalClassification": "verification target that passed",
+      "sa2Disposition": "existing acceptance/worker/review algorithms unchanged; full real integration and recovery passed",
+      "classification": "verified existing control",
+      "finalDisposition": "Durable admission, idempotency, fenced attempts, immutable predictions and review concurrency regressions passed",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "validation.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-10",
+      "priority": 10,
+      "title": "Private operators and runtime storage permissions observed",
+      "originalClassification": "verification target that passed",
+      "sa2Disposition": "non-root/readonly worker mount/private operators preserved in runtime/smoke checks",
+      "classification": "verified existing control",
+      "finalDisposition": "Non-root effective service users, private operators and read-only worker image mount verified",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "operations.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-11",
+      "priority": 11,
+      "title": "Dockerfile-only missing HEALTHCHECK alert",
+      "originalClassification": "false positive",
+      "sa2Disposition": "prior contextual health-check false positive retained; all services healthy during checks",
+      "classification": "false positive",
+      "finalDisposition": "Dockerfile-only missing-healthcheck finding remains contextual; all five Compose services had healthy configured checks",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "supply-chain.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-12",
+      "priority": 12,
+      "title": "nginx 200 SPA responses mistaken for exposed operators",
+      "originalClassification": "false positive",
+      "sa2Disposition": "prior SPA/operator false positive retained; routing/operator code unchanged and smoke passed",
+      "classification": "false positive",
+      "finalDisposition": "nginx operator-looking URLs are SPA HTML; actual public API operator URLs remain 404",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "operations.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-13",
+      "priority": 13,
+      "title": "Debian zlib1g MiniZip advisory match",
+      "originalClassification": "false positive",
+      "sa2Disposition": "prior Debian zlib/MiniZip package-specific false positive retained, no global suppression",
+      "classification": "false positive",
+      "finalDisposition": "Prior Debian zlib1g MiniZip package/CVE-specific disposition retained; no global zlib suppression",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Retain selected controls and stated local assumptions",
+      "evidence": [
+        "supply-chain.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA1-14",
+      "priority": 14,
+      "title": "Advisory and deployment coverage gaps",
+      "originalClassification": "blocked or untested case",
+      "sa2Disposition": "Mongo OS detection resolved but embedded/native coverage, other browsers/history/settings remain gaps; new anonymous-volume cleanup limitation recorded",
+      "classification": "blocked assessment",
+      "finalDisposition": "Complete Mongo native/bundled coverage, vendor discrepancies, full history/hosted settings, other browser/public/DNS scenarios remain open",
+      "localSeverity": "No new application severity assigned",
+      "publicSeverity": "Requires separately assessed deployment/exposure and feature reachability; not inherited from vendor CVSS",
+      "owner": "Repository owner",
+      "nextAction": "Authorize artifact/vendor/feature-specific follow-up; preserve gap",
+      "evidence": [
+        "supply-chain.md",
+        "evidence/regressions.json"
+      ],
+      "originalRegister": "../sa-1/findings.json"
+    },
+    {
+      "id": "SA3-H01",
+      "classification": "verified hardening",
+      "title": "Disposable configdb ownership and cleanup corrected",
+      "localSeverity": "audit-harness safety improvement, not application vulnerability",
+      "evidence": [
+        "evidence/isolation.json",
+        "evidence/preservation.json",
+        "evidence/regressions.json"
+      ],
+      "owner": "Repository owner",
+      "nextAction": "Keep exact mount/owner guards for future isolated runs"
+    },
+    {
+      "id": "SA3-S01",
+      "classification": "unresolved candidate",
+      "title": "mongosh embedded libmongocrypt 1.20.0 needs advisory applicability reconciliation",
+      "localSeverity": "unassigned; no application exploit demonstrated",
+      "prerequisites": "Affected KMS/encryption feature and attacker-controlled provider/key-vault inputs; installed component is in mongosh, not API runtime encryption module",
+      "evidence": [
+        "evidence/components.json",
+        "evidence/native-advisories.json",
+        "evidence/runtime.json"
+      ],
+      "owner": "Repository owner",
+      "nextAction": "Verify vendor affected range and precise embedded build/feature; no automatic upgrade"
+    },
+    {
+      "id": "SA3-L01",
+      "classification": "accepted operational limitation",
+      "title": "Pre-existing unowned anonymous volume remains excluded",
+      "evidence": [
+        "evidence/preservation.json"
+      ],
+      "owner": "Host operator",
+      "nextAction": "Do not mount/delete without separate ownership evidence and authorization"
+    },
+    {
+      "id": "SA3-O01",
+      "classification": "unresolved operational observation",
+      "title": "Built-in Docker bridge identity changed during the run",
+      "localSeverity": "unassigned; causality/data impact not established",
+      "evidence": [
+        "evidence/preservation.json"
+      ],
+      "owner": "Host operator",
+      "nextAction": "If needed, separately review Docker Desktop/engine event history; no speculative restore or network change"
+    }
+  ]
+}

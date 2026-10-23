@@ -1,0 +1,44 @@
+{
+  "node": "v24.22.0",
+  "pnpm": "10.34.7",
+  "results": [
+    {
+      "command": "pnpm lint",
+      "code": 0,
+      "durationMs": 6993,
+      "testCounts": []
+    },
+    {
+      "command": "pnpm typecheck",
+      "code": 0,
+      "durationMs": 24561,
+      "testCounts": []
+    },
+    {
+      "command": "pnpm test",
+      "code": 0,
+      "durationMs": 21702,
+      "testCounts": [
+        "packages/contracts test:       Tests  42 passed (42)",
+        "packages/backend test:       Tests  35 passed | 1 skipped (36)",
+        "apps/worker test:       Tests  2 passed (2)",
+        "apps/api test:       Tests  65 passed (65)",
+        "apps/web test:       Tests  134 passed (134)"
+      ]
+    },
+    {
+      "command": "pnpm build",
+      "code": 0,
+      "durationMs": 17541,
+      "testCounts": []
+    }
+  ],
+  "unit": {
+    "passed": 278,
+    "skipped": 1,
+    "failed": 0,
+    "nodeHarnessPassed": 10,
+    "nodeHarnessFailed": 0
+  },
+  "accounting": "Typecheck/test/build are the actual first execution against unchanged application and final harness source. Only lint rerun after audit-script import correction and documentation/reproduction additions. Initial failed lint preserved."
+}

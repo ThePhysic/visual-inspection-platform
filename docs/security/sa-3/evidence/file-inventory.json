@@ -1,0 +1,366 @@
+{
+  "candidateCommit": "b5de38321f2a12b5334b176576ffbcc5ff29eef2",
+  "files": [
+    {
+      "path": "docs/reliability.md",
+      "kind": "modified",
+      "sha256": "160612e3aca2f908b91629266e7f5d7f2bb21882ac95a2e6f85a86a855650f01",
+      "bytes": 16179,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/README.md",
+      "kind": "modified",
+      "sha256": "7a2867d96f5a584555ea5dac6e10c2a7d64d2c920cd39092c07a3ecb9436319c",
+      "bytes": 4012,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/README.md",
+      "kind": "created",
+      "sha256": "36f7ed3b8a6f1fd104667debfd3d8d873bcbea4a5690cda4ec88dd3cbdf9db59",
+      "bytes": 6011,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/browser-resources.md",
+      "kind": "created",
+      "sha256": "9de1132b827b23eba450589e3c277b36ff3c6626d69d255f23c9d2f346cc2331",
+      "bytes": 5526,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/baseline.json",
+      "kind": "created",
+      "sha256": "0e462ccd82ed8ab697dbd0d8718f58713dbdc48fce9943e277449af4a35154bf",
+      "bytes": 64231,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/boundary-execution.json",
+      "kind": "created",
+      "sha256": "fb5f92d48cb79b0fcb7df7280db8f0965f0aba16338571765547bd989d829ebb",
+      "bytes": 449,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/browser-after.json",
+      "kind": "created",
+      "sha256": "2f5a66a0851af5dd754d82083cc4788a935593b55f5204f8dbea0ccaf7b4aaf8",
+      "bytes": 9345,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/components.json",
+      "kind": "created",
+      "sha256": "5813d659e83a9e4e7fdfb7165b1ea3f4d8780bfd383899bbc434a15d52d52725",
+      "bytes": 10686,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/file-inventory.json",
+      "kind": "created",
+      "sha256": "(self not hashed)",
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/http-after.json",
+      "kind": "created",
+      "sha256": "ffabcbcef844a97e6b3c5151e0bdf05ec34f6661fbf4862eb0baf1e6a31fe4eb",
+      "bytes": 3186,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/image-scans.json",
+      "kind": "created",
+      "sha256": "4e248fb4608b5cad67b27732fa0ed082b1a143159b376ccf8c17bbe587f6e884",
+      "bytes": 384562,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/images.json",
+      "kind": "created",
+      "sha256": "cf7b23bcd44da8ec84c5242e307096da8ceca5c79209303533a3d88a3ee4bf8f",
+      "bytes": 735,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/isolation.json",
+      "kind": "created",
+      "sha256": "24ccd4744fc6b5924078a19ed302019dea8077db125a26d5786ceb6c4aca7c85",
+      "bytes": 2969,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/legitimate-browser.json",
+      "kind": "created",
+      "sha256": "f71f430431965826e34bdfd84b22afee9fee7a2716e0d3e19246504bcaccab8a",
+      "bytes": 822,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/mongo-catalog.json",
+      "kind": "created",
+      "sha256": "51adfc9095dd17d2369449690bc3fd7d4207e49a2ce30f15c463f866414fbf7a",
+      "bytes": 41399,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/native-advisories.json",
+      "kind": "created",
+      "sha256": "7bbb98dc813c7475a32dd756895fa8eecf271e447e5ccfa651c573b249383760",
+      "bytes": 9774,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/preservation.json",
+      "kind": "created",
+      "sha256": "d75920ea539f9efcf51b9263c427bd9034958cc0524a59981d8534a6445ae804",
+      "bytes": 1600,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/regressions.json",
+      "kind": "created",
+      "sha256": "52b439983937e82679025267188d7971b73b57d4d1b582f8342603b943f8d6a6",
+      "bytes": 2387,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/runtime.json",
+      "kind": "created",
+      "sha256": "e44580c29f78e6b034bcbbeb1463d1b62f548756ac7a01a1bf30553f83d52b56",
+      "bytes": 4385,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/source-scans.json",
+      "kind": "created",
+      "sha256": "68f7178465beff7a0b8c1334bbfa1c8ed7c1f0033370054d4ca312ec879988f0",
+      "bytes": 29782,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/verification.json",
+      "kind": "created",
+      "sha256": "d3a50a4a9ceeb2e1c18e5faff42a14a10925d9caa7122afbabf3bebadb7fb01c",
+      "bytes": 956,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/workspace-validation-final.json",
+      "kind": "created",
+      "sha256": "2507fe5811dd3d3f927c9a3198c16fd1ad09490bd81edac24d4b83b5cfc8149d",
+      "bytes": 1199,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/evidence/workspace-validation-initial.json",
+      "kind": "created",
+      "sha256": "45b68d38a2c4240417b2dd6ffcc9fd4f8ce17ffe84b7f17384c6b86527375c83",
+      "bytes": 819,
+      "purpose": "sanitized validation/assessment evidence"
+    },
+    {
+      "path": "docs/security/sa-3/findings.json",
+      "kind": "created",
+      "sha256": "ee3c694af188d7a4274bb92d25eff64284e7adf98528d9717af76bf914ddaf3a",
+      "bytes": 16200,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/findings.md",
+      "kind": "created",
+      "sha256": "8985e0f622f0510200caaab0403f1133b7b66600e781a7576530ba918ddd3355",
+      "bytes": 6376,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/operations.md",
+      "kind": "created",
+      "sha256": "d004627aa77fd4b2696f9ba5105874dd51bb925162a37058852ed31f4e61c559",
+      "bytes": 7506,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/portfolio.md",
+      "kind": "created",
+      "sha256": "cdd52646fcf495b04716126f737b22f34d06aa8284363727aab3a5b70c87a81a",
+      "bytes": 5459,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/repro/boundaries.mjs",
+      "kind": "created",
+      "sha256": "3dd213c786de937d3a7bbe68a0b8f96eb347f8a0f6f3313d2bc846fa254db658",
+      "bytes": 615,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/browser.mjs",
+      "kind": "created",
+      "sha256": "ad5f6067f64ddadf94ee788c4cbbf482903c62b9a8be4dbd5e1febd8cb8e451d",
+      "bytes": 8440,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/cleanup.mjs",
+      "kind": "created",
+      "sha256": "3a41c52624e3be195e277fa03fb0b5b82acf5aaecdd376f5aff0fb67875f92c9",
+      "bytes": 3954,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/components.mjs",
+      "kind": "created",
+      "sha256": "22e74d25ad445844341c737c58db04a5ca2a2569835c36004b8635d7e08e048e",
+      "bytes": 6059,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/environment.mjs",
+      "kind": "created",
+      "sha256": "c354de9dd53756fc5d06af8b4ead7ac438bdaa2ee2d8ccb12555c9a23250bd26",
+      "bytes": 2611,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/finish.mjs",
+      "kind": "created",
+      "sha256": "07108eb2cef58a357186d9017dbdc4f9863432c707ddb1acfd774e52e928e1a0",
+      "bytes": 1637,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/http.mjs",
+      "kind": "created",
+      "sha256": "28ec9c6ca8009cc0134e434eec8bf365c13b600c1bbfa0121327e6b5af64e206",
+      "bytes": 5573,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/image-scans.mjs",
+      "kind": "created",
+      "sha256": "e97b9be41eca3f6ffd80a274a239e7d94bf5bee7d5f9b1701aafb28e0841943d",
+      "bytes": 4430,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/mongo-catalog.mjs",
+      "kind": "created",
+      "sha256": "20aef86dda11f1b4a740bae79316a2eae38a123a49326d53914c961db4311592",
+      "bytes": 4335,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/native-advisories.mjs",
+      "kind": "created",
+      "sha256": "3d611c5ff07b50e3fc3fcf85978cf8a1ef796c0ea75472fdb666a29f83a14912",
+      "bytes": 2826,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/prepare.mjs",
+      "kind": "created",
+      "sha256": "24932d971b08e9373ee19e4b8d83a4866631f07dce93e2cf9744b2971e357bc2",
+      "bytes": 2264,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/report.mjs",
+      "kind": "created",
+      "sha256": "e13855223cd4106579407ff65dc5ca1fbe0abf9246d86590bb10cde2ff12f9b4",
+      "bytes": 10689,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/runtime.mjs",
+      "kind": "created",
+      "sha256": "e6ffa50a00202ac9860f27bc1ff429c7bf4f75062a690ed6633b2ef5939512e0",
+      "bytes": 4826,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/setup.mjs",
+      "kind": "created",
+      "sha256": "b31bc27be274a6e0aa520bff9dbc472a4060f77cd89d1f642f92337c415ae583",
+      "bytes": 3791,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/static.mjs",
+      "kind": "created",
+      "sha256": "005efa96a8019d25eddcb15eebe51176550ba7c810dfb0b7a0938697b014f0a9",
+      "bytes": 4978,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/support.mjs",
+      "kind": "created",
+      "sha256": "c0c727835c9da199e07b355fe49d9f3040d2f69044950b1be1b4727de1072936",
+      "bytes": 1766,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/validation.mjs",
+      "kind": "created",
+      "sha256": "225af78b8657c812375b5c9032532848cb0366e63e9dbf19353dc7485ec1617b",
+      "bytes": 1687,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/verify.mjs",
+      "kind": "created",
+      "sha256": "df29dbea724d20612bf1f5d887051220063b4981c4e4127dd635a948a8847f58",
+      "bytes": 3356,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/repro/workflow.mjs",
+      "kind": "created",
+      "sha256": "e635843d995dafb9da5de102e83eb69cb1bde86b694ffae310e239d401f09774",
+      "bytes": 3077,
+      "purpose": "audit-owned reproducibility script"
+    },
+    {
+      "path": "docs/security/sa-3/supply-chain.md",
+      "kind": "created",
+      "sha256": "7c63c32fba0076b0fd04b52bb04df176dc9b149a2d0ad0e34f0841a5eccfdcd5",
+      "bytes": 8810,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/threat-model.md",
+      "kind": "created",
+      "sha256": "d000d4cdb822c8dfe3260164b7cd0903316b7cf1a37a9f21db4fa1e51a1bcef1",
+      "bytes": 6278,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "docs/security/sa-3/validation.md",
+      "kind": "created",
+      "sha256": "39808a902c71abf5778cb200ad9b736daa7b081c38aa7d3fc4d5ba858ab675f0",
+      "bytes": 9482,
+      "purpose": "documentation/portfolio"
+    },
+    {
+      "path": "infra/benchmark/core.test.mjs",
+      "kind": "modified",
+      "sha256": "04e199463069de2a3c4511aa813fa89eba2fca17258f36a78963853580a63cf4",
+      "bytes": 7705,
+      "purpose": "audit-harness correction/regression"
+    },
+    {
+      "path": "infra/docker/disposable.mjs",
+      "kind": "modified",
+      "sha256": "f90f655cefc2a907602b545c3897eceecd17502a3824e502186ee2b8056f7d9a",
+      "bytes": 9755,
+      "purpose": "audit-harness correction/regression"
+    }
+  ],
+  "applicationAndRuntimeConfigurationUnchanged": true,
+  "immutablePriorAssessmentFilesVerified": 96,
+  "indexUnchanged": true,
+  "preservedSourceBoundary": "All baseline files except the two authorized harness files and two documentation indexes match frozen hashes. No source/dependency/schema/runtime/CI remediation.",
+  "privateArtifacts": ".tools/sa3/bd25103e959f4940837c06a51705d3f2: filtered read-only snapshot, scanner/build/runner logs and full reports; temporary image archives and generated project override removed; unique built tags/cache retained"
+}

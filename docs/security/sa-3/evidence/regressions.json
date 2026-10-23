@@ -1,0 +1,58 @@
+{
+  "command": "pnpm test:reliability --native --browser --ci-mongodb",
+  "exitCode": 0,
+  "project": "vip-reliability-bf666306a4494bba8b33334196189fc9",
+  "integration": {
+    "discovered": 143,
+    "passed": 143,
+    "failed": 0,
+    "skipped": 0,
+    "deselected": 0
+  },
+  "nativeBrowser": {
+    "passed": 18,
+    "failed": 0
+  },
+  "containerBrowser": {
+    "passed": 2,
+    "failed": 0
+  },
+  "phases": [
+    "{\"version\":\"8.0.34\",\"usingPerCPUCaches\":false}",
+    "Container smoke create passed: proxy, upload, inference, review, history, retry, and runtime packaging.",
+    "Worker runtime check passed: non-root, production-only dependencies, shared images mounted read-only.",
+    "Reliability phase passed: redis-down",
+    "Reliability phase passed: redis-recovered",
+    "Reliability phase passed: mongo-down",
+    "Reliability phase passed: result-recovered",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "Reliability phase passed: storage",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "Container smoke verify passed: persisted data/images/reviews and new worker execution.",
+    "{\"version\":\"8.0.34\",\"usingPerCPUCaches\":false}",
+    "Container reliability passed: acceptance during Redis outage, MongoDB rejection/recovery, restarts, recreation, storage report."
+  ],
+  "fourNamedVolumesRemoved": true,
+  "configdbCleanupObserved": true,
+  "noAppBehaviorChanges": true,
+  "hostedCIExecuted": false,
+  "failuresAndCorrections": [
+    {
+      "scope": "audit-owned setup script",
+      "check": "first lint",
+      "error": "unused root import",
+      "correction": "removed import; final lint recorded separately"
+    },
+    {
+      "scope": "read-only native advisory metadata experiment",
+      "error": "unstructured extraction could not retrieve known records",
+      "correction": "discarded unsupported result; select exact structured scanner records; missing native coverage remains blocked"
+    },
+    {
+      "scope": "cleanup preservation metadata",
+      "error": "built-in bridge ID changed",
+      "correction": "no network change attempted; container/volume/other-network identities verified separately; unexplained drift remains open"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "project": "vip-reliability-9843eb8a1e864c43880bb2668613484b",
+  "images": [
+    {
+      "service": "worker",
+      "imageId": "sha256:16f1bb1a45e4846b4fd7cf99306ab372082afa86b08c0d530474f0df13aa1121"
+    },
+    {
+      "service": "web",
+      "imageId": "sha256:3505b0f4ab815186737143ad9ecacb775ef0835332bacd96aecd51a4c7d9063a"
+    },
+    {
+      "service": "api",
+      "imageId": "sha256:f3062be8d2fbcc191efbf45574ff6c811be59029f5ba65b03433629b94fac4ae"
+    },
+    {
+      "service": "redis",
+      "imageId": "sha256:2f7462b9e93e0a7ae2edf3a0a0babc8a4d29f8bfc50849b906b7caaef925edc1"
+    },
+    {
+      "service": "mongodb",
+      "imageId": "sha256:4a4ab5d4834207389e0d7270fac988e21ffedccecba77991a552f755df229907"
+    }
+  ]
+}

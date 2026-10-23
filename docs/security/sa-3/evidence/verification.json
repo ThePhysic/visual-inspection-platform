@@ -1,0 +1,32 @@
+{
+  "candidateCommit": "b5de38321f2a12b5334b176576ffbcc5ff29eef2",
+  "applicationDependencyRuntimeConfigurationUnchanged": true,
+  "priorSecurityPackageFilesUnchanged": 96,
+  "indexUnchanged": true,
+  "whitespace": "passed",
+  "inventoryHashes": "passed",
+  "markdownFilesChecked": 8,
+  "localLinksChecked": 47,
+  "jsonFilesParsed": 19,
+  "workspaceGates": [
+    {
+      "command": "pnpm lint",
+      "code": 0
+    },
+    {
+      "command": "pnpm typecheck",
+      "code": 0
+    },
+    {
+      "command": "pnpm test",
+      "code": 0
+    },
+    {
+      "command": "pnpm build",
+      "code": 0
+    }
+  ],
+  "ownedResourceCleanup": "passed, four named volumes per project; no new anonymous volume",
+  "operationalGap": "Built-in bridge ID drift remains unexplained; not counted as a passing full-network-equality check",
+  "finalAssurance": "PARTIALLY BLOCKED native/vendor/reachability and operational assurance; report and bounded regressions complete"
+}

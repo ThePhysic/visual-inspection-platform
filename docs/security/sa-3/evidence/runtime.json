@@ -1,0 +1,185 @@
+{
+  "identities": [
+    {
+      "service": "api",
+      "configuredUser": "node",
+      "serviceUid": "1000",
+      "effectiveCapabilities": "0000000000000000",
+      "privileged": false,
+      "publishedPorts": {
+        "3001/tcp": null
+      },
+      "health": "healthy"
+    },
+    {
+      "service": "worker",
+      "configuredUser": "node",
+      "serviceUid": "1000",
+      "effectiveCapabilities": "0000000000000000",
+      "privileged": false,
+      "publishedPorts": {},
+      "health": "healthy"
+    },
+    {
+      "service": "web",
+      "configuredUser": "101",
+      "serviceUid": "101",
+      "effectiveCapabilities": "0000000000000000",
+      "privileged": false,
+      "publishedPorts": {
+        "8080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54871"
+          }
+        ]
+      },
+      "health": "healthy"
+    },
+    {
+      "service": "mongodb",
+      "configuredUser": "",
+      "serviceUid": "999",
+      "effectiveCapabilities": "0000000000000000",
+      "privileged": false,
+      "publishedPorts": {
+        "27017/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54872"
+          }
+        ]
+      },
+      "health": "healthy"
+    },
+    {
+      "service": "redis",
+      "configuredUser": "",
+      "serviceUid": "999",
+      "effectiveCapabilities": "0000000000000000",
+      "privileged": false,
+      "publishedPorts": {
+        "6379/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "54873"
+          }
+        ]
+      },
+      "health": "healthy"
+    }
+  ],
+  "api": {
+    "cases": [
+      {
+        "host": "api:3001",
+        "status": 200
+      },
+      {
+        "host": "localhost:3001",
+        "status": 200
+      },
+      {
+        "host": "[::1]:3001",
+        "status": 200
+      },
+      {
+        "host": "unexpected.invalid",
+        "status": 421
+      },
+      {
+        "publicApi": "/metrics",
+        "status": 404
+      },
+      {
+        "publicApi": "/queue",
+        "status": 404
+      },
+      {
+        "publicApi": "/api/v1/metrics",
+        "status": 404
+      },
+      {
+        "privateApi": "/metrics",
+        "status": 200
+      },
+      {
+        "privateApi": "/queue",
+        "status": 200
+      }
+    ],
+    "encryptionAvailable": false,
+    "mongoose": "9.11.2",
+    "driver": "7.7.0",
+    "storage": {
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "700"
+    }
+  },
+  "spa": [
+    {
+      "path": "/metrics",
+      "status": 200,
+      "content": "SPA HTML, not operator data"
+    },
+    {
+      "path": "/queue",
+      "status": 200,
+      "content": "SPA HTML, not operator data"
+    }
+  ],
+  "actions": [
+    {
+      "repository": "actions/checkout",
+      "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "tag": "v7.0.1",
+      "provenance": "Preserved SA-2 upstream tag/peeled-commit evidence; current workflow matches locally. No new external lookup."
+    },
+    {
+      "repository": "actions/setup-node",
+      "commit": "949feb2413d6458794dcd2491c4babbbce0c15c1",
+      "tag": "v7.1.0",
+      "provenance": "Preserved SA-2 upstream tag/peeled-commit evidence; current workflow matches locally. No new external lookup."
+    },
+    {
+      "repository": "pnpm/action-setup",
+      "commit": "ea17c68df8912ef543352723c149a84f56e3d413",
+      "tag": "v6.1.0",
+      "provenance": "Preserved SA-2 upstream tag/peeled-commit evidence; current workflow matches locally. No new external lookup."
+    }
+  ],
+  "workflowSha256": "340d211492dcd3c00a624fbcfb77d8b9dd221f830a591286d504c89c0cf2e583",
+  "lockSha256": "97c03ee11273af2d3ab593dfb7b9b5f020654c4a4ce5b103eb92ab04ef5696f5",
+  "historicalPnpmAudits": {
+    "source": "SA-2 unchanged dependency graph; not newly queried in SA-3",
+    "all": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 425,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 425
+    },
+    "prod": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0
+      },
+      "dependencies": 152,
+      "devDependencies": 0,
+      "optionalDependencies": 0,
+      "totalDependencies": 152
+    }
+  },
+  "hostedCIExecuted": false,
+  "noExternalLookup": true
+}

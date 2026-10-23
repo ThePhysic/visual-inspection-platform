@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseArguments, distribution, summarize, mapConcurrent, assertBenchmarkIsolation, withDisposable, workerMeasurements, readableSummary } from './core.mjs';
-import { assertOwnedBuildImage } from '../docker/disposable.mjs';
+import { assertOwnedBuildImage, assertOwnedDataMounts } from '../docker/disposable.mjs';
 
 test('benchmark arguments are bounded, explicit and validated before Docker use', () => {
   assert.equal(parseArguments([]).concurrency, 4);
@@ -61,6 +61,32 @@ test('cleanup executes after success, workload failure and ownership refusal', a
     assert.deepEqual(events, failure === 'ownership' ? ['verify', 'cleanup-with-independent-ownership-check']
       : ['verify', 'work', 'cleanup-with-independent-ownership-check']);
   }
+});
+
+test('MongoDB cleanup requires both exact named database mounts, including configdb', () => {
+  const project = `vip-reliability-${'a'.repeat(32)}`;
+  const volume = (name, Destination) => ({ Name: `${project}_${name}`, Destination, Type: 'volume', RW: true });
+  const container = { Config: { Labels: { 'com.docker.compose.service': 'mongodb' } },
+    Mounts: [volume('mongodb-data', '/data/db'), volume('mongodb-config-data', '/data/configdb')] };
+  assert.doesNotThrow(() => assertOwnedDataMounts(container, project));
+  for (const mount of [{ ...container.Mounts[1], Name: 'unowned-anonymous' },
+    { ...container.Mounts[1], Name: 'vip-demo_mongodb-data' },
+    { ...container.Mounts[1], Name: `${project}_images` },
+    { ...container.Mounts[1], Type: 'bind' }, { ...container.Mounts[1], RW: false }]) {
+    assert.throws(() => assertOwnedDataMounts({ ...container, Mounts: [container.Mounts[0], mount] }, project));
+  }
+  assert.throws(() => assertOwnedDataMounts({ ...container, Mounts: [container.Mounts[0]] }, project));
+});
+
+test('disposable mount verification rejects extra volumes and preserves worker read-only storage', () => {
+  const project = `vip-reliability-${'b'.repeat(32)}`;
+  const mount = { Name: `${project}_images`, Destination: '/data/images', Type: 'volume', RW: false };
+  const worker = { Config: { Labels: { 'com.docker.compose.service': 'worker' } }, Mounts: [mount] };
+  assert.doesNotThrow(() => assertOwnedDataMounts(worker, project));
+  assert.throws(() => assertOwnedDataMounts({ ...worker, Mounts: [{ ...mount, RW: true }] }, project));
+  assert.throws(() => assertOwnedDataMounts({ ...worker, Mounts: [mount, { ...mount, Destination: '/extra' }] }, project));
+  assert.throws(() => assertOwnedDataMounts(worker, 'vip-demo'));
+  assert.doesNotThrow(() => assertOwnedDataMounts({ Config: { Labels: { 'com.docker.compose.service': 'web' } }, Mounts: [] }, project));
 });
 test('worker timing extraction counts selected attempts, never unrelated logs as throughput', () => {
   const lines = [{ inspectionId: 'a', to: 'queued', attemptDurationMs: 5, providerDurationMs: 1 },

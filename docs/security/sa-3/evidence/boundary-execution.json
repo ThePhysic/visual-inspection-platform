@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "command": "node docs/security/sa-3/repro/http.mjs",
+      "code": 0,
+      "durationMs": 12561
+    },
+    {
+      "command": "node docs/security/sa-3/repro/browser.mjs",
+      "code": 0,
+      "durationMs": 17419
+    },
+    {
+      "command": "node docs/security/sa-3/repro/workflow.mjs",
+      "code": 0,
+      "durationMs": 5131
+    }
+  ],
+  "privateWorkingDirectory": ".tools/sa3/bd25103e959f4940837c06a51705d3f2"
+}

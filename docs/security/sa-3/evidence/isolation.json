@@ -1,0 +1,87 @@
+{
+  "sourceCommit": "b5de38321f2a12b5334b176576ffbcc5ff29eef2",
+  "project": "vip-reliability-9843eb8a1e864c43880bb2668613484b",
+  "owner": "9843eb8a1e864c43880bb2668613484b",
+  "environment": {
+    "MONGODB_TEST_URI": "mongodb://127.0.0.1:54872",
+    "REDIS_TEST_URL": "redis://127.0.0.1:54873",
+    "CONTAINER_BASE_URL": "http://127.0.0.1:54871"
+  },
+  "configSha256": "c67b0541d1f9fc96fe1c191bd08a6554fb3454035c0806244d370693259163ef",
+  "verificationPoint": "All containers created but services not yet started; four named labeled volumes and network checked before tests",
+  "mounts": [
+    {
+      "service": "worker",
+      "mounts": [
+        {
+          "destination": "/data/images",
+          "name": "vip-reliability-9843eb8a1e864c43880bb2668613484b_images",
+          "writable": false
+        }
+      ]
+    },
+    {
+      "service": "web",
+      "mounts": []
+    },
+    {
+      "service": "api",
+      "mounts": [
+        {
+          "destination": "/data/images",
+          "name": "vip-reliability-9843eb8a1e864c43880bb2668613484b_images",
+          "writable": true
+        }
+      ]
+    },
+    {
+      "service": "redis",
+      "mounts": [
+        {
+          "destination": "/data",
+          "name": "vip-reliability-9843eb8a1e864c43880bb2668613484b_redis-data",
+          "writable": true
+        }
+      ]
+    },
+    {
+      "service": "mongodb",
+      "mounts": [
+        {
+          "destination": "/data/configdb",
+          "name": "vip-reliability-9843eb8a1e864c43880bb2668613484b_mongodb-config-data",
+          "writable": true
+        },
+        {
+          "destination": "/data/db",
+          "name": "vip-reliability-9843eb8a1e864c43880bb2668613484b_mongodb-data",
+          "writable": true
+        }
+      ]
+    }
+  ],
+  "volumes": [
+    "vip-reliability-9843eb8a1e864c43880bb2668613484b_images",
+    "vip-reliability-9843eb8a1e864c43880bb2668613484b_mongodb-data",
+    "vip-reliability-9843eb8a1e864c43880bb2668613484b_mongodb-config-data",
+    "vip-reliability-9843eb8a1e864c43880bb2668613484b_redis-data"
+  ],
+  "retainedDemoVolumes": [
+    "vip-demo_images",
+    "vip-demo_mongodb-data",
+    "vip-demo_redis-data"
+  ],
+  "unownedVolumeExcluded": "8f1d43eca2fa087394e62eeda1f2787db8cace965afb0ec44018bd75613d7b58",
+  "allowedDestinations": "Owned bridge services; assigned loopback web/MongoDB/Redis ports; free native E2E ports 3003/4174; ephemeral loopback browser origin. Synthetic public document fulfilled locally only.",
+  "limits": {
+    "customRps": 2,
+    "customRequestsPerCase": 50,
+    "uploadStreams": 3,
+    "deterministicExistingIdempotencyRace": 8,
+    "artifactImageBytes": "<1 GiB",
+    "archiveBytes": "<1100 MiB",
+    "catalogExportBytes": "<1 MiB per file, <16 MiB total",
+    "noExhaustion": true
+  },
+  "cleanup": "Only generated project after exact mount/name/owner checks. Four owned data volumes survive ordinary down/up, then are removed at final down --volumes. No prune or unowned volume operation."
+}

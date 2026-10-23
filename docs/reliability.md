@@ -56,10 +56,17 @@ pnpm test:reliability --native --browser
 The harness creates a new `vip-reliability-<32 hex characters>` project; it never
 accepts a user project name. Before creation it checks for collisions. Its
 generated override is recorded under Git-ignored `.tools/`. All five containers,
-three volumes, and the network receive a unique ownership label. API/worker use
+four test volumes, and the network receive a unique ownership label. API/worker use
 a private `vip_reliability_<token>` database, a dedicated Redis instance and
 image volume. Temporary loopback-only ports support the optional native tests;
 those tests additionally use random databases, queue names, and private storage.
+
+SA-3 explicitly names and labels the test MongoDB `/data/configdb` volume in
+addition to the three ordinary application volumes. Exact per-service mount
+names/types/read-only modes are checked before disruption and cleanup, preventing
+an anonymous configdb volume from being orphaned by the down/up check. This is a
+disposable-harness override; the retained application Compose configuration is
+unchanged. See [final audit results and limits](security/sa-3/README.md).
 
 Before every stop/restart/down and final volume removal, the harness verifies
 Compose project and ownership labels, allowed service names, and expected data

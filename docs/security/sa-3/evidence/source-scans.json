@@ -1,0 +1,868 @@
+{
+  "snapshotFiles": [
+    {
+      "path": ".dockerignore",
+      "bytes": 206,
+      "sha256": "f753e3c3272526f30645ff52525a71bae95e9fe9a333ddaecf8051030a83504d"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 4013,
+      "sha256": "340d211492dcd3c00a624fbcfb77d8b9dd221f830a591286d504c89c0cf2e583"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 183,
+      "sha256": "390cde0988225daab091e9b4f537f36908dbd006beb8b7cfd61b8696f1057f47"
+    },
+    {
+      "path": ".node-version",
+      "bytes": 8,
+      "sha256": "a1c56e968c358e10872d64220b3ae759ffe7feaffc4da95fae425dbcca43fe44"
+    },
+    {
+      "path": ".npmrc",
+      "bytes": 35,
+      "sha256": "3b88d1057add6f92ec23dc22dd017e312ded13a042deb0ba6f08bad85d936456"
+    },
+    {
+      "path": "apps/api/package.json",
+      "bytes": 905,
+      "sha256": "5cbbbe39c241dcc127aa1b58ae18bf9449fdd6060594d98ee7f06273e9e37fd7"
+    },
+    {
+      "path": "apps/api/src/admission.ts",
+      "bytes": 2225,
+      "sha256": "8eecd230e2b45778436a5bb802ea282a7dd9db772d526ab7d38390abb4e6227e"
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "bytes": 4854,
+      "sha256": "9a77460fd9d08f844337760407d33d1a39384da2ae9f45b2c5b0979959dca082"
+    },
+    {
+      "path": "apps/api/src/assets.ts",
+      "bytes": 8063,
+      "sha256": "b42bedbcfb69c6b8bbe7076479895ddf3c910b4ad668115ae5455b2658f1c5bf"
+    },
+    {
+      "path": "apps/api/src/config.ts",
+      "bytes": 903,
+      "sha256": "c5b07bb0ed96aae7e329fbdbe1a5fa9ebfb795d8d78f1de74d2ae6839c749e6e"
+    },
+    {
+      "path": "apps/api/src/database.ts",
+      "bytes": 82,
+      "sha256": "b5916143c1dfd7374ede1f2d77b5261c3cff658d7a18928525366492a8e3c1e5"
+    },
+    {
+      "path": "apps/api/src/errors.ts",
+      "bytes": 82,
+      "sha256": "b5916143c1dfd7374ede1f2d77b5261c3cff658d7a18928525366492a8e3c1e5"
+    },
+    {
+      "path": "apps/api/src/images.ts",
+      "bytes": 5225,
+      "sha256": "9b5f1ddc2bac6eb9d4778eeadd0d2105f3c3302f707f17c9e946f66c4f08d80d"
+    },
+    {
+      "path": "apps/api/src/inspections.ts",
+      "bytes": 5277,
+      "sha256": "1e5c334b899e0daa2c68f15b0c21a39b315f1d324b0d66879953093d34a6a504"
+    },
+    {
+      "path": "apps/api/src/server.ts",
+      "bytes": 2847,
+      "sha256": "4e2816621f22c9b59c03a65f998791524ad99adc88d7241dbd494d7ec32a2a60"
+    },
+    {
+      "path": "apps/api/src/storage.ts",
+      "bytes": 82,
+      "sha256": "b5916143c1dfd7374ede1f2d77b5261c3cff658d7a18928525366492a8e3c1e5"
+    },
+    {
+      "path": "apps/api/test/admission.test.ts",
+      "bytes": 3752,
+      "sha256": "73697a0eec0291e1b4f63d338af235b3b579fb65676dc72f5c06bf72cd62e0f5"
+    },
+    {
+      "path": "apps/api/test/app.test.ts",
+      "bytes": 2572,
+      "sha256": "fd61eb765a9e33a17a9f0d43d92747e25e03f10017171d6f56795595d35a4e56"
+    },
+    {
+      "path": "apps/api/test/assets.integration.test.ts",
+      "bytes": 23303,
+      "sha256": "41de33d256d68559c071e04a9a048fb6672eada483077271e3bdc1485b1ed8e5"
+    },
+    {
+      "path": "apps/api/test/config.test.ts",
+      "bytes": 2151,
+      "sha256": "1a86cb283f2fa2924497271247f71ebd6b1be8766e911d09fd00eca3ae9f315a"
+    },
+    {
+      "path": "apps/api/test/helpers/interrupted-worker.mjs",
+      "bytes": 2115,
+      "sha256": "f2b63910805e203e7c2fb5c41c0644a8a7117414c2a038b9e1079c6649a0993c"
+    },
+    {
+      "path": "apps/api/test/history.integration.test.ts",
+      "bytes": 12254,
+      "sha256": "acf83e7cd75b9c56dadef50d3f4ba3befe527648c273251158a632e56de49e11"
+    },
+    {
+      "path": "apps/api/test/inspections.integration.test.ts",
+      "bytes": 47405,
+      "sha256": "254e065fd231f4fe0b01e43ea09bd01c2c8ade522a24034a6089a98bab366707"
+    },
+    {
+      "path": "apps/api/test/metrics.test.ts",
+      "bytes": 2271,
+      "sha256": "87f88910cce563af1fdaaefa6e9c89608f85c326369a519d0a976bb1970dd76c"
+    },
+    {
+      "path": "apps/api/test/reviews.integration.test.ts",
+      "bytes": 13756,
+      "sha256": "d59ffa4844017392ba0db937973464b24e7d39cda58dd9c1664e12da48eaeecb"
+    },
+    {
+      "path": "apps/api/test/storage.test.ts",
+      "bytes": 4109,
+      "sha256": "e34f72f19766a61a733c22d8d7c936cf30bf8740dd92336cd6717f953c0cf07c"
+    },
+    {
+      "path": "apps/api/tsconfig.build.json",
+      "bytes": 182,
+      "sha256": "5a3e4bc1e9d313feb091f4fd143a3d9fb28f87769f5278e14e15476df29836c0"
+    },
+    {
+      "path": "apps/api/tsconfig.json",
+      "bytes": 246,
+      "sha256": "00e10577b517e9d6b0d6c8e7470c876e04517a5ae98cdac68651e7fd936a0bea"
+    },
+    {
+      "path": "apps/api/vitest.config.ts",
+      "bytes": 187,
+      "sha256": "44e5d8c3a8efab7c637bc12b0eebce85423e946e3061dd5d9489724b1feb993a"
+    },
+    {
+      "path": "apps/api/vitest.integration.config.ts",
+      "bytes": 399,
+      "sha256": "cb657a194f022b7a568fa6e196c4fa4d1f9358f858c6d75c12fe0377d37503f9"
+    },
+    {
+      "path": "apps/web/container-test/portfolio.spec.ts",
+      "bytes": 7952,
+      "sha256": "9b6c786b4929cc126ce453623c6d2dc212308f434235eebbd77a25e2a835a458"
+    },
+    {
+      "path": "apps/web/container-test/workflow.spec.ts",
+      "bytes": 2929,
+      "sha256": "c79d87b5b9d2b9f7e1b24e5cb288219d6f801a93e0ab360914e3bc9981d70ef4"
+    },
+    {
+      "path": "apps/web/e2e/annotations.spec.ts",
+      "bytes": 16237,
+      "sha256": "470b129b752b898e72b0213c77f427bf764dd255a9a92548ab36f3fcc07dac35"
+    },
+    {
+      "path": "apps/web/e2e/cleanup.ts",
+      "bytes": 1602,
+      "sha256": "18e157170ac7f6d9d535de6a2e42fe25ead5adf73c206505b6ded3d4911c6525"
+    },
+    {
+      "path": "apps/web/e2e/history.spec.ts",
+      "bytes": 6782,
+      "sha256": "9be4411d9cf58cb9d7e4fb47543587960fa98d08455aa6d1c9a5e06020dee468"
+    },
+    {
+      "path": "apps/web/e2e/inspection.spec.ts",
+      "bytes": 6428,
+      "sha256": "420115f0db8da4fc1ba34ef1af4543c104407d3655a91036fae8cf82c9cccebb"
+    },
+    {
+      "path": "apps/web/e2e/reviews.spec.ts",
+      "bytes": 7678,
+      "sha256": "27a484a874636740fcab5ffb8a3d0cb8832c63e8f4fe204f623f50e7eead7318"
+    },
+    {
+      "path": "apps/web/e2e/settings.ts",
+      "bytes": 1190,
+      "sha256": "6671a6efe68c380360cf8a5e5f618e8553d9a655e7cefd17f7717976b78b1859"
+    },
+    {
+      "path": "apps/web/index.html",
+      "bytes": 438,
+      "sha256": "d6baa3b15f96c5499df595ca02fb6f0cfb3f97ad24584efea1663832b11aa90d"
+    },
+    {
+      "path": "apps/web/package.json",
+      "bytes": 1027,
+      "sha256": "cdafd4ff980bcd11feb7ceea7e576490340778da6dad4d59aab6a0bbe5bd81b8"
+    },
+    {
+      "path": "apps/web/playwright.config.ts",
+      "bytes": 1373,
+      "sha256": "a79b10aa4ffe149ec744b29a03ad3d4be2e79327106b3be8ecb334a810560e4b"
+    },
+    {
+      "path": "apps/web/playwright.container.config.ts",
+      "bytes": 846,
+      "sha256": "9f0fbe8e45accdd2923dd025265b98e90347e8a6bdf391eb8dbbf17a07ba1e47"
+    },
+    {
+      "path": "apps/web/src/App.test.tsx",
+      "bytes": 2967,
+      "sha256": "e18410b2ceae2449353166518d84030eb94e36b30f9f634bd1beccf1981a6e00"
+    },
+    {
+      "path": "apps/web/src/App.tsx",
+      "bytes": 1271,
+      "sha256": "89b2cc603053d97d6664520b0a48de134e5460c494d5efd58d6781702dfbc80b"
+    },
+    {
+      "path": "apps/web/src/DetectionViewer.test.tsx",
+      "bytes": 3810,
+      "sha256": "c87e68a31dfb95d28aae04daba4ba53a2b464486e40c47dabb82d78c23b318cf"
+    },
+    {
+      "path": "apps/web/src/DetectionViewer.tsx",
+      "bytes": 3483,
+      "sha256": "ab1a32bc879b69d17594c5d2d5ae42681f5b4071f634134e01b8f526e9dd8b2f"
+    },
+    {
+      "path": "apps/web/src/HealthPage.tsx",
+      "bytes": 1550,
+      "sha256": "86e44476da745f5855593ec06d1bf86b59eab14722380df3e59e961cde047dff"
+    },
+    {
+      "path": "apps/web/src/HistoryPage.test.tsx",
+      "bytes": 9054,
+      "sha256": "33be1be5777e4c3fe4399d0364492abe858dd77be5b2141f799553249628df99"
+    },
+    {
+      "path": "apps/web/src/HistoryPage.tsx",
+      "bytes": 6247,
+      "sha256": "e76fe63ca7172eb7af203a38dead0dbfbbc988d8583803aecb7aca99e367e3a5"
+    },
+    {
+      "path": "apps/web/src/InspectionPage.test.tsx",
+      "bytes": 7668,
+      "sha256": "aa6d741b2c9408fcde566129ee1993494cf7c343bb33b4a17c54a5f72a1a2972"
+    },
+    {
+      "path": "apps/web/src/InspectionPage.tsx",
+      "bytes": 5743,
+      "sha256": "a5e50018c1eda2c27fd77add8526cd8858e689cce4aca6f8c651df71b43ceeca"
+    },
+    {
+      "path": "apps/web/src/RetryInspection.test.tsx",
+      "bytes": 4691,
+      "sha256": "e40ebdc555d20c2c31c07000c7e8a1120a1ec537dc1d9b785793ce592cfe25ba"
+    },
+    {
+      "path": "apps/web/src/RetryInspection.tsx",
+      "bytes": 2646,
+      "sha256": "6e41ed1dbad3b9eb55ef42e0cca1c324a4b3fe789f72715e6004efd3d0aea522"
+    },
+    {
+      "path": "apps/web/src/UploadPage.test.tsx",
+      "bytes": 11551,
+      "sha256": "cb9ef807c88f6f715b880a47cf97a8394a47c8bcf663f0b9940cb4bf365eb6eb"
+    },
+    {
+      "path": "apps/web/src/UploadPage.tsx",
+      "bytes": 6280,
+      "sha256": "3c1ea8944e7d462020b71f2fee23fd0bc7ee6e2e6116149d987a2dc2ebab8a8a"
+    },
+    {
+      "path": "apps/web/src/annotations/AnnotationCanvas.test.tsx",
+      "bytes": 2443,
+      "sha256": "bc1624729dfef7e1b635dcbe6e02d987ea82d01e8fdd1ad67c16f2f82b05d3da"
+    },
+    {
+      "path": "apps/web/src/annotations/AnnotationCanvas.tsx",
+      "bytes": 9095,
+      "sha256": "454209914bff775f3ce50c923d76aeb29e9a405847113e09d9ae1f3a337c55b1"
+    },
+    {
+      "path": "apps/web/src/annotations/AnnotationEditor.test.tsx",
+      "bytes": 9831,
+      "sha256": "62efbdf84109ac79c71150789489b1fcff20fcb435897285022e0fce196aba08"
+    },
+    {
+      "path": "apps/web/src/annotations/AnnotationEditor.tsx",
+      "bytes": 8452,
+      "sha256": "b92b48da730bd860adfbff2aa5e2a6fd8c709bef671c0d817dc7c110e0557b18"
+    },
+    {
+      "path": "apps/web/src/annotations/DraftNavigationGuard.tsx",
+      "bytes": 642,
+      "sha256": "7c54fb1876e549bd06425117bf883528f8abcb8021b408ca77366e78b71a0e81"
+    },
+    {
+      "path": "apps/web/src/annotations/ReviewPersistence.test.tsx",
+      "bytes": 11280,
+      "sha256": "e102d79fa483844b00ab86f0342d1edb271bbb0ff059b5f8ccfb356c91e10f1e"
+    },
+    {
+      "path": "apps/web/src/annotations/ReviewWorkspace.tsx",
+      "bytes": 7229,
+      "sha256": "a9d08bf27549ddfe5f81360b9c93ff31bbe3ee980b21f877cfa8bbacf082bf4e"
+    },
+    {
+      "path": "apps/web/src/annotations/draft.test.ts",
+      "bytes": 6817,
+      "sha256": "0bc19dbf9aec12ece59dce589eeff4ec7d5a9162be51c58b5bbdab6ba05f88f2"
+    },
+    {
+      "path": "apps/web/src/annotations/draft.ts",
+      "bytes": 7589,
+      "sha256": "4c73b24135f79240f77d2839c8a8c0618894d573502c42d290f6bfe4f6a2440f"
+    },
+    {
+      "path": "apps/web/src/annotations/draftNavigationContext.ts",
+      "bytes": 144,
+      "sha256": "d143edbc8c16f42af955582aea9d1f845a24084ab4b964dfeb67fff6162593ed"
+    },
+    {
+      "path": "apps/web/src/annotations/geometry.test.ts",
+      "bytes": 7244,
+      "sha256": "87283b94d5129df2190d23307d8723faee3475f49d110eebda4179f1e5d200e3"
+    },
+    {
+      "path": "apps/web/src/annotations/geometry.ts",
+      "bytes": 5429,
+      "sha256": "e8d933b42bc27a6f9882631a9713e6b86efe1b28cd4666abab3a1234ce10b50c"
+    },
+    {
+      "path": "apps/web/src/annotations/useDraftWarning.ts",
+      "bytes": 628,
+      "sha256": "7ad82803709cd450b50b874a4dc1d8fe730ad6af4d11a91164f9b881746a91ca"
+    },
+    {
+      "path": "apps/web/src/api.test.ts",
+      "bytes": 1736,
+      "sha256": "e3452dfe9f05b9b823f4e48b82692bbe0b68d2114cf1d86ac2aad2221f1ad973"
+    },
+    {
+      "path": "apps/web/src/api.ts",
+      "bytes": 7661,
+      "sha256": "1f4b921031f1612c6df71ccd7b45c7030bc03fbeab2df07d68e21518a4fecf48"
+    },
+    {
+      "path": "apps/web/src/main.tsx",
+      "bytes": 685,
+      "sha256": "52ec172a1a036e12362b6b617255b8bf78f838c4b945839f16a02511aba25690"
+    },
+    {
+      "path": "apps/web/src/presentation.ts",
+      "bytes": 470,
+      "sha256": "442ee4d569aaeeba7903829e2181b193d1c20f3c513346a5363f2c89daa56778"
+    },
+    {
+      "path": "apps/web/src/queries.ts",
+      "bytes": 954,
+      "sha256": "728d74b5ec1823dc4e6aad07df5dce8a7e57b03bfdad593a1b9424b6e09d30ea"
+    },
+    {
+      "path": "apps/web/src/styles.css",
+      "bytes": 6649,
+      "sha256": "a8a56d5c2af5b0ba2e172494c569fa0c57a6636436cf1bf10919784a586945d9"
+    },
+    {
+      "path": "apps/web/src/test/fixtures.ts",
+      "bytes": 2070,
+      "sha256": "7e5786e306be1a91e7f9edb6b766dc307d0214dcf74485a06e66cc18d7b318b5"
+    },
+    {
+      "path": "apps/web/src/test/render.tsx",
+      "bytes": 899,
+      "sha256": "63a06734e8369148575d6d3bf0efd6946757d311f4512c6ac76b8a6c79e9ef86"
+    },
+    {
+      "path": "apps/web/src/test/setup.ts",
+      "bytes": 163,
+      "sha256": "a21c1e9c7d211362868c0233351ac9263ffcab5d32868530aca0d40d9103edb9"
+    },
+    {
+      "path": "apps/web/tsconfig.json",
+      "bytes": 237,
+      "sha256": "fc61fe8b1ea812c9c92a4b68a8d0a0f9ddf3e83332bb2b4668ca0b644e8736b2"
+    },
+    {
+      "path": "apps/web/tsconfig.node.json",
+      "bytes": 276,
+      "sha256": "eb871eb0d7f4916661f645ead0c46daf132440eee3d21fd7998cd96eb1094f66"
+    },
+    {
+      "path": "apps/web/vite.config.ts",
+      "bytes": 925,
+      "sha256": "d8eed7d36f10fdb7cab602d529de553a478782fe6665e9ca85540c542d19d16e"
+    },
+    {
+      "path": "apps/worker/package.json",
+      "bytes": 567,
+      "sha256": "c6a5c1ceace016f0760bde6965bd3ff6705000138efb6e4a890a45ba4cafb41a"
+    },
+    {
+      "path": "apps/worker/src/health.ts",
+      "bytes": 1587,
+      "sha256": "8fd0a46be29309f904d56cbf45944982b8e602a3d4df70f3c0dd3553565ddd34"
+    },
+    {
+      "path": "apps/worker/src/main.ts",
+      "bytes": 3009,
+      "sha256": "c0e6c98aa5cb2678c9550e3fd315bfe452097f9404914364e975ff0ddbf4a422"
+    },
+    {
+      "path": "apps/worker/test/health.test.ts",
+      "bytes": 2055,
+      "sha256": "d9b4aabc641b8184217d56e2bdc2f2bb36f780c78acc11b7ea72990e80912a45"
+    },
+    {
+      "path": "apps/worker/tsconfig.build.json",
+      "bytes": 145,
+      "sha256": "40bc6d97775eda085afb4cf2f8e08cdcfab78b07d060f71f715f48a7bb5c6c40"
+    },
+    {
+      "path": "apps/worker/tsconfig.json",
+      "bytes": 207,
+      "sha256": "b45cea6b69c62eb20dd3fd696e8dc3cf1f13afc724b6e92fa0ca97ea92ee4f23"
+    },
+    {
+      "path": "compose.ci.yaml",
+      "bytes": 322,
+      "sha256": "424e1d478a2cc4b4cd0f8b4a244f1a94937603e5191c82e61b4896799b3b1545"
+    },
+    {
+      "path": "compose.dev.yaml",
+      "bytes": 226,
+      "sha256": "4d479671f8c1cd5e30f39724fd9fdd8c95b315fc3bf9a7b4e8114e6b6bef0e58"
+    },
+    {
+      "path": "compose.yaml",
+      "bytes": 2932,
+      "sha256": "616d2f426e6ac178db889b8941b70917019df4c04b93c8c06ae9d9b3c8c243f2"
+    },
+    {
+      "path": "eslint.config.js",
+      "bytes": 902,
+      "sha256": "80f331a61c34bb8b75d01ec07fbea5065fbe3bb2b9fd5c94d73addff86aeeac5"
+    },
+    {
+      "path": "infra/benchmark/core.mjs",
+      "bytes": 6394,
+      "sha256": "8f2712e710b84dc36331e8e54f9fc2b95864cab2b98b96229bcb1c9a3a895b9b"
+    },
+    {
+      "path": "infra/benchmark/core.test.mjs",
+      "bytes": 7705,
+      "sha256": "04e199463069de2a3c4511aa813fa89eba2fca17258f36a78963853580a63cf4"
+    },
+    {
+      "path": "infra/benchmark/run.mjs",
+      "bytes": 5628,
+      "sha256": "381536ec2b6659f8252ee085b9716e505b8c9a4790d3948591c3957237adaad6"
+    },
+    {
+      "path": "infra/benchmark/workload.mjs",
+      "bytes": 8651,
+      "sha256": "351b2f31bff00a6f7544c9522a24d664780991c4575f8a358c8e128f4c749cfc"
+    },
+    {
+      "path": "infra/docker/Dockerfile",
+      "bytes": 3387,
+      "sha256": "7705be6283beb23dcc396140f7f4f539fa5248e8b1f446e298d3187760918131"
+    },
+    {
+      "path": "infra/docker/check-worker-health.mjs",
+      "bytes": 782,
+      "sha256": "067f21be9350c4550d9d3d57f6df2a358f6cff29296504ac86eff84b1ce5d391"
+    },
+    {
+      "path": "infra/docker/check-worker.mjs",
+      "bytes": 1648,
+      "sha256": "25d94e6a8ca65aefa5a56ba09a1ee2924c47653534322dc6809a2986d6333e2d"
+    },
+    {
+      "path": "infra/docker/disposable.mjs",
+      "bytes": 9755,
+      "sha256": "f90f655cefc2a907602b545c3897eceecd17502a3824e502186ee2b8056f7d9a"
+    },
+    {
+      "path": "infra/docker/nginx.conf",
+      "bytes": 2402,
+      "sha256": "663a3a149c7e421bb504d895d48b2deb763c8a87140de536dd247358f9469425"
+    },
+    {
+      "path": "infra/docker/persistence-window.mjs",
+      "bytes": 2486,
+      "sha256": "56e3181cfab8cdcf4dbd561270428bb975cca5f186b68009a599728bd36c6d0d"
+    },
+    {
+      "path": "infra/docker/reliability.mjs",
+      "bytes": 4622,
+      "sha256": "2d6184d18360f87297231c6e9121f644fc7d40a9dc09d11423452917a7991e91"
+    },
+    {
+      "path": "infra/docker/smoke.mjs",
+      "bytes": 9402,
+      "sha256": "a7afb7b189b0335d1bdcb16dfe072e9c058f7d5db375365b212bfed5c755cb49"
+    },
+    {
+      "path": "infra/docker/storage-maintenance.mjs",
+      "bytes": 3275,
+      "sha256": "fa239c208427939d2403d013059802f358f62efd376936f072a2d2343f45de5b"
+    },
+    {
+      "path": "infra/docker/test-native.mjs",
+      "bytes": 960,
+      "sha256": "22391f11436c13adc658d8a2fe37f6cdcce0b97abc84e03d4b45cf1f655c005a"
+    },
+    {
+      "path": "infra/docker/test-reliability.mjs",
+      "bytes": 6870,
+      "sha256": "b71dbc29ff277ef0748d88f31f2d63503c0773727d37fdb107afcf29cb8be290"
+    },
+    {
+      "path": "infra/portfolio/capture.mjs",
+      "bytes": 2114,
+      "sha256": "ac86a5c956f7d6d12e376a2e0bc301a0d22507b091b5c1f44e2b81be672389b2"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1614,
+      "sha256": "ebbcec1bb9f458f3e2910a41b8791bd1e13c44f4c094c3075e4c6237a6cfdca7"
+    },
+    {
+      "path": "packages/backend/package.json",
+      "bytes": 624,
+      "sha256": "625517f914629f81d61ddefdd373e6ee3759c64cb3fb05bd681ffd80b3c9f565"
+    },
+    {
+      "path": "packages/backend/src/acceptance.ts",
+      "bytes": 5425,
+      "sha256": "2d4922990d61c0c5a2b376575eed30df439eaa58c1b1259b72987cc7ce9e72bc"
+    },
+    {
+      "path": "packages/backend/src/config.ts",
+      "bytes": 1033,
+      "sha256": "31beedc68cec3837728b78f836f66555bd8e6d508134353c3a28bca14945f238"
+    },
+    {
+      "path": "packages/backend/src/database.ts",
+      "bytes": 1964,
+      "sha256": "66bb45ffc55b37b984b4e5e2a108757d93ee34511b7a7fbe5a289480c8be0796"
+    },
+    {
+      "path": "packages/backend/src/errors.ts",
+      "bytes": 538,
+      "sha256": "ba369b7ae4fc93903dd0770a3f007f39e22ffd116c77f4bd614696473d3bb366"
+    },
+    {
+      "path": "packages/backend/src/execution.ts",
+      "bytes": 12874,
+      "sha256": "de6c3364a6c97dde59b199bca4d168c37bf7479e0c9cd70e71feccd6d169ad3d"
+    },
+    {
+      "path": "packages/backend/src/history.ts",
+      "bytes": 4341,
+      "sha256": "9d20a45774045bd9d87689f3d8d16af1a65aaf1e49866692bd9ba59a9d7c5ced"
+    },
+    {
+      "path": "packages/backend/src/index.ts",
+      "bytes": 485,
+      "sha256": "17b5f87acff9351b1874b957b21841874491ba087eb3258062bcb5a4088b397e"
+    },
+    {
+      "path": "packages/backend/src/inspection-model.ts",
+      "bytes": 3199,
+      "sha256": "f348389b7e1441145c33a1191ee95d61206a2c5d175048cbcf1a53e672acdbe8"
+    },
+    {
+      "path": "packages/backend/src/metrics.ts",
+      "bytes": 5319,
+      "sha256": "d8157dabb57813705a594b9eab409420c04fd6c136ae3f5631e712c56b14b20e"
+    },
+    {
+      "path": "packages/backend/src/operations.ts",
+      "bytes": 3106,
+      "sha256": "0bd66f507c636375b377c7d9654fecca39796b6f049de0b383707388dc585aad"
+    },
+    {
+      "path": "packages/backend/src/provider.ts",
+      "bytes": 3596,
+      "sha256": "50d37ed89930d037eb1256783486fac2260882a038db193e5c23ad7d0eb215b1"
+    },
+    {
+      "path": "packages/backend/src/queue.ts",
+      "bytes": 3841,
+      "sha256": "40daec6a4a444cfc6a8ae93c61f618fd2e7e13e0c370f86482b4d683ec21fa7b"
+    },
+    {
+      "path": "packages/backend/src/reconciliation.ts",
+      "bytes": 7351,
+      "sha256": "2014fa7dfced1764ce2ffe0c313ab934fb887a9577a64fa0bc7ebde2a98dab3b"
+    },
+    {
+      "path": "packages/backend/src/reviews.ts",
+      "bytes": 5452,
+      "sha256": "b3ca4aff134b0810335b0053366a4fbbb3eac3fcf907c959be3cd79ddd3a46da"
+    },
+    {
+      "path": "packages/backend/src/storage-maintenance.ts",
+      "bytes": 5451,
+      "sha256": "62aada0d44d71997236beb38e4009daf8a93f35c2e57a45626c994b2f8dd08dc"
+    },
+    {
+      "path": "packages/backend/src/storage.ts",
+      "bytes": 4325,
+      "sha256": "f930cf29c365f6863d07e7672b3631feeb394782f28c05b805d75a3e74a52a6f"
+    },
+    {
+      "path": "packages/backend/test/metrics.test.ts",
+      "bytes": 5090,
+      "sha256": "599ea4e9ff94d0b25321dd2b587d9656dec20e41bc0589223170c4a25d75161b"
+    },
+    {
+      "path": "packages/backend/test/provider.test.ts",
+      "bytes": 4381,
+      "sha256": "51cf9976711faa1611d87013149aacea1fee02f3bd6fcbec4341bd4b31f8b31e"
+    },
+    {
+      "path": "packages/backend/test/reconciliation.test.ts",
+      "bytes": 7706,
+      "sha256": "27d1491b9369abbed496d6ab6b9173bba550c4d33a17b45f1f4fd4ff29aa1063"
+    },
+    {
+      "path": "packages/backend/test/storage-maintenance.test.ts",
+      "bytes": 10272,
+      "sha256": "36dc2e8063633c1371272240c2c70d81bc8cc6d4998926206f6182d0fb8508ab"
+    },
+    {
+      "path": "packages/backend/tsconfig.build.json",
+      "bytes": 189,
+      "sha256": "a5c5905e1b190c1db8bb5f1ff090ce408c2162defd185141192c3444e36fd107"
+    },
+    {
+      "path": "packages/backend/tsconfig.json",
+      "bytes": 207,
+      "sha256": "63337d01463d6127ff2cb8a7a633b5620f8e4fb0423f9bc070781d0bda860a6e"
+    },
+    {
+      "path": "packages/contracts/package.json",
+      "bytes": 450,
+      "sha256": "cdca9f6aeafef96db62556249c2e0eaca7196e4050a69631f453b41d9fd5f77a"
+    },
+    {
+      "path": "packages/contracts/src/annotations.ts",
+      "bytes": 510,
+      "sha256": "08d550fe0d1413a934db380c0b9ec736f63724e997f3b2f558c5b8f2c651efa7"
+    },
+    {
+      "path": "packages/contracts/src/history.ts",
+      "bytes": 2898,
+      "sha256": "34d6bd6bb11effd1bc5134f90beb4f616e7d79c5a65fd6866cc01e35c54750fe"
+    },
+    {
+      "path": "packages/contracts/src/index.ts",
+      "bytes": 2570,
+      "sha256": "575d9e6b2e100a10aabc2aa767306d983929f6f1ed82c8c72597860fe8e1e173"
+    },
+    {
+      "path": "packages/contracts/src/inspections.ts",
+      "bytes": 5422,
+      "sha256": "62e059f76abef837d30c9b3157fe01a9f768cf461d8f0b12ec296b8a7ae387cf"
+    },
+    {
+      "path": "packages/contracts/src/reviews.ts",
+      "bytes": 5281,
+      "sha256": "1744f7e8e01fffdf0bf825d34acc35e7bdd5581782f29043f52c737e7e000cda"
+    },
+    {
+      "path": "packages/contracts/test/health.test.ts",
+      "bytes": 782,
+      "sha256": "7f6d1b715729642c310432ed0203f1d79185762e65dd992c5f8acc525e55218f"
+    },
+    {
+      "path": "packages/contracts/test/history.test.ts",
+      "bytes": 1833,
+      "sha256": "ac74072ae06c7bbd0568392be6e67eed29abac72e2928789f94a1e90578b024f"
+    },
+    {
+      "path": "packages/contracts/test/inspections.test.ts",
+      "bytes": 1977,
+      "sha256": "6d2b9a89bdfcfec2b9d452d9ec68d287931698983a5163f5a42df8a5861b51c5"
+    },
+    {
+      "path": "packages/contracts/test/reviews.test.ts",
+      "bytes": 3778,
+      "sha256": "9359425cdedc9d790ea2eb3acee6348cc47f9f23f34ca04aa9de02dcbd5072bd"
+    },
+    {
+      "path": "packages/contracts/tsconfig.json",
+      "bytes": 278,
+      "sha256": "5c3b73917f53b1f03754c48c1c387822a4678598c23764b005d9b4e364b576ae"
+    },
+    {
+      "path": "packages/contracts/tsconfig.test.json",
+      "bytes": 160,
+      "sha256": "8d0a5b8fa42ddce7f1818c7094d9ad0c968412133a48f580f3a5af50ac3ced06"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "bytes": 130710,
+      "sha256": "97c03ee11273af2d3ab593dfb7b9b5f020654c4a4ce5b103eb92ab04ef5696f5"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "bytes": 130,
+      "sha256": "8c1eff7e9550ade43657ed4333feb7f29021e48126bdf69f498d57dff6b28ef2"
+    },
+    {
+      "path": "tsconfig.base.json",
+      "bytes": 461,
+      "sha256": "69243348e68005d406c256ead7d1f8d9222f4c71d3b9624a9a7367bc781a11e1"
+    }
+  ],
+  "manifestSha256": "541f110da14f0003fd8bfa8a8581a98309b8f4fc123c0ba7e583260548c5c3ff",
+  "engines": {
+    "semgrep": "sha256:93963d9295a366f59e4850127b1550400ee7b388f04fe144e4a1f6325d96e01b",
+    "trivy": "sha256:790fd66d1697395d8693d1acaa1ea702406a20f109b6fc7bac8db623eca6c06c"
+  },
+  "versions": {
+    "semgrep": "1.179.0",
+    "trivy": "0.76.1"
+  },
+  "ruleFile": "../sa-1/repro/semgrep-rules.yaml",
+  "rulesSha256": "d1f78c89e0c5c499dac11113f6827e0e09fe70df0b162aedfea658d90cbd7390",
+  "network": "none",
+  "sourceExecuted": false,
+  "snapshotUnchanged": true,
+  "semgrep": {
+    "code": 0,
+    "errors": [],
+    "scannedPaths": [
+      "/src/apps/api/src/admission.ts",
+      "/src/apps/api/src/app.ts",
+      "/src/apps/api/src/assets.ts",
+      "/src/apps/api/src/config.ts",
+      "/src/apps/api/src/database.ts",
+      "/src/apps/api/src/errors.ts",
+      "/src/apps/api/src/images.ts",
+      "/src/apps/api/src/inspections.ts",
+      "/src/apps/api/src/server.ts",
+      "/src/apps/api/src/storage.ts",
+      "/src/apps/api/vitest.config.ts",
+      "/src/apps/api/vitest.integration.config.ts",
+      "/src/apps/web/container-test/portfolio.spec.ts",
+      "/src/apps/web/container-test/workflow.spec.ts",
+      "/src/apps/web/e2e/annotations.spec.ts",
+      "/src/apps/web/e2e/cleanup.ts",
+      "/src/apps/web/e2e/history.spec.ts",
+      "/src/apps/web/e2e/inspection.spec.ts",
+      "/src/apps/web/e2e/reviews.spec.ts",
+      "/src/apps/web/e2e/settings.ts",
+      "/src/apps/web/playwright.config.ts",
+      "/src/apps/web/playwright.container.config.ts",
+      "/src/apps/web/src/App.test.tsx",
+      "/src/apps/web/src/App.tsx",
+      "/src/apps/web/src/DetectionViewer.test.tsx",
+      "/src/apps/web/src/DetectionViewer.tsx",
+      "/src/apps/web/src/HealthPage.tsx",
+      "/src/apps/web/src/HistoryPage.test.tsx",
+      "/src/apps/web/src/HistoryPage.tsx",
+      "/src/apps/web/src/InspectionPage.test.tsx",
+      "/src/apps/web/src/InspectionPage.tsx",
+      "/src/apps/web/src/RetryInspection.test.tsx",
+      "/src/apps/web/src/RetryInspection.tsx",
+      "/src/apps/web/src/UploadPage.test.tsx",
+      "/src/apps/web/src/UploadPage.tsx",
+      "/src/apps/web/src/annotations/AnnotationCanvas.test.tsx",
+      "/src/apps/web/src/annotations/AnnotationCanvas.tsx",
+      "/src/apps/web/src/annotations/AnnotationEditor.test.tsx",
+      "/src/apps/web/src/annotations/AnnotationEditor.tsx",
+      "/src/apps/web/src/annotations/DraftNavigationGuard.tsx",
+      "/src/apps/web/src/annotations/ReviewPersistence.test.tsx",
+      "/src/apps/web/src/annotations/ReviewWorkspace.tsx",
+      "/src/apps/web/src/annotations/draft.test.ts",
+      "/src/apps/web/src/annotations/draft.ts",
+      "/src/apps/web/src/annotations/draftNavigationContext.ts",
+      "/src/apps/web/src/annotations/geometry.test.ts",
+      "/src/apps/web/src/annotations/geometry.ts",
+      "/src/apps/web/src/annotations/useDraftWarning.ts",
+      "/src/apps/web/src/api.test.ts",
+      "/src/apps/web/src/api.ts",
+      "/src/apps/web/src/main.tsx",
+      "/src/apps/web/src/presentation.ts",
+      "/src/apps/web/src/queries.ts",
+      "/src/apps/web/vite.config.ts",
+      "/src/apps/worker/src/health.ts",
+      "/src/apps/worker/src/main.ts",
+      "/src/eslint.config.js",
+      "/src/infra/benchmark/core.mjs",
+      "/src/infra/benchmark/core.test.mjs",
+      "/src/infra/benchmark/run.mjs",
+      "/src/infra/benchmark/workload.mjs",
+      "/src/infra/docker/check-worker-health.mjs",
+      "/src/infra/docker/check-worker.mjs",
+      "/src/infra/docker/disposable.mjs",
+      "/src/infra/docker/persistence-window.mjs",
+      "/src/infra/docker/reliability.mjs",
+      "/src/infra/docker/smoke.mjs",
+      "/src/infra/docker/storage-maintenance.mjs",
+      "/src/infra/docker/test-native.mjs",
+      "/src/infra/docker/test-reliability.mjs",
+      "/src/infra/portfolio/capture.mjs",
+      "/src/packages/backend/src/acceptance.ts",
+      "/src/packages/backend/src/config.ts",
+      "/src/packages/backend/src/database.ts",
+      "/src/packages/backend/src/errors.ts",
+      "/src/packages/backend/src/execution.ts",
+      "/src/packages/backend/src/history.ts",
+      "/src/packages/backend/src/index.ts",
+      "/src/packages/backend/src/inspection-model.ts",
+      "/src/packages/backend/src/metrics.ts",
+      "/src/packages/backend/src/operations.ts",
+      "/src/packages/backend/src/provider.ts",
+      "/src/packages/backend/src/queue.ts",
+      "/src/packages/backend/src/reconciliation.ts",
+      "/src/packages/backend/src/reviews.ts",
+      "/src/packages/backend/src/storage-maintenance.ts",
+      "/src/packages/backend/src/storage.ts",
+      "/src/packages/contracts/src/annotations.ts",
+      "/src/packages/contracts/src/history.ts",
+      "/src/packages/contracts/src/index.ts",
+      "/src/packages/contracts/src/inspections.ts",
+      "/src/packages/contracts/src/reviews.ts"
+    ],
+    "findings": []
+  },
+  "trivy": {
+    "code": 0,
+    "targets": [
+      {
+        "target": "pnpm-lock.yaml",
+        "type": "pnpm",
+        "secrets": [],
+        "misconfiguration": []
+      },
+      {
+        "target": "infra/docker/Dockerfile",
+        "type": "dockerfile",
+        "secrets": [],
+        "misconfiguration": [
+          {
+            "id": "DS-0026",
+            "title": "No HEALTHCHECK defined",
+            "severity": "LOW",
+            "status": "FAIL"
+          }
+        ]
+      }
+    ]
+  },
+  "exclusions": "Private instructions/config, Git history, docs, fixtures/images, data, dependencies/build outputs. Default Semgrep ignores still apply; rule coverage is narrow, not exhaustive taint analysis.",
+  "dependencyAudit": "No new npm registry request authorized. Preserved SA-2 metadata responses remain historical for unchanged manifest/lockfile; current advisory assurance uses pinned offline image feed and manual review."
+}
