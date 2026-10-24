@@ -50,6 +50,33 @@ are included. There is no hosted public demo.
 - **Verification:** Vitest, React Testing Library, real MongoDB/Redis integration
   tests, Playwright canvas interactions, and disposable-container interruption tests.
 
+
+## Application Security Audit & Hardening
+
+Conducted a separate, evidence-based security assessment of
+the completed platform, covering API boundaries, image uploads,
+worker integrity, dependencies, container configuration, and CI.
+
+Key improvements:
+- Implemented Origin/Host admission and framing protections;
+  verified that previously observed cross-loopback upload
+  side effects were blocked in local browser tests.
+- Hardened image caching, request logging, and CI workflows.
+- Removed unused runtime tooling and strengthened disposable
+  Docker resource-ownership safeguards.
+- Preserved existing application reliability through 278
+  unit/component, 143 integration, and 20 browser tests.
+
+**Scope:** Trusted single-user local demonstration. No application
+vulnerability was confirmed within the exercised scope; native
+dependency advisory coverage and certain operational assurances
+remain incomplete.
+
+[Security audit overview](docs/security/README.md) |
+[Final findings and validation](docs/security/sa-3/README.md) |
+[Security portfolio case study](docs/security/sa-3/portfolio.md)
+
+
 ## Architecture
 
 ```mermaid
