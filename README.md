@@ -72,7 +72,7 @@ vulnerability was confirmed within the exercised scope; native
 dependency advisory coverage and certain operational assurances
 remain incomplete.
 
-[Security audit overview](docs/security/README.md) |
+[Application Security Audit & Hardening](docs/security/README.md) |
 [Final findings and validation](docs/security/sa-3/README.md) |
 [Security portfolio case study](docs/security/sa-3/portfolio.md)
 
